@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///Users/tobydance/Downloads/logue.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logue — Workplace Intelligence</title>
+<link href="./Logue — Workplace Intelligence (version 1)_files/css2" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────
+   LOGUE — QUIET LUXURY DESIGN SYSTEM
+───────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 14px; }
+
+:root {
+  /* Core Palette */
+  --forest:     #1E3A2F;
+  --forest-md:  #2D5240;
+  --forest-lt:  #3D6B52;
+  --sage:       #6B8F71;
+  --sage-lt:    #A8C5AE;
+  --sage-wash:  #EEF4EF;
+  --sage-tint:  #F5F9F6;
+
+  --slate-950:  #0F1614;
+  --slate-900:  #1A2420;
+  --slate-800:  #2A3830;
+  --slate-700:  #3D4F46;
+  --slate-600:  #556158;
+  --slate-500:  #717D74;
+  --slate-400:  #95A098;
+  --slate-300:  #BAC4BC;
+  --slate-200:  #D8DED9;
+  --slate-100:  #EDF0EE;
+  --slate-50:   #F7F8F7;
+
+  --offwhite:   #FAFAF8;
+  --white:      #FFFFFF;
+
+  --amber:      #9A6B2E;
+  --amber-lt:   #F5EDD9;
+  --crimson:    #8B3A3A;
+  --crimson-lt: #F5EAEA;
+  --cobalt:     #2E4A6B;
+  --cobalt-lt:  #E8EFF5;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(15,22,20,0.04);
+  --shadow-sm: 0 1px 4px rgba(15,22,20,0.06), 0 1px 2px rgba(15,22,20,0.04);
+  --shadow-md: 0 4px 16px rgba(15,22,20,0.07), 0 2px 4px rgba(15,22,20,0.04);
+  --shadow-lg: 0 12px 40px rgba(15,22,20,0.10), 0 4px 8px rgba(15,22,20,0.05);
+  --shadow-xl: 0 24px 60px rgba(15,22,20,0.13), 0 8px 16px rgba(15,22,20,0.06);
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Jost', sans-serif;
+
+  /* Radii */
+  --r-xs: 3px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--offwhite);
+  color: var(--slate-900);
+  min-height: 100vh;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── ROLE SWITCHER BAR ─── */
+.role-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 38px;
+  background: var(--slate-950);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 2000;
+  border-bottom: 1px solid var(--slate-800);
+}
+.role-bar-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-500);
+  font-weight: 500;
+  margin-right: 10px;
+}
+.role-switch-btn {
+  padding: 4px 16px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: transparent;
+  color: var(--slate-400);
+  transition: all 0.18s;
+}
+.role-switch-btn:hover { color: var(--white); border-color: var(--slate-600); }
+.role-switch-btn.active {
+  background: var(--forest);
+  color: var(--white);
+  border-color: var(--forest);
+}
+
+/* ─── APP SHELL ─── */
+.app-wrap {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 38px;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 220px;
+  background: var(--white);
+  border-right: 1px solid var(--slate-100);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 38px;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--slate-100);
+}
+.brand-lockup { display: flex; align-items: center; gap: 11px; }
+.brand-mark {
+  width: 28px; height: 28px;
+  background: var(--forest);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.brand-mark svg { width: 14px; height: 14px; stroke: var(--offwhite); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--slate-900);
+  letter-spacing: 0.06em;
+}
+.brand-tagline {
+  font-size: 0.6rem;
+  color: var(--slate-400);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1px;
+  padding-left: 39px;
+}
+
+.role-indicator {
+  margin: 14px 20px 2px;
+  padding: 6px 10px;
+  border-radius: var(--r-xs);
+  border: 1px solid;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.role-ind-emp  { background: var(--sage-tint); color: var(--forest-md); border-color: var(--sage-lt); }
+.role-ind-mgr  { background: var(--cobalt-lt); color: var(--cobalt); border-color: #c0d0e0; }
+.role-ind-own  { background: var(--amber-lt); color: var(--amber); border-color: #e0cca8; }
+.role-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
+
+.nav-group { padding: 14px 12px 6px; }
+.nav-group-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--slate-300);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  margin-bottom: 5px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 8px;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  color: var(--slate-500);
+  font-size: 0.8rem;
+  font-weight: 400;
+  transition: all 0.14s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+.nav-link:hover { background: var(--slate-50); color: var(--slate-900); }
+.nav-link.active { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.nav-link-icon {
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+.nav-link.active .nav-link-icon { opacity: 1; }
+.nav-link-icon svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-badge-pill {
+  margin-left: auto;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+.pill-alert  { background: var(--crimson-lt); color: var(--crimson); }
+.pill-new    { background: var(--sage-wash); color: var(--forest); }
+
+.sidebar-divider { height: 1px; background: var(--slate-100); margin: 6px 20px; }
+
+.sidebar-foot {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--slate-100);
+}
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+.user-av {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--white);
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+.av-emp  { background: linear-gradient(135deg, var(--sage), var(--forest-md)); }
+.av-mgr  { background: linear-gradient(135deg, #7090b0, var(--cobalt)); }
+.av-own  { background: linear-gradient(135deg, #c8a060, var(--amber)); }
+.user-detail-name { font-size: 0.78rem; font-weight: 500; color: var(--slate-900); }
+.user-detail-role { font-size: 0.65rem; color: var(--slate-400); letter-spacing: 0.02em; }
+.pro-badge {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--forest);
+  color: var(--white);
+  border-radius: 2px;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: background 0.14s;
+  margin-left: auto;
+}
+.pro-badge:hover { background: var(--forest-md); }
+
+/* ─── MAIN CONTENT ─── */
+.main-content {
+  margin-left: 220px;
+  flex: 1;
+  min-height: calc(100vh - 38px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  height: 52px;
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-100);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 38px;
+  z-index: 90;
+}
+.topbar-crumb {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  letter-spacing: 0.02em;
+}
+.crumb-sep { color: var(--slate-200); }
+.crumb-current { color: var(--slate-900); font-weight: 500; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.topbar-date {
+  font-size: 0.7rem;
+  color: var(--slate-400);
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xs);
+}
+.tb-btn {
+  padding: 6px 16px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  color: var(--slate-600);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.14s;
+  letter-spacing: 0.02em;
+}
+.tb-btn:hover { background: var(--slate-50); border-color: var(--slate-300); }
+.tb-btn.primary { background: var(--forest); border-color: var(--forest); color: var(--white); }
+.tb-btn.primary:hover { background: var(--forest-md); }
+
+/* ─── CONTENT AREA ─── */
+.content { padding: 32px; flex: 1; }
+
+/* ─── PAGES ─── */
+.page { display: none; }
+.page.active { display: block; animation: pageIn 0.28s ease; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── PAGE HEADING ─── */
+.page-head { margin-bottom: 28px; }
+.page-head h1 {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.page-head h1 em { font-style: italic; color: var(--forest); }
+.page-head p { font-size: 0.8rem; color: var(--slate-500); max-width: 520px; font-weight: 300; letter-spacing: 0.01em; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+.card-head {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--slate-900);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.card-sub { font-size: 0.7rem; color: var(--slate-400); margin-top: 2px; font-weight: 300; letter-spacing: 0.02em; }
+.card-body { padding: 18px 20px; }
+
+/* ─── STAT CARDS ─── */
+.stats-grid { display: grid; gap: 14px; margin-bottom: 22px; }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 20px 20px 18px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow 0.2s;
+}
+.kpi-card:hover { box-shadow: var(--shadow-md); }
+.kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.kpi-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+.kpi-delta {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+.delta-up   { background: var(--sage-wash); color: var(--forest); }
+.delta-down { background: var(--crimson-lt); color: var(--crimson); }
+.delta-flat { background: var(--slate-100); color: var(--slate-500); }
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.kpi-meta { font-size: 0.68rem; color: var(--slate-400); font-weight: 300; }
+
+/* ─── LAYOUT ─── */
+.col-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+.col-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.col-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.mb-18 { margin-bottom: 18px; }
+.mb-22 { margin-bottom: 22px; }
+
+/* ─── JOURNAL FORM ─── */
+.journal-panel {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.journal-two-col { display: grid; grid-template-columns: 1fr 1fr; }
+.journal-pane {
+  padding: 22px 22px 18px;
+  transition: background 0.15s;
+}
+.journal-pane:first-child { border-right: 1px solid var(--slate-100); }
+.journal-pane:focus-within:first-child  { background: var(--sage-tint); }
+.journal-pane:focus-within:last-child   { background: #fdf9f9; }
+
+.pane-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.pane-bar { width: 3px; height: 30px; border-radius: 1px; flex-shrink: 0; }
+.bar-green { background: var(--sage); }
+.bar-red   { background: var(--crimson); opacity: 0.55; }
+.pane-title { font-size: 0.82rem; font-weight: 600; color: var(--slate-900); letter-spacing: 0.02em; }
+.pane-desc  { font-size: 0.68rem; color: var(--slate-400); margin-top: 1px; font-weight: 300; }
+
+textarea {
+  width: 100%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--slate-900);
+  line-height: 1.7;
+  resize: vertical;
+  min-height: 110px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+textarea:focus { border-color: var(--sage); background: var(--white); }
+textarea::placeholder { color: var(--slate-300); }
+
+.tag-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.entry-tag {
+  padding: 3px 9px;
+  border-radius: 2px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.12s;
+  user-select: none;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.tag-g { border-color: var(--sage-lt); color: var(--forest-md); }
+.tag-g:hover, .tag-g.on { background: var(--sage-wash); border-color: var(--sage); }
+.tag-r { border-color: #dcc0be; color: var(--crimson); }
+.tag-r:hover, .tag-r.on { background: var(--crimson-lt); border-color: #c09090; }
+
+.journal-footer {
+  border-top: 1px solid var(--slate-100);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--slate-50);
+}
+
+/* ─── VOICE BUTTON ─── */
+.voice-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  color: var(--slate-600);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.voice-trigger:hover { border-color: var(--sage); color: var(--forest); }
+.voice-trigger svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.voice-hint { font-size: 0.68rem; color: var(--slate-300); letter-spacing: 0.02em; font-weight: 300; }
+
+/* ─── JOURNAL OPTIONS ─── */
+.entry-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.opt-panel {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-xs);
+}
+.opt-head {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+  margin-bottom: 10px;
+}
+.mood-set { display: flex; gap: 5px; }
+.mood-pick {
+  flex: 1;
+  height: 30px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--slate-100);
+  background: var(--slate-50);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.mood-pick:hover { border-color: var(--sage-lt); }
+.mood-pick.on { border-color: var(--sage); background: var(--sage-tint); box-shadow: 0 0 0 2px var(--sage-wash); }
+input[type="range"] { width: 100%; accent-color: var(--forest); margin-top: 6px; }
+.range-labels { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--slate-300); margin-top: 2px; letter-spacing: 0.06em; text-transform: uppercase; }
+select {
+  width: 100%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xs);
+  padding: 7px 10px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--slate-900);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+select:focus { border-color: var(--sage); }
+.check-group { display: flex; flex-direction: column; gap: 6px; }
+.check-row { display: flex; align-items: center; gap: 7px; font-size: 0.73rem; color: var(--slate-500); cursor: pointer; font-weight: 300; }
+.check-row input { accent-color: var(--forest); width: 13px; height: 13px; cursor: pointer; }
+
+/* ─── SUBMIT ROW ─── */
+.submit-strip {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-md);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-xs);
+  margin-bottom: 20px;
+}
+.privacy-block { display: flex; align-items: center; gap: 10px; }
+.privacy-ico {
+  width: 28px; height: 28px;
+  background: var(--sage-tint);
+  border-radius: var(--r-xs);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.privacy-ico svg { width: 13px; height: 13px; stroke: var(--forest); fill: none; stroke-width: 2; stroke-linecap: round; }
+.privacy-ttl { font-size: 0.76rem; font-weight: 600; color: var(--slate-900); letter-spacing: 0.01em; }
+.privacy-sub { font-size: 0.67rem; color: var(--slate-400); font-weight: 300; }
+.btn-cluster { display: flex; gap: 8px; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: var(--r-xs);
+  border: 1px solid;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.btn-ghost { background: transparent; border-color: var(--slate-200); color: var(--slate-500); }
+.btn-ghost:hover { background: var(--slate-50); border-color: var(--slate-300); color: var(--slate-900); }
+.btn-primary { background: var(--forest); border-color: var(--forest); color: var(--white); }
+.btn-primary:hover { background: var(--forest-md); box-shadow: 0 3px 12px rgba(30,58,47,0.25); }
+.btn-sm { padding: 5px 12px; font-size: 0.65rem; }
+.btn-full { width: 100%; justify-content: center; }
+.btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ─── AI INSIGHT PANEL ─── */
+.insight-panel {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--sage-lt);
+  border-radius: var(--r-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  animation: pageIn 0.3s ease;
+  margin-top: 4px;
+}
+.insight-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--forest), var(--sage));
+}
+.insight-panel.open { display: block; }
+.insight-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.ai-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--sage-tint);
+  color: var(--forest);
+  border: 1px solid var(--sage-wash);
+  border-radius: var(--r-xs);
+  padding: 3px 9px;
+}
+.insight-head-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  letter-spacing: 0.01em;
+}
+.loading-row { display: flex; align-items: center; gap: 9px; color: var(--slate-400); font-size: 0.78rem; font-weight: 300; }
+.spinner { width: 14px; height: 14px; border: 1.5px solid var(--slate-200); border-top-color: var(--forest); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.insight-text { font-size: 0.82rem; line-height: 1.85; color: var(--slate-700); font-weight: 300; }
+.insight-text p { margin-bottom: 10px; }
+.insight-text p:last-child { margin-bottom: 0; }
+.insight-action-lbl {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--forest);
+  margin: 14px 0 4px;
+}
+.insight-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--slate-100);
+}
+.meta-item { display: flex; flex-direction: column; gap: 2px; }
+.meta-lbl { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate-300); font-weight: 600; }
+.meta-val { font-size: 0.76rem; font-weight: 500; color: var(--slate-900); }
+
+/* ─── FRICTION / ITEM LISTS ─── */
+.list-item {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.list-item:last-child { border-bottom: none; }
+.list-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 5px; }
+.list-item-title { font-size: 0.82rem; font-weight: 600; color: var(--slate-900); letter-spacing: 0.01em; }
+.severity-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sev-h { background: var(--crimson-lt); color: var(--crimson); }
+.sev-m { background: var(--amber-lt); color: var(--amber); }
+.sev-l { background: var(--sage-wash); color: var(--forest); }
+.sev-w { background: var(--cobalt-lt); color: var(--cobalt); }
+.list-item-body { font-size: 0.76rem; color: var(--slate-500); line-height: 1.65; margin-bottom: 8px; font-weight: 300; }
+.tag-cluster { display: flex; gap: 5px; flex-wrap: wrap; }
+.dept-tag {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xs);
+  padding: 2px 8px;
+  font-size: 0.62rem;
+  color: var(--slate-500);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* ─── BAR CHART ─── */
+.bar-set { margin-top: 8px; }
+.bar-line { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.bar-key { font-size: 0.62rem; color: var(--slate-400); width: 22px; text-align: right; letter-spacing: 0.04em; }
+.bar-track { flex: 1; height: 4px; background: var(--slate-100); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+.fill-forest  { background: linear-gradient(90deg, var(--sage-lt), var(--forest-lt)); }
+.fill-crimson { background: linear-gradient(90deg, #d4918a, var(--crimson)); }
+.fill-amber   { background: linear-gradient(90deg, #d4b87a, var(--amber)); }
+.bar-num { font-size: 0.62rem; color: var(--slate-400); width: 26px; letter-spacing: 0.04em; }
+
+/* Wide bar variant */
+.wbar-line { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.wbar-key { font-size: 0.72rem; font-weight: 500; color: var(--slate-700); }
+.wbar-track { flex: 1; height: 6px; background: var(--slate-100); border-radius: 2px; overflow: hidden; }
+.wbar-fill { height: 100%; border-radius: 2px; }
+.wbar-num { font-size: 0.7rem; font-weight: 600; width: 30px; text-align: right; }
+
+/* ─── SECTION LABEL ─── */
+.section-lbl {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-300);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-lbl::after { content: ''; flex: 1; height: 1px; background: var(--slate-100); }
+
+/* ─── PULSE HEADER ─── */
+.pulse-hero {
+  background: var(--forest);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 22px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.pulse-hero::after {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+  pointer-events: none;
+}
+.pulse-hero-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 3px;
+  letter-spacing: 0.01em;
+  position: relative;
+}
+.pulse-hero-sub { font-size: 0.73rem; opacity: 0.55; position: relative; font-weight: 300; letter-spacing: 0.02em; }
+.pulse-metrics { display: flex; gap: 28px; margin-top: 18px; position: relative; flex-wrap: wrap; }
+.pm-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; line-height: 1; letter-spacing: -0.01em; }
+.pm-lbl { font-size: 0.58rem; opacity: 0.55; margin-top: 3px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+/* ─── OWNER HERO ─── */
+.owner-hero {
+  background: linear-gradient(135deg, var(--slate-950) 0%, var(--forest-lt) 100%);
+  border-radius: var(--r-lg);
+  padding: 26px 28px;
+  margin-bottom: 22px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.owner-hero::before {
+  content: '';
+  position: absolute;
+  bottom: -30px; right: -30px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.025);
+  pointer-events: none;
+}
+.owner-hero-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; margin-bottom: 3px; letter-spacing: 0.01em; position: relative; }
+.owner-hero-sub { font-size: 0.73rem; opacity: 0.45; font-weight: 300; letter-spacing: 0.02em; position: relative; }
+
+/* ─── SENTIMENT ─── */
+.sentiment-wrap { margin: 4px 0; }
+.sentiment-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--crimson) 0%, #d4a060 45%, var(--forest-lt) 100%);
+  position: relative;
+  margin: 8px 0;
+}
+.sentiment-needle {
+  position: absolute;
+  top: -5px;
+  width: 16px; height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  border: 2px solid var(--slate-700);
+  transform: translateX(-50%);
+  box-shadow: var(--shadow-sm);
+  transition: left 0.8s ease;
+}
+.sentiment-ends { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--slate-400); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ─── LEADERBOARD ─── */
+.lb-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--slate-100); }
+.lb-row:last-child { border-bottom: none; }
+.lb-num { font-family: var(--font-display); font-size: 1rem; font-weight: 400; color: var(--slate-300); width: 20px; text-align: center; }
+.lb-num.gold { color: var(--forest); }
+.lb-av { width: 28px; height: 28px; border-radius: 50%; font-size: 0.6rem; font-weight: 600; color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; letter-spacing: 0.04em; }
+.lb-info { flex: 1; }
+.lb-name { font-size: 0.76rem; font-weight: 500; color: var(--slate-900); }
+.lb-streak { font-size: 0.64rem; color: var(--slate-400); font-weight: 300; }
+.lb-pts { font-size: 0.76rem; font-weight: 600; color: var(--forest); }
+
+/* ─── ACTION ITEMS ─── */
+.action-row { display: flex; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--slate-100); }
+.action-row:last-child { border-bottom: none; }
+.action-idx {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.action-body { flex: 1; }
+.action-title { font-size: 0.82rem; font-weight: 600; color: var(--slate-900); margin-bottom: 3px; letter-spacing: 0.01em; }
+.action-desc  { font-size: 0.76rem; color: var(--slate-500); line-height: 1.65; margin-bottom: 7px; font-weight: 300; }
+.chip-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--r-xs);
+}
+.chip-g { background: var(--sage-wash); color: var(--forest); }
+.chip-a { background: var(--amber-lt); color: var(--amber); }
+.chip-b { background: var(--cobalt-lt); color: var(--cobalt); }
+.chip-r { background: var(--crimson-lt); color: var(--crimson); }
+
+/* ─── SPARKLINE ─── */
+.spark { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 14px; }
+.spark-b { flex: 1; border-radius: 2px 2px 0 0; background: var(--slate-100); transition: height 0.8s ease; }
+.spark-b.hi { background: var(--forest-lt); }
+
+/* ─── REVENUE TABLE ─── */
+.rev-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.rev-table th {
+  text-align: left;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--slate-100);
+}
+.rev-table td {
+  padding: 11px 0;
+  font-size: 0.78rem;
+  color: var(--slate-700);
+  border-bottom: 1px solid var(--slate-100);
+  vertical-align: middle;
+}
+.rev-table tr:last-child td { border-bottom: none; }
+.rev-table td:last-child { text-align: right; font-weight: 600; color: var(--slate-900); }
+.plan-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: var(--r-xs);
+}
+.plan-ent { background: var(--amber-lt); color: var(--amber); }
+.plan-pro { background: var(--sage-wash); color: var(--forest); }
+.plan-str { background: var(--slate-100); color: var(--slate-500); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.dot-active { background: var(--forest-lt); }
+.dot-trial  { background: var(--amber); }
+.dot-at_risk { background: var(--crimson); }
+
+/* ─── FEED ─── */
+.feed-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--slate-100); }
+.feed-item:last-child { border-bottom: none; }
+.feed-pip { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.pip-g { background: var(--forest-lt); }
+.pip-a { background: var(--amber); }
+.pip-r { background: var(--crimson); }
+.pip-b { background: var(--cobalt); }
+.feed-text { font-size: 0.76rem; color: var(--slate-500); line-height: 1.55; flex: 1; font-weight: 300; }
+.feed-text strong { color: var(--slate-800); font-weight: 600; }
+.feed-time { font-size: 0.64rem; color: var(--slate-300); white-space: nowrap; letter-spacing: 0.04em; }
+
+/* ─── PLAN DISTRIBUTION ─── */
+.plan-dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.pdr-label { font-size: 0.72rem; font-weight: 500; color: var(--slate-700); width: 90px; }
+.pdr-track { flex: 1; height: 6px; background: var(--slate-100); border-radius: 2px; overflow: hidden; }
+.pdr-fill { height: 100%; border-radius: 2px; }
+.pdr-count { font-size: 0.68rem; color: var(--slate-400); width: 55px; text-align: right; }
+
+/* ─── TOGGLE ─── */
+.toggle {
+  width: 34px; height: 18px;
+  border-radius: 9px;
+  background: var(--slate-200);
+  position: relative;
+  cursor: pointer;
+  border: none;
+  transition: background 0.18s;
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.18s;
+  box-shadow: var(--shadow-xs);
+}
+.toggle.on { background: var(--forest); }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ─── SETTINGS ─── */
+.settings-layout { display: grid; grid-template-columns: 180px 1fr; gap: 22px; }
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+.s-item {
+  padding: 8px 10px;
+  border-radius: var(--r-xs);
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--slate-500);
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  transition: all 0.12s;
+  letter-spacing: 0.02em;
+}
+.s-item:hover { background: var(--slate-50); color: var(--slate-900); }
+.s-item.active { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--slate-100); }
+.settings-row:last-child { border-bottom: none; }
+.sr-title { font-size: 0.8rem; font-weight: 500; color: var(--slate-900); }
+.sr-sub   { font-size: 0.68rem; color: var(--slate-400); margin-top: 2px; font-weight: 300; }
+
+/* ─── EXECUTIVE SUMMARY (formal doc) ─── */
+.exec-summary {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 22px;
+}
+.exec-letterhead {
+  background: var(--forest);
+  color: var(--white);
+  padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.exec-letterhead::after {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.025);
+}
+.exec-doc-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.55;
+  margin-bottom: 6px;
+  position: relative;
+}
+.exec-doc-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  position: relative;
+}
+.exec-doc-sub { font-size: 0.75rem; opacity: 0.5; margin-top: 4px; font-weight: 300; position: relative; letter-spacing: 0.04em; }
+.exec-kpis {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+  position: relative;
+}
+.exec-kpi-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; line-height: 1; }
+.exec-kpi-lbl { font-size: 0.58rem; opacity: 0.5; margin-top: 3px; letter-spacing: 0.12em; text-transform: uppercase; }
+.exec-body { padding: 28px 32px; }
+.exec-section { margin-bottom: 24px; }
+.exec-section-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--slate-300);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+/* ─── AI SUGGESTED ACTIONS PANEL ─── */
+.ai-actions-panel {
+  background: var(--sage-tint);
+  border: 1px solid var(--sage-wash);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-actions-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--forest), var(--sage));
+}
+.aap-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.aap-head-title { font-size: 0.76rem; font-weight: 600; color: var(--slate-900); letter-spacing: 0.02em; text-transform: uppercase; }
+.aap-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(168,197,174,0.3); }
+.aap-item:last-child { border-bottom: none; padding-bottom: 0; }
+.aap-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--white);
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.aap-title { font-size: 0.8rem; font-weight: 600; color: var(--slate-900); margin-bottom: 3px; }
+.aap-desc  { font-size: 0.73rem; color: var(--slate-600); line-height: 1.6; font-weight: 300; }
+
+/* ─── PRO MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,22,20,0.45);
+  z-index: 800;
+  align-items: center;
+  justify-content: center;
+  animation: fadeOverlay 0.2s ease;
+}
+@keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  padding: 36px;
+  width: 420px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn 0.2s ease;
+}
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.modal-mark {
+  width: 52px; height: 52px;
+  background: var(--sage-tint);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+}
+.modal-mark svg { width: 24px; height: 24px; stroke: var(--forest); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.modal-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: var(--slate-900); margin-bottom: 10px; letter-spacing: 0.01em; }
+.modal-body  { font-size: 0.8rem; color: var(--slate-500); line-height: 1.75; margin-bottom: 22px; font-weight: 300; }
+.modal-body strong { color: var(--forest); font-weight: 600; }
+
+/* ─── VOICE MODAL ─── */
+.voice-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,22,20,0.45);
+  z-index: 800;
+  align-items: center;
+  justify-content: center;
+}
+.voice-overlay.open { display: flex; animation: fadeOverlay 0.2s ease; }
+.voice-box {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  padding: 36px 32px 28px;
+  width: 360px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn 0.2s ease;
+}
+.voice-icon-ring {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--sage-tint);
+  border: 2px solid var(--sage-wash);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.voice-icon-ring.recording {
+  background: var(--crimson-lt);
+  border-color: #dcc0be;
+  animation: pulseRing 1.2s infinite;
+}
+@keyframes pulseRing { 0%,100% { box-shadow: 0 0 0 0 rgba(139,58,58,0.2); } 50% { box-shadow: 0 0 0 10px rgba(139,58,58,0); } }
+.voice-icon-ring svg { width: 28px; height: 28px; stroke: var(--forest); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.voice-icon-ring.recording svg { stroke: var(--crimson); }
+.voice-modal-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 400; color: var(--slate-900); margin-bottom: 4px; }
+.voice-modal-sub   { font-size: 0.76rem; color: var(--slate-400); margin-bottom: 20px; font-weight: 300; }
+.waveform-vis {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.wv-bar { width: 3px; border-radius: 2px; background: var(--slate-200); transition: height 0.1s; }
+.waveform-vis.active .wv-bar { background: var(--forest-lt); animation: wvAnim 0.55s ease-in-out infinite alternate; }
+.wv-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.wv-bar:nth-child(2) { height: 14px; animation-delay: 0.06s; }
+.wv-bar:nth-child(3) { height: 22px; animation-delay: 0.12s; }
+.wv-bar:nth-child(4) { height: 28px; animation-delay: 0.18s; }
+.wv-bar:nth-child(5) { height: 34px; animation-delay: 0.24s; }
+.wv-bar:nth-child(6) { height: 28px; animation-delay: 0.30s; }
+.wv-bar:nth-child(7) { height: 22px; animation-delay: 0.36s; }
+.wv-bar:nth-child(8) { height: 14px; animation-delay: 0.42s; }
+.wv-bar:nth-child(9) { height: 8px; animation-delay: 0.48s; }
+@keyframes wvAnim { to { height: 4px; } }
+.voice-timer { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; color: var(--slate-900); margin-bottom: 22px; }
+.voice-btn-row { display: flex; gap: 8px; justify-content: center; }
+.vm-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--slate-200);
+  background: var(--slate-50);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--slate-500);
+  transition: all 0.14s;
+}
+.vm-btn:hover { background: var(--slate-100); }
+.vm-btn.vm-record { background: var(--crimson); border-color: var(--crimson); color: var(--white); }
+.vm-btn.vm-record:hover { background: #7a2e2e; }
+.vm-btn.vm-stop { background: var(--slate-900); border-color: var(--slate-900); color: var(--white); }
+
+/* ─── ROLE PANELS ─── */
+.role-panel { display: none; }
+.role-panel.active { display: flex; flex-direction: column; min-height: calc(100vh - 38px); }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--slate-900);
+  color: var(--white);
+  border-radius: var(--r-xs);
+  padding: 11px 20px;
+  font-size: 0.74rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .main-content { margin-left: 0; }
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .col-3-2, .col-2-1, .col-2 { grid-template-columns: 1fr; }
+  .journal-two-col { grid-template-columns: 1fr; }
+  .journal-pane:first-child { border-right: none; border-bottom: 1px solid var(--slate-100); }
+  .entry-options { grid-template-columns: 1fr; }
+  .pulse-metrics { gap: 16px; }
+  .settings-layout { grid-template-columns: 1fr; }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 0 16px; }
+}
+@media (max-width: 540px) {
+  .g4, .g3, .g2 { grid-template-columns: 1fr; }
+  .exec-kpis { gap: 18px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     ROLE SWITCHER
+═══════════════════════════════ -->
+<div class="role-bar">
+  <span class="role-bar-label">View As</span>
+  <button class="role-switch-btn active" onclick="switchRole(&#39;employee&#39;, this)">Employee</button>
+  <button class="role-switch-btn" onclick="switchRole(&#39;manager&#39;, this)">Manager</button>
+  <button class="role-switch-btn" onclick="switchRole(&#39;owner&#39;, this)">Owner</button>
+</div>
+
+
+<!-- ═══════════════════════════════
+     EMPLOYEE PANEL
+═══════════════════════════════ -->
+<div class="role-panel active" id="panel-employee">
+<div class="app-wrap">
+  <aside class="sidebar" id="sb-employee">
+    <div class="sidebar-brand">
+      <div class="brand-lockup">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg>
+        </div>
+        <div>
+          <div class="brand-name">Logue</div>
+        </div>
+      </div>
+      <div class="brand-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-indicator role-ind-emp"><div class="role-dot"></div>Employee</div>
+    <div class="nav-group">
+      <div class="nav-group-label">My Workspace</div>
+      <button class="nav-link active" onclick="navigate(&#39;emp&#39;,&#39;journal&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
+        Daily Journal
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;emp&#39;,&#39;history&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+        My History
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;emp&#39;,&#39;goals&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+        Goals
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Account</div>
+      <button class="nav-link" onclick="navigate(&#39;emp&#39;,&#39;settings&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Settings
+      </button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="user-profile">
+        <div class="user-av av-emp">JR</div>
+        <div class="user-detail-name" style="flex:1;">Jamie Rivera<br><span class="user-detail-role">Marketing</span></div>
+        <div class="pro-badge" onclick="openProModal()">Enterprise</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue <span class="crumb-sep">›</span> <span class="topbar-current" id="emp-crumb">Daily Journal</span></div>
+      <div class="topbar-actions">
+        <div class="topbar-date">Wednesday, 4 March 2026</div>
+        <button class="tb-btn">Notifications</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- JOURNAL -->
+      <div class="page active" id="emp-journal">
+        <div class="page-head">
+          <h1>Daily <em>Journal</em></h1>
+          <p>Your end-of-day reflection. Entries are anonymized before any analysis — management sees patterns, never individuals.</p>
+        </div>
+
+        <div class="journal-panel">
+          <div class="journal-two-col">
+            <div class="journal-pane">
+              <div class="pane-header">
+                <div class="pane-bar bar-green"></div>
+                <div>
+                  <div class="pane-title">Victories &amp; Wins</div>
+                  <div class="pane-desc">What worked well today?</div>
+                </div>
+              </div>
+              <textarea id="wins-input" placeholder="e.g. Closed the Miller account ahead of schedule. The new async standup is saving real time every morning."></textarea>
+              <div class="tag-strip">
+                <span class="entry-tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Great team collaboration&#39;)">Collaboration</span>
+                <span class="entry-tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Tools worked smoothly&#39;)">Tools working</span>
+                <span class="entry-tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Clear communication&#39;)">Clear comms</span>
+                <span class="entry-tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Fast delivery&#39;)">Fast delivery</span>
+              </div>
+            </div>
+            <div class="journal-pane">
+              <div class="pane-header">
+                <div class="pane-bar bar-red"></div>
+                <div>
+                  <div class="pane-title">Friction &amp; Blockers</div>
+                  <div class="pane-desc">Where did things slow down?</div>
+                </div>
+              </div>
+              <textarea id="friction-input" placeholder="e.g. Still can&#39;t find assets in the new shared drive. Had to ask three people to understand the approval process."></textarea>
+              <div class="tag-strip">
+                <span class="entry-tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Unclear process or workflow&#39;)">Unclear process</span>
+                <span class="entry-tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Software slow or buggy&#39;)">Slow software</span>
+                <span class="entry-tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Missing information&#39;)">Missing info</span>
+                <span class="entry-tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Too many unproductive meetings&#39;)">Meeting overload</span>
+              </div>
+            </div>
+          </div>
+          <div class="journal-footer">
+            <button class="voice-trigger" onclick="openVoice()">
+              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              Voice Entry
+            </button>
+            <span class="voice-hint">Speak your thoughts — AI transcribes into your entry</span>
+          </div>
+        </div>
+
+        <div class="entry-options">
+          <div class="opt-panel">
+            <div class="opt-head">Energy &amp; Mood</div>
+            <div class="mood-set">
+              <button class="mood-pick" onclick="pickMood(this)" title="Drained">😔</button>
+              <button class="mood-pick" onclick="pickMood(this)" title="Neutral">😐</button>
+              <button class="mood-pick" onclick="pickMood(this)" title="Good">🙂</button>
+              <button class="mood-pick" onclick="pickMood(this)" title="Energized">😊</button>
+              <button class="mood-pick on" onclick="pickMood(this)" title="Excellent">🚀</button>
+            </div>
+            <div style="margin-top:14px;">
+              <div class="opt-head">Productivity (1–10)</div>
+              <input type="range" min="1" max="10" value="8" id="prod-slider">
+              <div class="range-labels"><span>Low</span><span>High</span></div>
+            </div>
+          </div>
+          <div class="opt-panel">
+            <div class="opt-head">Department</div>
+            <select>
+              <option>Select...</option>
+              <option selected="">Marketing</option>
+              <option>Sales</option>
+              <option>Engineering</option>
+              <option>Operations</option>
+              <option>Customer Success</option>
+            </select>
+            <div class="opt-head">Entry Type</div>
+            <select>
+              <option selected="">End of Day</option>
+              <option>Mid-Day Check-In</option>
+              <option>Project Debrief</option>
+              <option>Sprint Retrospective</option>
+            </select>
+          </div>
+          <div class="opt-panel">
+            <div class="opt-head">Privacy Controls</div>
+            <div class="check-group">
+              <label class="check-row"><input type="checkbox" checked=""> Anonymize this entry</label>
+              <label class="check-row"><input type="checkbox" checked=""> Include in team report</label>
+              <label class="check-row"><input type="checkbox"> Share with direct manager</label>
+              <label class="check-row"><input type="checkbox"> Flag for follow-up</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-strip">
+          <div class="privacy-block">
+            <div class="privacy-ico">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div>
+              <div class="privacy-ttl">Privacy Protected</div>
+              <div class="privacy-sub">Your entry is anonymized before analysis. Management sees aggregated trends only.</div>
+            </div>
+          </div>
+          <div class="btn-cluster">
+            <button class="btn btn-ghost" onclick="showToast(&#39;Draft saved&#39;)">Save Draft</button>
+            <button class="btn btn-primary" onclick="runAnalysis()">
+              <svg viewBox="0 0 24 24" width="12" height="12"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Analyse &amp; Submit
+            </button>
+          </div>
+        </div>
+
+        <div class="insight-panel" id="insight-panel">
+          <div class="insight-head">
+            <span class="ai-label">Logue AI</span>
+            <span class="insight-head-title">Personal Insight</span>
+          </div>
+          <div id="insight-loading" class="loading-row"><div class="spinner"></div><span>Analysing your entry…</span></div>
+          <div id="insight-body" class="insight-text" style="display:none;"></div>
+          <div id="insight-meta" class="insight-meta" style="display:none;">
+            <div class="meta-item"><span class="meta-lbl">Mood</span><span class="meta-val" id="m-mood">—</span></div>
+            <div class="meta-item"><span class="meta-lbl">Theme</span><span class="meta-val" id="m-theme">—</span></div>
+            <div class="meta-item"><span class="meta-lbl">Impact</span><span class="meta-val" id="m-impact">—</span></div>
+            <div class="meta-item"><span class="meta-lbl">Tomorrow</span><span class="meta-val" id="m-focus">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="page" id="emp-history">
+        <div class="page-head"><h1>My <em>History</em></h1><p>Your personal reflection archive — 28 entries this month.</p></div>
+        <div class="stats-grid g3 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Day Streak</div><span class="kpi-delta delta-up">+12%</span></div><div class="kpi-value">18</div><div class="kpi-meta">Personal record: 22 days</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Entries This Month</div><span class="kpi-delta delta-up">+5</span></div><div class="kpi-value">28</div><div class="kpi-meta">Target: 22 / month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Productivity</div><span class="kpi-delta delta-flat">Stable</span></div><div class="kpi-value">7.4</div><div class="kpi-meta">Out of 10</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Recent Entries</div></div></div>
+          <div class="card-body">
+            <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);border-color:var(--sage-lt);">1</div><div class="action-body"><div class="action-title">3 Mar — Strong collaboration day</div><div class="action-desc">Wins: Closed two deals. Friction: approval workflow delay. Mood: Energised · Productivity: 9/10</div><div class="chip-row"><span class="chip chip-g">High Productivity</span><span class="chip chip-b">Team Collab</span></div></div></div>
+            <div class="action-row"><div class="action-idx">2</div><div class="action-body"><div class="action-title">2 Mar — File-sharing issue flagged</div><div class="action-desc">Wins: Campaign brief approved. Friction: 40 min lost navigating shared drive. Mood: Neutral · Productivity: 5/10</div><div class="chip-row"><span class="chip chip-r">Blocker Flagged</span><span class="chip chip-a">Tool Issue</span></div></div></div>
+            <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);border-color:var(--sage-lt);">3</div><div class="action-body"><div class="action-title">28 Feb — Best day this month</div><div class="action-desc">Wins: Q1 campaign launched on time. No friction. Mood: Excellent · Productivity: 10/10</div><div class="chip-row"><span class="chip chip-g">Top Performance</span></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOALS -->
+      <div class="page" id="emp-goals">
+        <div class="page-head"><h1>Personal <em>Goals</em></h1><p>Set intentions. Logue AI tracks progress through your journal entries automatically.</p></div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Active Goals</div></div>
+            <div class="card-body">
+              <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);border-color:var(--sage-lt);">1</div><div class="action-body"><div class="action-title">Reduce daily meeting time to under 90 min</div><div class="action-desc">3 of 5 days achieved this week.</div><div class="chip-row"><span class="chip chip-g">60% Progress</span></div></div></div>
+              <div class="action-row"><div class="action-idx" style="background:var(--amber-lt);color:var(--amber);border-color:#dbc8a0;">2</div><div class="action-body"><div class="action-title">Journal 5 days per week</div><div class="action-desc">4 of 5 days. 18-day streak.</div><div class="chip-row"><span class="chip chip-a">80% This Week</span></div></div></div>
+              <div class="action-row"><div class="action-idx">3</div><div class="action-body"><div class="action-title">Maintain productivity above 7.0</div><div class="action-desc">Current average: 7.4. On track.</div><div class="chip-row"><span class="chip chip-g">On Track</span></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">AI-Suggested Goals</div><div class="card-sub">Based on your last 10 entries</div></div>
+            <div class="card-body">
+              <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);">AI</div><div class="action-body"><div class="action-title">Block two focus hours daily</div><div class="action-desc">You mentioned "interrupted" in 6 of your last 10 entries.</div><div class="chip-row"><button class="btn btn-ghost btn-sm">Add Goal</button></div></div></div>
+              <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);">AI</div><div class="action-body"><div class="action-title">Batch notifications to twice daily</div><div class="action-desc">Context switching is a recurring friction theme.</div><div class="chip-row"><button class="btn btn-ghost btn-sm">Add Goal</button></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="emp-settings">
+        <div class="page-head"><h1>Account <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="settings-nav">
+              <button class="s-item active" onclick="sTab(this)">Notifications</button>
+              <button class="s-item" onclick="sTab(this)">Privacy</button>
+              <button class="s-item" onclick="sTab(this)">Integrations</button>
+            </div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Daily journal reminder</div><div class="sr-sub">Nudge at 4:30 PM to complete your entry</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">AI insights on submissions</div><div class="sr-sub">Personal synthesis after each entry</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Full anonymisation</div><div class="sr-sub">Management sees trends only — never your name</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Opt out of leaderboard</div><div class="sr-sub">Hide your streak from team rankings</div></div><button class="toggle" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-content -->
+</div><!-- /app-wrap -->
+</div><!-- /panel-employee -->
+
+
+<!-- ═══════════════════════════════
+     MANAGER PANEL
+═══════════════════════════════ -->
+<div class="role-panel" id="panel-manager">
+<div class="app-wrap">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-lockup">
+        <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+        <div><div class="brand-name">Logue</div></div>
+      </div>
+      <div class="brand-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-indicator role-ind-mgr"><div class="role-dot"></div>Manager</div>
+    <div class="nav-group">
+      <div class="nav-group-label">Insights</div>
+      <button class="nav-link" onclick="navigate(&#39;mgr&#39;,&#39;pulse&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+        Team Pulse <span class="nav-badge-pill pill-alert">3</span>
+      </button>
+      <button class="nav-link active" onclick="navigate(&#39;mgr&#39;,&#39;actions&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+        AI Actions <span class="nav-badge-pill pill-new">New</span>
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;mgr&#39;,&#39;sentiment&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+        Sentiment
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;mgr&#39;,&#39;engagement&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        Engagement
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Reports</div>
+      <button class="nav-link" onclick="navigate(&#39;mgr&#39;,&#39;execsummary&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+        Executive Summary
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;mgr&#39;,&#39;msettings&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Settings
+      </button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="user-profile">
+        <div class="user-av av-mgr">SM</div>
+        <div>
+          <div class="user-detail-name">Sarah Mitchell</div>
+          <div class="user-detail-role">Operations Manager</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue › <span class="topbar-current" id="mgr-crumb">AI Actions</span></div>
+      <div class="topbar-actions">
+        <div class="topbar-date">Wednesday, 4 March 2026</div>
+        <button class="tb-btn" onclick="showToast(&#39;Exporting report…&#39;)">Export Report</button>
+        <button class="tb-btn primary" onclick="showToast(&#39;Generating summary…&#39;)">Generate Summary</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- TEAM PULSE -->
+      <div class="page" id="mgr-pulse">
+        <div class="page-head">
+          <h1>Team <em>Pulse</em></h1>
+          <p>Aggregated from 47 anonymous entries this week. No individual data is surfaced here.</p>
+        </div>
+
+        <div class="pulse-hero">
+          <div class="pulse-hero-title">Week of 4 March 2026</div>
+          <div class="pulse-hero-sub">All entries anonymised. Individual responses are never visible in this view.</div>
+          <div class="pulse-metrics">
+            <div><div class="pm-val">47</div><div class="pm-lbl">Entries</div></div>
+            <div><div class="pm-val">89%</div><div class="pm-lbl">Participation</div></div>
+            <div><div class="pm-val">7.2</div><div class="pm-lbl">Morale Score</div></div>
+            <div><div class="pm-val">14</div><div class="pm-lbl">Friction Points</div></div>
+          </div>
+        </div>
+
+        <div class="col-3-2">
+          <div>
+            <div class="card mb-18">
+              <div class="card-head">
+                <div><div class="card-title">Top Friction Points</div><div class="card-sub">Requiring management attention</div></div>
+              </div>
+              <div class="card-body">
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">File-sharing software confusion</div><span class="severity-badge sev-h">High</span></div>
+                  <div class="list-item-body">62% of Marketing &amp; Design report losing approximately 25 minutes per day navigating the new shared drive. "Can't find" and "had to ask" appear in 20 entries this week.</div>
+                  <div class="tag-cluster"><span class="dept-tag">Marketing · 12</span><span class="dept-tag">Design · 8</span></div>
+                  <div class="bar-set">
+                    <div class="bar-line"><span class="bar-key">Mon</span><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 30%;"></div></div><span class="bar-num">30%</span></div>
+                    <div class="bar-line"><span class="bar-key">Tue</span><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 48%;"></div></div><span class="bar-num">48%</span></div>
+                    <div class="bar-line"><span class="bar-key">Wed</span><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 62%;"></div></div><span class="bar-num">62%</span></div>
+                  </div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">Meeting overload in Operations</div><span class="severity-badge sev-m">Medium</span></div>
+                  <div class="list-item-body">Seven employees independently flagged 3+ hours of unproductive meetings daily. Most frequent phrase: "could have been an email."</div>
+                  <div class="tag-cluster"><span class="dept-tag">Operations · 7</span></div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">Q2 approval process unclear</div><span class="severity-badge sev-m">Medium</span></div>
+                  <div class="list-item-body">Confusion about vendor approval for purchases above £500 appears in 9 entries across four departments.</div>
+                  <div class="tag-cluster"><span class="dept-tag">Finance · 4</span><span class="dept-tag">Ops · 3</span><span class="dept-tag">Sales · 2</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Wins This Week</div></div>
+              <div class="card-body">
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">Async standup bot praised</div><span class="severity-badge sev-w">Replicate</span></div>
+                  <div class="list-item-body">Eleven independent mentions. "Saves 20 minutes" is the most repeated phrase. Strong candidate for company-wide rollout.</div>
+                  <div class="tag-cluster"><span class="dept-tag">Sales · 6</span><span class="dept-tag">Marketing · 5</span></div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">Q1 campaign launched on schedule</div><span class="severity-badge sev-l">Celebrate</span></div>
+                  <div class="list-item-body">Eight Marketing entries celebrate this milestone — good candidate for public recognition.</div>
+                  <div class="tag-cluster"><span class="dept-tag">Marketing · 8</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card mb-18">
+              <div class="card-head"><div class="card-title">Dept. Morale</div></div>
+              <div class="card-body">
+                <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:100px;">Marketing</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 84%;"></div></div><span class="wbar-num" style="color:var(--forest);">8.4</span></div>
+                <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:100px;">Sales</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 78%;"></div></div><span class="wbar-num" style="color:var(--forest);">7.8</span></div>
+                <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:100px;">Engineering</span><div class="wbar-track"><div class="wbar-fill fill-amber" style="width: 70%;"></div></div><span class="wbar-num" style="color:var(--amber);">7.0</span></div>
+                <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:100px;">Operations</span><div class="wbar-track"><div class="wbar-fill fill-crimson" style="width: 58%;"></div></div><span class="wbar-num" style="color:var(--crimson);">5.8</span></div>
+                <div class="wbar-line"><span class="wbar-key" style="width:100px;">Cust. Success</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 82%;"></div></div><span class="wbar-num" style="color:var(--forest);">8.2</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Engagement Leaders</div><div class="card-sub">Streak-based, pseudonymised</div></div>
+              <div class="card-body">
+                <div class="section-lbl">Most Consistent</div>
+                <div class="lb-row"><span class="lb-num gold">1</span><div class="lb-av" style="background:linear-gradient(135deg,var(--sage-lt),var(--forest));">A</div><div class="lb-info"><div class="lb-name">Team Member A</div><div class="lb-streak">18-day streak</div></div><span class="lb-pts">98</span></div>
+                <div class="lb-row"><span class="lb-num gold">2</span><div class="lb-av" style="background:linear-gradient(135deg,#90c0d0,var(--cobalt));">B</div><div class="lb-info"><div class="lb-name">Team Member B</div><div class="lb-streak">14-day streak</div></div><span class="lb-pts">84</span></div>
+                <div class="lb-row"><span class="lb-num">3</span><div class="lb-av" style="background:linear-gradient(135deg,#b8d4c0,var(--sage));">C</div><div class="lb-info"><div class="lb-name">Team Member C</div><div class="lb-streak">9-day streak</div></div><span class="lb-pts">71</span></div>
+                <div class="lb-row"><span class="lb-num">4</span><div class="lb-av" style="background:linear-gradient(135deg,#d4b880,var(--amber));">D</div><div class="lb-info"><div class="lb-name">Team Member D</div><div class="lb-streak">7-day streak</div></div><span class="lb-pts">63</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI ACTIONS -->
+      <div class="page active" id="mgr-actions">
+        <div class="page-head">
+          <h1>AI Suggested <em>Actions</em></h1>
+          <p>Three concrete tasks generated from this week's anonymous employee entries.</p>
+        </div>
+        <div class="col-3-2">
+          <div>
+            <div class="ai-actions-panel mb-18">
+              <div class="aap-head">
+                <span class="ai-label">Logue AI</span>
+                <span class="aap-head-title">Three Priority Actions — Week of 4 March</span>
+              </div>
+              <div class="aap-item">
+                <div class="aap-num">1</div>
+                <div>
+                  <div class="aap-title">Schedule a file-sharing onboarding session this week</div>
+                  <div class="aap-desc">62% of Marketing &amp; Design employees are losing ~25 min/day navigating the new shared drive. A single 60-minute walkthrough with a searchable folder structure guide will eliminate this friction. Assign to IT or the Department Lead. Expected recovery: 12+ hours per week across 30 staff.</div>
+                </div>
+              </div>
+              <div class="aap-item">
+                <div class="aap-num">2</div>
+                <div>
+                  <div class="aap-title">Pilot async standup across all departments</div>
+                  <div class="aap-desc">The Slack standup bot already in use by Sales and Marketing has generated 11 unprompted positive mentions this week. IT holds the configuration template. This is the highest-confidence, lowest-effort action in this week's data set. Expected benefit: 20 min saved per person per day.</div>
+                </div>
+              </div>
+              <div class="aap-item">
+                <div class="aap-num">3</div>
+                <div>
+                  <div class="aap-title">Publish updated Q2 vendor approval documentation today</div>
+                  <div class="aap-desc">Nine entries across four departments reference confusion about the approval chain for vendor purchases above £500. A single Notion page or two-minute Loom walkthrough distributed company-wide resolves this immediately. Owner: Finance or Operations lead.</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Recommended Actions Archive</div></div>
+              <div class="card-body">
+                <div class="action-row"><div class="action-idx">4</div><div class="action-body"><div class="action-title">Audit Operations meeting schedule</div><div class="action-desc">7 team members flagged 3+ hours of unproductive meetings daily. Replace the daily 9 AM check-in with Slack async Mon–Wed; retain live sync Thursdays only.</div><div class="chip-row"><span class="chip chip-g">3–5 hrs/person/week</span><span class="chip chip-a">Medium effort</span></div></div></div>
+                <div class="action-row"><div class="action-idx">5</div><div class="action-body"><div class="action-title">Publicly recognise the Q1 campaign launch</div><div class="action-desc">Eight Marketing entries celebrate this milestone. A brief all-hands mention reinforces morale at a time when Operations morale is low (5.8/10).</div><div class="chip-row"><span class="chip chip-b">Morale impact</span></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card mb-18">
+              <div class="card-head"><div class="card-title">Company Sentiment</div></div>
+              <div class="card-body">
+                <div class="sentiment-wrap">
+                  <div style="font-size:0.68rem;color:var(--slate-400);margin-bottom:8px;letter-spacing:0.04em;">Overall this week</div>
+                  <div class="sentiment-track"><div class="sentiment-needle" style="left:65%"></div></div>
+                  <div class="sentiment-ends"><span>Stressed</span><span>Energised</span></div>
+                </div>
+                <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--forest);margin-top:14px;font-weight:400;">+12% <span style="font-family:var(--font-body);font-size:0.72rem;color:var(--slate-400);font-weight:300;">vs last week</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Export</div></div>
+              <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-ghost btn-full" onclick="showToast(&#39;Generating PDF…&#39;)">Export as PDF</button>
+                <button class="btn btn-ghost btn-full" onclick="showToast(&#39;Exporting to Sheets…&#39;)">Export to Google Sheets</button>
+                <button class="btn btn-primary btn-full" onclick="showToast(&#39;Report sent to leadership&#39;)">Email to Leadership</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SENTIMENT -->
+      <div class="page" id="mgr-sentiment">
+        <div class="page-head"><h1>Sentiment <em>Trends</em></h1><p>30-day company-wide emotional and productivity patterns.</p></div>
+        <div class="stats-grid g4 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Morale</div><span class="kpi-delta delta-up">+0.4</span></div><div class="kpi-value">7.2</div><div class="kpi-meta">Out of 10</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Positive Entries</div><span class="kpi-delta delta-up">+7%</span></div><div class="kpi-value">68%</div><div class="kpi-meta">This week</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Friction Points</div><span class="kpi-delta delta-down">+3</span></div><div class="kpi-value">14</div><div class="kpi-meta">Open issues</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Productivity</div><span class="kpi-delta delta-up">+0.4</span></div><div class="kpi-value">7.8</div><div class="kpi-meta">Out of 10</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Friction Category Breakdown — Last 30 Days</div></div>
+          <div class="card-body">
+            <div class="wbar-line" style="margin-bottom:12px;"><span class="wbar-key" style="width:170px;">Tool / Software Issues</span><div class="wbar-track"><div class="wbar-fill fill-crimson" style="width: 74%;"></div></div><span class="wbar-num" style="color:var(--crimson);">74%</span></div>
+            <div class="wbar-line" style="margin-bottom:12px;"><span class="wbar-key" style="width:170px;">Meeting Overload</span><div class="wbar-track"><div class="wbar-fill fill-amber" style="width: 58%;"></div></div><span class="wbar-num" style="color:var(--amber);">58%</span></div>
+            <div class="wbar-line" style="margin-bottom:12px;"><span class="wbar-key" style="width:170px;">Missing Documentation</span><div class="wbar-track"><div class="wbar-fill fill-amber" style="width: 41%;"></div></div><span class="wbar-num" style="color:var(--amber);">41%</span></div>
+            <div class="wbar-line" style="margin-bottom:12px;"><span class="wbar-key" style="width:170px;">Communication Gaps</span><div class="wbar-track"><div class="wbar-fill fill-amber" style="width: 35%;"></div></div><span class="wbar-num" style="color:var(--amber);">35%</span></div>
+            <div class="wbar-line"><span class="wbar-key" style="width:170px;">Resource Shortage</span><div class="wbar-track"><div class="wbar-fill fill-crimson" style="width: 22%;"></div></div><span class="wbar-num" style="color:var(--crimson);">22%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENGAGEMENT -->
+      <div class="page" id="mgr-engagement">
+        <div class="page-head"><h1>Team <em>Engagement</em></h1><p>Participation rates and consistency. No individual feedback is shown here.</p></div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Participation by Department</div></div>
+            <div class="card-body">
+              <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:110px;">Marketing</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 96%;"></div></div><span class="wbar-num" style="color:var(--forest);">96%</span></div>
+              <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:110px;">Sales</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 91%;"></div></div><span class="wbar-num" style="color:var(--forest);">91%</span></div>
+              <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:110px;">Engineering</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 87%;"></div></div><span class="wbar-num" style="color:var(--forest);">87%</span></div>
+              <div class="wbar-line" style="margin-bottom:10px;"><span class="wbar-key" style="width:110px;">Operations</span><div class="wbar-track"><div class="wbar-fill fill-amber" style="width: 72%;"></div></div><span class="wbar-num" style="color:var(--amber);">72%</span></div>
+              <div class="wbar-line"><span class="wbar-key" style="width:110px;">Cust. Success</span><div class="wbar-track"><div class="wbar-fill fill-forest" style="width: 88%;"></div></div><span class="wbar-num" style="color:var(--forest);">88%</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Consistency Leaders</div><div class="card-sub">Pseudonymised for privacy</div></div>
+            <div class="card-body">
+              <div class="lb-row"><span class="lb-num gold">1</span><div class="lb-av" style="background:linear-gradient(135deg,var(--sage-lt),var(--forest));">A</div><div class="lb-info"><div class="lb-name">Team Member A</div><div class="lb-streak">18-day streak</div></div><span class="lb-pts">98 pts</span></div>
+              <div class="lb-row"><span class="lb-num gold">2</span><div class="lb-av" style="background:linear-gradient(135deg,#90c0d0,var(--cobalt));">B</div><div class="lb-info"><div class="lb-name">Team Member B</div><div class="lb-streak">14-day streak</div></div><span class="lb-pts">84 pts</span></div>
+              <div class="lb-row"><span class="lb-num">3</span><div class="lb-av" style="background:linear-gradient(135deg,#b8d4c0,var(--sage));">C</div><div class="lb-info"><div class="lb-name">Team Member C</div><div class="lb-streak">9-day streak</div></div><span class="lb-pts">71 pts</span></div>
+              <div class="lb-row"><span class="lb-num">4</span><div class="lb-av" style="background:linear-gradient(135deg,#d4b880,var(--amber));">D</div><div class="lb-info"><div class="lb-name">Team Member D</div><div class="lb-streak">7-day streak</div></div><span class="lb-pts">63 pts</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXECUTIVE SUMMARY -->
+      <div class="page" id="mgr-execsummary">
+        <div class="page-head"><h1>Executive <em>Summary</em></h1><p>Formal business document — 26 Feb – 4 Mar 2026.</p></div>
+        <div class="exec-summary">
+          <div class="exec-letterhead">
+            <div class="exec-doc-label">Confidential — Internal Distribution Only</div>
+            <div class="exec-doc-title">Weekly Executive Summary</div>
+            <div class="exec-doc-sub">Logue Workplace Intelligence Platform · 26 February – 4 March 2026</div>
+            <div class="exec-kpis">
+              <div><div class="exec-kpi-val">47</div><div class="exec-kpi-lbl">Entries Analysed</div></div>
+              <div><div class="exec-kpi-val">14</div><div class="exec-kpi-lbl">Friction Points</div></div>
+              <div><div class="exec-kpi-val">~32h</div><div class="exec-kpi-lbl">Est. Time Lost</div></div>
+              <div><div class="exec-kpi-val">89%</div><div class="exec-kpi-lbl">Participation</div></div>
+            </div>
+          </div>
+          <div class="exec-body">
+            <div class="exec-section">
+              <div class="exec-section-label">Executive Overview</div>
+              <p style="font-size:0.82rem;color:var(--slate-600);line-height:1.8;font-weight:300;">This report summarises anonymised employee feedback collected during the week of 26 February to 4 March 2026. Overall organisational sentiment has improved by 12% week-on-week, driven primarily by positive reception of the async communication pilot in Marketing and Sales. Three operational issues require management attention and are detailed in the Recommended Actions section below.</p>
+            </div>
+            <div class="exec-section">
+              <div class="exec-section-label">Priority Recommendations</div>
+              <div class="action-row"><div class="action-idx">1</div><div class="action-body"><div class="action-title">Conduct file-sharing onboarding session — Marketing &amp; Design</div><div class="action-desc">62% of these teams are losing approximately 25 minutes daily. A single team walkthrough with an indexed folder structure will recover an estimated 12+ hours per week. Assign to IT or Department Lead. Timeline: this week.</div><div class="chip-row"><span class="chip chip-g">~12 hrs recovered/week</span><span class="chip chip-b">Low effort</span><span class="chip chip-a">This week</span></div></div></div>
+              <div class="action-row"><div class="action-idx">2</div><div class="action-body"><div class="action-title">Expand async standup bot company-wide</div><div class="action-desc">Eleven independent positive mentions. IT holds the configuration template. Highest-confidence, lowest-effort action in the data set. Estimated benefit: 20 minutes saved per person per day.</div><div class="chip-row"><span class="chip chip-g">High adoption confidence</span><span class="chip chip-b">Low effort</span></div></div></div>
+              <div class="action-row"><div class="action-idx">3</div><div class="action-body"><div class="action-title">Publish Q2 vendor approval documentation</div><div class="action-desc">Confusion appears in 9 entries across 4 departments. One Notion page or Loom walkthrough resolves this immediately. Owner: Finance or Operations. Timeline: today.</div><div class="chip-row"><span class="chip chip-g">Cross-departmental impact</span><span class="chip chip-a">Today</span></div></div></div>
+            </div>
+            <div class="exec-section" style="margin-bottom:0;">
+              <div class="exec-section-label">Closing Note</div>
+              <p style="font-size:0.82rem;color:var(--slate-600);line-height:1.8;font-weight:300;">Operations department morale (5.8/10) remains below company average and warrants continued monitoring. The meeting overload friction point is the most probable contributing factor. All data in this report is fully anonymised and complies with Logue's privacy-first data policy.</p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="showToast(&#39;Generating PDF…&#39;)">Export PDF</button>
+          <button class="btn btn-ghost" onclick="showToast(&#39;Exporting to Sheets…&#39;)">Export to Sheets</button>
+          <button class="btn btn-primary" onclick="showToast(&#39;Sent to leadership&#39;)">Email to Leadership</button>
+        </div>
+      </div>
+
+      <!-- MGR SETTINGS -->
+      <div class="page" id="mgr-msettings">
+        <div class="page-head"><h1>Manager <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="settings-nav">
+              <button class="s-item active" onclick="sTab(this)">Alerts</button>
+              <button class="s-item" onclick="sTab(this)">Privacy</button>
+              <button class="s-item" onclick="sTab(this)">Reports</button>
+            </div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Critical friction alerts</div><div class="sr-sub">Notify when a High Priority issue is detected</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Weekly summary auto-send</div><div class="sr-sub">Email executive summary every Monday morning</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Participation drop alert</div><div class="sr-sub">Alert when team participation falls below 70%</div></div><button class="toggle" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Anonymisation enforced</div><div class="sr-sub">Prevent individual attribution in all reports</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div><!-- /panel-manager -->
+
+
+<!-- ═══════════════════════════════
+     OWNER PANEL
+     NOTE: This panel is completely
+     isolated from employee feedback data.
+     No employee content flows here.
+═══════════════════════════════ -->
+<div class="role-panel" id="panel-owner">
+<div class="app-wrap">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-lockup">
+        <div class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+        <div><div class="brand-name">Logue</div></div>
+      </div>
+      <div class="brand-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-indicator role-ind-own"><div class="role-dot"></div>Owner</div>
+    <div class="nav-group">
+      <div class="nav-group-label">Business Health</div>
+      <button class="nav-link" onclick="navigate(&#39;own&#39;,&#39;overview&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></div>
+        Overview
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;own&#39;,&#39;revenue&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+        Revenue &amp; MRR
+      </button>
+      <button class="nav-link" onclick="navigate(&#39;own&#39;,&#39;users&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        Users &amp; Growth
+      </button>
+      <button class="nav-link active" onclick="navigate(&#39;own&#39;,&#39;billing&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div>
+        Billing &amp; Subscriptions
+      </button>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="nav-group">
+      <div class="nav-group-label">Administration</div>
+      <button class="nav-link" onclick="navigate(&#39;own&#39;,&#39;ownsettings&#39;,this)">
+        <div class="nav-link-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Platform Settings
+      </button>
+    </div>
+    <div class="sidebar-foot">
+      <div class="user-profile">
+        <div class="user-av av-own">AO</div>
+        <div>
+          <div class="user-detail-name">Alex Owen</div>
+          <div class="user-detail-role">Founder &amp; Owner</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue › <span class="topbar-current" id="own-crumb">Billing &amp; Subscriptions</span></div>
+      <div class="topbar-actions">
+        <div class="topbar-date">Wednesday, 4 March 2026</div>
+        <button class="tb-btn" onclick="showToast(&#39;Downloading report…&#39;)">Download Report</button>
+        <button class="tb-btn primary" onclick="showToast(&#39;Opening billing portal…&#39;)">Billing Portal</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="page" id="own-overview">
+        <div class="page-head">
+          <h1>Business <em>Overview</em></h1>
+          <p>Platform-wide health metrics. This view contains no employee feedback data — revenue and user data are strictly isolated.</p>
+        </div>
+        <div class="owner-hero">
+          <div class="owner-hero-title">Logue Platform — March 2026</div>
+          <div class="owner-hero-sub">Revenue and user metrics are entirely separate from employee feedback content</div>
+        </div>
+        <div class="stats-grid g4 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Monthly Recurring Revenue</div><span class="kpi-delta delta-up">+18%</span></div><div class="kpi-value">$42.8k</div><div class="kpi-meta">+$6.5k vs February</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Active Users</div><span class="kpi-delta delta-up">+312</span></div><div class="kpi-value">1,847</div><div class="kpi-meta">Across 94 organisations</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Monthly Churn Rate</div><span class="kpi-delta delta-down">+0.3%</span></div><div class="kpi-value">2.1%</div><div class="kpi-meta">Industry avg: 4.7%</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Customer Acquisition Cost</div><span class="kpi-delta delta-down">-$12</span></div><div class="kpi-value">$284</div><div class="kpi-meta">Blended CAC · LTV: $1,360</div></div>
+        </div>
+        <div class="col-3-2">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">MRR Growth</div><div class="card-sub">Last 8 months</div></div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;">
+                <div>
+                  <div style="font-family:var(--font-display);font-size:2.2rem;color:var(--slate-900);font-weight:400;line-height:1;">$42,840</div>
+                  <div style="font-size:0.68rem;color:var(--slate-400);margin-top:4px;font-weight:300;letter-spacing:0.04em;">Current MRR</div>
+                </div>
+                <span class="kpi-delta delta-up" style="align-self:flex-start;">+18% MoM</span>
+              </div>
+              <div class="spark">
+                <div class="spark-b" style="height:28%"></div>
+                <div class="spark-b" style="height:38%"></div>
+                <div class="spark-b" style="height:45%"></div>
+                <div class="spark-b" style="height:52%"></div>
+                <div class="spark-b" style="height:61%"></div>
+                <div class="spark-b" style="height:72%"></div>
+                <div class="spark-b" style="height:84%"></div>
+                <div class="spark-b hi" style="height:100%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--slate-300);margin-top:4px;letter-spacing:0.04em;">
+                <span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-card mb-18">
+              <div class="kpi-top"><div class="kpi-label">Annual Recurring Revenue</div><span class="kpi-delta delta-up">+21%</span></div>
+              <div class="kpi-value">$514k</div>
+              <div class="kpi-meta">Projected ARR: $610k</div>
+            </div>
+            <div class="kpi-card mb-18">
+              <div class="kpi-top"><div class="kpi-label">Net Revenue Retention</div><span class="kpi-delta delta-up">Top decile</span></div>
+              <div class="kpi-value">118%</div>
+              <div class="kpi-meta">Expansion revenue positive</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><div class="kpi-label">Avg Contract Value</div><span class="kpi-delta delta-up">+$84</span></div>
+              <div class="kpi-value">$456</div>
+              <div class="kpi-meta">Per organisation / month</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Plan Distribution</div><div class="card-sub">By organisation count</div></div>
+            <div class="card-body">
+              <div class="plan-dist-row"><div class="pdr-label">Enterprise</div><div class="pdr-track"><div class="pdr-fill" style="width: 14%; background: var(--amber); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count">13 orgs</div></div>
+              <div class="plan-dist-row"><div class="pdr-label">Professional</div><div class="pdr-track"><div class="pdr-fill" style="width: 54%; background: var(--forest-lt); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count">51 orgs</div></div>
+              <div class="plan-dist-row"><div class="pdr-label">Starter</div><div class="pdr-track"><div class="pdr-fill" style="width: 32%; background: var(--slate-300); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count">30 orgs</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Activity Feed</div></div>
+            <div class="card-body">
+              <div class="feed-item"><div class="feed-pip pip-g"></div><div class="feed-text"><strong>Nexora Inc.</strong> upgraded from Pro to Enterprise</div><div class="feed-time">2h ago</div></div>
+              <div class="feed-item"><div class="feed-pip pip-b"></div><div class="feed-text"><strong>3 new organisations</strong> started free trials today</div><div class="feed-time">4h ago</div></div>
+              <div class="feed-item"><div class="feed-pip pip-a"></div><div class="feed-text"><strong>Luma Studio</strong> added 8 new seats</div><div class="feed-time">6h ago</div></div>
+              <div class="feed-item"><div class="feed-pip pip-r"></div><div class="feed-text"><strong>1 organisation</strong> downgraded to Starter plan</div><div class="feed-time">Yesterday</div></div>
+              <div class="feed-item"><div class="feed-pip pip-g"></div><div class="feed-text"><strong>Brightfield Co.</strong> renewed annual contract</div><div class="feed-time">Yesterday</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVENUE -->
+      <div class="page" id="own-revenue">
+        <div class="page-head"><h1>Revenue <em>&amp; MRR</em></h1><p>Financial health of the Logue platform. Entirely separate from employee data.</p></div>
+        <div class="stats-grid g4 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">MRR</div><span class="kpi-delta delta-up">+18%</span></div><div class="kpi-value">$42.8k</div><div class="kpi-meta">+$6.5k vs last month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">ARR</div><span class="kpi-delta delta-up">+21%</span></div><div class="kpi-value">$514k</div><div class="kpi-meta">Projected: $610k</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">New MRR</div><span class="kpi-delta delta-up">+$8.2k</span></div><div class="kpi-value">$11.4k</div><div class="kpi-meta">From new orgs this month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Churned MRR</div><span class="kpi-delta delta-down">-$890</span></div><div class="kpi-value">$890</div><div class="kpi-meta">Net expansion positive</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Revenue by Plan</div></div>
+            <div class="card-body">
+              <div class="plan-dist-row" style="margin-bottom:14px;"><div class="pdr-label">Enterprise</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 48%; background: var(--amber); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="color:var(--amber);font-weight:700;">$20.6k</div></div>
+              <div class="plan-dist-row" style="margin-bottom:14px;"><div class="pdr-label">Professional</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 43%; background: var(--forest-lt); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="color:var(--forest);font-weight:700;">$18.4k</div></div>
+              <div class="plan-dist-row"><div class="pdr-label">Starter</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 9%; background: var(--slate-300); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="font-weight:700;">$3.8k</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Key Metrics</div></div>
+            <div class="card-body">
+              <div class="settings-row"><div><div class="sr-title">Net Revenue Retention</div><div class="sr-sub">Expansion above 100%</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--forest);font-weight:400;">118%</div></div>
+              <div class="settings-row"><div><div class="sr-title">Avg Contract Value</div><div class="sr-sub">Per organisation per month</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--slate-900);font-weight:400;">$456</div></div>
+              <div class="settings-row"><div><div class="sr-title">Payback Period</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--slate-900);font-weight:400;">8.2 mo</div></div>
+              <div class="settings-row"><div><div class="sr-title">LTV / CAC Ratio</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--forest);font-weight:400;">4.8×</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="own-users">
+        <div class="page-head"><h1>Users <em>&amp; Growth</em></h1><p>Platform user metrics across all organisations. No employee feedback content here.</p></div>
+        <div class="stats-grid g4 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Active Users</div><span class="kpi-delta delta-up">+312</span></div><div class="kpi-value">1,847</div><div class="kpi-meta">+20% MoM</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Active Organisations</div><span class="kpi-delta delta-up">+11</span></div><div class="kpi-value">94</div><div class="kpi-meta">+13% MoM</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Churn Rate</div><span class="kpi-delta delta-down">+0.3%</span></div><div class="kpi-value">2.1%</div><div class="kpi-meta">Below industry avg</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Trial Conversion</div><span class="kpi-delta delta-up">+4%</span></div><div class="kpi-value">38%</div><div class="kpi-meta">Trial-to-paid rate</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Growth Drivers</div></div>
+          <div class="card-body">
+            <div class="action-row"><div class="action-idx" style="background:var(--sage-tint);color:var(--forest);border-color:var(--sage-lt);">1</div><div class="action-body"><div class="action-title">Word-of-mouth referrals driving 41% of new signups</div><div class="action-desc">Customers citing "the platform paid for itself" are the top source of inbound leads this quarter. No paid acquisition required to hit growth targets.</div><div class="chip-row"><span class="chip chip-g">Organic</span></div></div></div>
+            <div class="action-row"><div class="action-idx">2</div><div class="action-body"><div class="action-title">Enterprise expansion accounts for 60% of net new MRR</div><div class="action-desc">Pro customers upgrading to Enterprise is the dominant revenue growth lever. NRR at 118% confirms strong product-market fit.</div><div class="chip-row"><span class="chip chip-a">Expansion Revenue</span></div></div></div>
+            <div class="action-row"><div class="action-idx">3</div><div class="action-body"><div class="action-title">Churn concentrated in Starter — onboarding gap identified</div><div class="action-desc">83% of churned accounts in the last 60 days were on Starter with low engagement in week 2. Recommend an in-app onboarding nudge at day 10.</div><div class="chip-row"><span class="chip chip-r">Action Required</span></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BILLING & SUBSCRIPTIONS -->
+      <div class="page active" id="own-billing">
+        <div class="page-head">
+          <h1>Billing <em>&amp; Subscriptions</em></h1>
+          <p>Manage all active plans, invoices, and customer subscription status.</p>
+        </div>
+        <div class="stats-grid g3 mb-22">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Active Subscriptions</div><span class="kpi-delta delta-up">+11</span></div><div class="kpi-value">94</div><div class="kpi-meta">Across all tiers</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Renewals This Month</div><span class="kpi-delta delta-flat">On track</span></div><div class="kpi-value">18</div><div class="kpi-meta">$84.2k renewal value</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Overdue / At Risk</div><span class="kpi-delta delta-down">+2</span></div><div class="kpi-value">3</div><div class="kpi-meta">Requires follow-up</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Active Subscriptions</div><div class="card-sub">All billing data is isolated from employee feedback</div></div>
+            <button class="btn btn-primary btn-sm" onclick="showToast(&#39;Opening billing portal…&#39;)">Manage in Portal</button>
+          </div>
+          <div class="card-body">
+            <table class="rev-table">
+              <thead>
+                <tr>
+                  <th>Organisation</th>
+                  <th>Plan</th>
+                  <th>Status</th>
+                  <th>Users</th>
+                  <th>MRR</th>
+                  <th>Next Renewal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Nexora Inc.</td><td><span class="plan-badge plan-ent">Enterprise</span></td><td><span class="status-dot dot-active"></span>Active</td><td>210</td><td>$4,620</td><td>1 Apr 2026</td></tr>
+                <tr><td>Brightfield Co.</td><td><span class="plan-badge plan-pro">Professional</span></td><td><span class="status-dot dot-active"></span>Active</td><td>80</td><td>$1,760</td><td>15 Mar 2026</td></tr>
+                <tr><td>Luma Studio</td><td><span class="plan-badge plan-pro">Professional</span></td><td><span class="status-dot dot-active"></span>Active</td><td>43</td><td>$946</td><td>22 Mar 2026</td></tr>
+                <tr><td>Meridian Group</td><td><span class="plan-badge plan-ent">Enterprise</span></td><td><span class="status-dot dot-trial"></span>Trial</td><td>155</td><td>—</td><td>Trial ends 18 Mar</td></tr>
+                <tr><td>Foxfield Ltd.</td><td><span class="plan-badge plan-str">Starter</span></td><td><span class="status-dot dot-at_risk"></span>At risk</td><td>12</td><td>$108</td><td>Overdue</td></tr>
+                <tr><td>Carrow Advisory</td><td><span class="plan-badge plan-pro">Professional</span></td><td><span class="status-dot dot-active"></span>Active</td><td>28</td><td>$616</td><td>8 Apr 2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- OWNER SETTINGS -->
+      <div class="page" id="own-ownsettings">
+        <div class="page-head"><h1>Platform <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="settings-nav">
+              <button class="s-item active" onclick="sTab(this)">Security</button>
+              <button class="s-item" onclick="sTab(this)">Data Policy</button>
+              <button class="s-item" onclick="sTab(this)">Integrations</button>
+              <button class="s-item" onclick="sTab(this)">Billing Config</button>
+            </div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Platform-wide anonymisation enforced</div><div class="sr-sub">No dashboard can surface individual employee data</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Owner ↔ Manager data wall</div><div class="sr-sub">Revenue metrics are never accessible in manager or employee views</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Two-factor authentication required</div><div class="sr-sub">All admin and owner accounts must use 2FA</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">GDPR data retention policy</div><div class="sr-sub">Auto-delete anonymised entries older than 12 months</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Audit log access</div><div class="sr-sub">Full compliance reporting available on request</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div><!-- /panel-owner -->
+
+
+<!-- ─── PRO MODAL (Employee) ─── -->
+<div class="modal-overlay" id="pro-modal">
+  <div class="modal-box">
+    <div class="modal-mark">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+    </div>
+    <div class="modal-title">Logue Enterprise</div>
+    <div class="modal-body">Your organisation is currently on the <strong>Enterprise Plan</strong>.<br><br>All premium features — including AI synthesis, team pulse reports, the executive summary, and advanced analytics — are fully unlocked and managed by your administrator.<br><br>To discuss your organisation's plan, contact your Logue account manager.</div>
+    <button class="btn btn-primary btn-full" onclick="document.getElementById(&#39;pro-modal&#39;).classList.remove(&#39;open&#39;)">Understood</button>
+  </div>
+</div>
+
+
+<!-- ─── VOICE MODAL ─── -->
+<div class="voice-overlay" id="voice-overlay">
+  <div class="voice-box">
+    <div class="voice-icon-ring" id="v-ring">
+      <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+    </div>
+    <div class="voice-modal-title" id="v-title">Voice Entry</div>
+    <div class="voice-modal-sub" id="v-sub">Press Record to begin. Logue AI will transcribe your speech directly into your journal.</div>
+    <div class="waveform-vis" id="v-wave">
+      <div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div>
+      <div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div>
+      <div class="wv-bar"></div><div class="wv-bar"></div><div class="wv-bar"></div>
+    </div>
+    <div class="voice-timer" id="v-timer">0:00</div>
+    <div class="voice-btn-row">
+      <button class="vm-btn" onclick="closeVoice()">Cancel</button>
+      <button class="vm-btn vm-record" id="v-rec-btn" onclick="toggleVoice()">Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-text">Generating summary…</span></div>
+
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA ARCHITECTURE
+   
+   employeeStore: holds journal entries.
+   Flows ONLY into manager action plan logic.
+   
+   ownerStore: holds revenue/billing metrics.
+   NEVER accessible from employee or manager views.
+   
+   Data wall enforced by JS scope — owner data
+   is never referenced in employee/manager logic.
+═══════════════════════════════════════════ */
+
+const employeeStore = {
+  entries: [],
+  addEntry(entry) { this.entries.push({ ...entry, timestamp: new Date().toISOString() }); }
+};
+
+// Owner data is scoped entirely separately
+const ownerStore = {
+  mrr: 42840,
+  arr: 514000,
+  churn: 2.1,
+  cac: 284,
+  activeOrgs: 94,
+  activeUsers: 1847
+};
+
+/* ═══ ROLE SWITCHING ═══ */
+function switchRole(role, btn) {
+  document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.role-switch-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + role).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ═══ NAVIGATION ═══ */
+const crumbMap = {
+  journal:'Daily Journal', history:'My History', goals:'Goals', settings:'Settings',
+  pulse:'Team Pulse', actions:'AI Actions', sentiment:'Sentiment', engagement:'Engagement',
+  execsummary:'Executive Summary', msettings:'Settings',
+  overview:'Business Overview', revenue:'Revenue & MRR', users:'Users & Growth',
+  billing:'Billing & Subscriptions', ownsettings:'Platform Settings'
+};
+
+function navigate(role, page, el) {
+  const prefix = role === 'emp' ? 'emp' : role === 'mgr' ? 'mgr' : 'own';
+  const panel = document.getElementById('panel-' + (role === 'emp' ? 'employee' : role === 'mgr' ? 'manager' : 'owner'));
+  panel.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  panel.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById(prefix + '-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  if (el) el.classList.add('active');
+  const crumbEl = document.getElementById(prefix + '-crumb');
+  if (crumbEl) crumbEl.textContent = crumbMap[page] || page;
+  window.scrollTo(0, 0);
+}
+
+/* ═══ JOURNAL HELPERS ═══ */
+function addTag(el, taId, text) {
+  el.classList.toggle('on');
+  const ta = document.getElementById(taId);
+  if (el.classList.contains('on')) ta.value = (ta.value ? ta.value + '\n' : '') + text;
+}
+
+function pickMood(btn) {
+  document.querySelectorAll('.mood-pick').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function sTab(el) {
+  const parent = el.closest('.settings-layout').querySelector('.settings-nav');
+  parent.querySelectorAll('.s-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ═══ MODALS ═══ */
+function openProModal() {
+  document.getElementById('pro-modal').classList.add('open');
+}
+document.getElementById('pro-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+/* ═══ VOICE RECORDING ═══ */
+let voiceActive = false, voiceSecs = 0, voiceInterval = null;
+
+function openVoice() { document.getElementById('voice-overlay').classList.add('open'); resetVoice(); }
+function closeVoice() { stopVoiceRec(); document.getElementById('voice-overlay').classList.remove('open'); }
+
+function resetVoice() {
+  voiceActive = false; voiceSecs = 0;
+  document.getElementById('v-timer').textContent = '0:00';
+  document.getElementById('v-title').textContent = 'Voice Entry';
+  document.getElementById('v-sub').textContent = 'Press Record to begin. Logue AI will transcribe your speech into your journal.';
+  document.getElementById('v-ring').classList.remove('recording');
+  document.getElementById('v-wave').classList.remove('active');
+  const btn = document.getElementById('v-rec-btn');
+  btn.textContent = 'Record'; btn.className = 'vm-btn vm-record';
+}
+
+function toggleVoice() { voiceActive ? stopAndTranscribe() : startVoiceRec(); }
+
+function startVoiceRec() {
+  voiceActive = true;
+  document.getElementById('v-ring').classList.add('recording');
+  document.getElementById('v-wave').classList.add('active');
+  document.getElementById('v-title').textContent = 'Recording…';
+  document.getElementById('v-sub').textContent = 'Speak clearly. Click Stop when finished.';
+  const btn = document.getElementById('v-rec-btn');
+  btn.textContent = 'Stop'; btn.className = 'vm-btn vm-stop';
+  /* 
+   * SPEECH-TO-TEXT INTEGRATION POINT
+   * Replace this timer with:
+   *   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+   *   const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+   *   recognition.continuous = true;
+   *   recognition.onresult = (e) => { ... transcribeToField(e.results); }
+   *   recognition.start();
+   * Or send audio blob to OpenAI Whisper / Deepgram / AssemblyAI API.
+   */
+  voiceInterval = setInterval(() => {
+    voiceSecs++;
+    const m = Math.floor(voiceSecs / 60);
+    const s = voiceSecs % 60;
+    document.getElementById('v-timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+
+function stopVoiceRec() { voiceActive = false; clearInterval(voiceInterval); }
+
+function stopAndTranscribe() {
+  stopVoiceRec();
+  document.getElementById('v-title').textContent = 'Transcribing…';
+  document.getElementById('v-sub').textContent = 'Logue AI is converting your speech to text…';
+  document.getElementById('v-ring').classList.remove('recording');
+  document.getElementById('v-wave').classList.remove('active');
+  const btn = document.getElementById('v-rec-btn');
+  btn.textContent = 'Processing…'; btn.disabled = true;
+  // Simulate API transcription latency
+  setTimeout(transcribeResult, 1600);
+}
+
+function transcribeResult() {
+  /* PLACEHOLDER — Replace with actual Speech-to-Text API response */
+  const result = "The morning standup ran over again — I think we could cut it to 15 minutes by moving status updates to Slack. Also couldn't locate the Q1 assets folder, had to ask two people before finding it.";
+  const ta = document.getElementById('friction-input');
+  ta.value = (ta.value ? ta.value + '\n' : '') + result;
+  document.getElementById('voice-overlay').classList.remove('open');
+  showToast('Voice entry transcribed into your journal');
+}
+
+document.getElementById('voice-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeVoice();
+});
+
+/* ═══ AI ANALYSIS ═══ */
+async function runAnalysis() {
+  const wins = document.getElementById('wins-input').value.trim();
+  const friction = document.getElementById('friction-input').value.trim();
+  const prod = document.getElementById('prod-slider').value;
+
+  if (!wins && !friction) { showToast('Please complete at least one field before submitting'); return; }
+
+  // Store in employee data (flows to manager action plan logic only)
+  employeeStore.addEntry({ wins, friction, prod });
+
+  const panel = document.getElementById('insight-panel');
+  const loading = document.getElementById('insight-loading');
+  const body = document.getElementById('insight-body');
+  const meta = document.getElementById('insight-meta');
+
+  panel.classList.add('open');
+  loading.style.display = 'flex';
+  body.style.display = 'none';
+  meta.style.display = 'none';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const prompt = `You are Logue AI, a sophisticated workplace intelligence assistant.
+
+Employee daily journal:
+VICTORIES: ${wins || '(none provided)'}
+FRICTION POINTS: ${friction || '(none provided)'}
+SELF-REPORTED PRODUCTIVITY: ${prod}/10
+
+Write a structured personal synthesis in exactly four sections separated by [SECTION]:
+
+Section 1: Two sentences acknowledging a specific, genuine strength from their victories. Be concrete and precise.
+Section 2: Two sentences identifying and naming the key friction point. Bold the pattern name with <strong> tags. Explain the root cause briefly and professionally.
+Section 3: Begin with the literal line "Tomorrow's Recommended Action" (this will be styled as a label). Then one concrete, immediately actionable step to address that friction tomorrow.
+Section 4: One closing sentence — grounded, professional, and direct. Not motivational cliché.
+
+Then on a new line write exactly:
+META: [Mood: X] [Theme: X] [Impact: X] [Focus: X]
+(Mood=one word, Theme=2–3 words, Impact=High/Medium/Low, Focus=2–3 words)
+
+Tone: executive-level. Precise, warm, and professional. No bullet points. Flowing prose.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    const metaMatch = text.match(/META:\s*\[Mood:\s*([^\]]+)\]\s*\[Theme:\s*([^\]]+)\]\s*\[Impact:\s*([^\]]+)\]\s*\[Focus:\s*([^\]]+)\]/i);
+    const mainText = text.replace(/META:.*$/s, '').trim();
+    const sections = mainText.split('[SECTION]').map(s => s.trim()).filter(Boolean);
+    let html = '';
+    sections.forEach(s => {
+      const lines = s.split('\n').map(l => l.trim()).filter(Boolean);
+      if (lines[0] && lines[0].toLowerCase().includes("tomorrow")) {
+        html += `<div class="insight-action-lbl">${lines[0]}</div><p>${lines.slice(1).join(' ')}</p>`;
+      } else {
+        html += `<p>${s}</p>`;
+      }
+    });
+    loading.style.display = 'none';
+    body.innerHTML = html; body.style.display = 'block';
+    if (metaMatch) {
+      document.getElementById('m-mood').textContent = metaMatch[1];
+      document.getElementById('m-theme').textContent = metaMatch[2];
+      document.getElementById('m-impact').textContent = metaMatch[3];
+      document.getElementById('m-focus').textContent = metaMatch[4];
+      meta.style.display = 'flex';
+    }
+    showToast('Entry submitted and anonymised');
+  } catch (err) {
+    loading.style.display = 'none';
+    body.innerHTML = '<p style="color:var(--slate-400);">Your entry has been recorded and anonymised for the team report. AI synthesis is unavailable in this environment.</p>';
+    body.style.display = 'block';
+    showToast('Entry saved');
+  }
+}
+
+/* ═══ UTILITIES ═══ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Animate bar fills on first render
+setTimeout(() => {
+  document.querySelectorAll('.bar-fill, .wbar-fill, .pdr-fill').forEach(el => {
+    const w = el.style.width;
+    el.style.width = '0';
+    setTimeout(() => el.style.width = w, 80);
+  });
+}, 500);
+</script>
+
+
+</body></html>
