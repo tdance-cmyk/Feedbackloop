@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)file:///Users/tobydance/Downloads/logue-v3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logue — Workplace Intelligence</title>
+<link href="./Logue — Workplace Intelligence V3_files/css2" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   LOGUE v3 — FULL ENTERPRISE PLATFORM
+   Quiet Luxury Design System
+   Sections: Reset → Tokens → Shell → Sidebar → Topbar →
+             Cards → Journal → Charts → Manager → Suggestions
+             → Alerts → Employee → Owner → Modals → Responsive
+═══════════════════════════════════════════════════════════ */
+
+/* ── RESET ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 14px; }
+
+/* ── DESIGN TOKENS ── */
+:root {
+  --forest:      #1E3A2F;
+  --forest-md:   #2D5240;
+  --forest-lt:   #3D6B52;
+  --sage:        #6B8F71;
+  --sage-lt:     #A8C5AE;
+  --sage-wash:   #EEF4EF;
+  --sage-tint:   #F5F9F6;
+  --slate-950:   #0F1614;
+  --slate-900:   #1A2420;
+  --slate-800:   #2A3830;
+  --slate-700:   #3D4F46;
+  --slate-600:   #556158;
+  --slate-500:   #717D74;
+  --slate-400:   #95A098;
+  --slate-300:   #BAC4BC;
+  --slate-200:   #D8DED9;
+  --slate-100:   #EDF0EE;
+  --slate-50:    #F7F8F7;
+  --offwhite:    #FAFAF8;
+  --white:       #FFFFFF;
+  --amber:       #9A6B2E;
+  --amber-lt:    #F5EDD9;
+  --crimson:     #8B3A3A;
+  --crimson-lt:  #F5EAEA;
+  --cobalt:      #2E4A6B;
+  --cobalt-lt:   #E8EFF5;
+  --gold:        #B8962E;
+  --gold-lt:     #FBF3DC;
+  --shadow-xs: 0 1px 2px rgba(15,22,20,.04);
+  --shadow-sm: 0 1px 4px rgba(15,22,20,.06),0 1px 2px rgba(15,22,20,.04);
+  --shadow-md: 0 4px 16px rgba(15,22,20,.07),0 2px 4px rgba(15,22,20,.04);
+  --shadow-lg: 0 12px 40px rgba(15,22,20,.10),0 4px 8px rgba(15,22,20,.05);
+  --shadow-xl: 0 24px 60px rgba(15,22,20,.13),0 8px 16px rgba(15,22,20,.06);
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-ui:      'Jost', sans-serif;
+  --r-xs: 3px; --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px;
+}
+
+/* ── BASE ── */
+body {
+  font-family: var(--font-ui);
+  background: var(--offwhite);
+  color: var(--slate-900);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   ROLE SWITCHER BAR (demo navigation)
+═══════════════════════════════════════════ */
+.role-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 38px; background: var(--slate-950);
+  border-bottom: 1px solid var(--slate-800);
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; z-index: 2000;
+}
+.role-bar-label {
+  font-size: .63rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--slate-500); font-weight: 500; margin-right: 10px;
+}
+.role-btn {
+  padding: 4px 16px; border-radius: 2px;
+  border: 1px solid transparent;
+  font-family: var(--font-ui); font-size: .67rem; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  cursor: pointer; background: transparent; color: var(--slate-400);
+  transition: all .18s;
+}
+.role-btn:hover { color: var(--white); border-color: var(--slate-600); }
+.role-btn.active { background: var(--forest); color: var(--white); border-color: var(--forest); }
+
+/* ═══════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════ */
+.app-wrap { display: flex; min-height: 100vh; padding-top: 38px; }
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  width: 224px; background: var(--white);
+  border-right: 1px solid var(--slate-100);
+  position: fixed; top: 38px; left: 0; bottom: 0;
+  overflow-y: auto; z-index: 100;
+  display: flex; flex-direction: column;
+}
+.sb-brand { padding: 22px 20px 18px; border-bottom: 1px solid var(--slate-100); }
+.sb-logo { display: flex; align-items: center; gap: 10px; }
+.sb-mark {
+  width: 28px; height: 28px; background: var(--forest);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+}
+.sb-mark svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sb-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 500; letter-spacing: .05em; color: var(--slate-900); }
+.sb-tagline { font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-400); padding-left: 38px; margin-top: 2px; }
+
+.role-badge {
+  margin: 12px 18px 2px; padding: 5px 10px;
+  border-radius: var(--r-xs); border: 1px solid;
+  font-size: .59rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.rb-emp { background: var(--sage-tint); color: var(--forest-md); border-color: var(--sage-lt); }
+.rb-mgr { background: var(--cobalt-lt); color: var(--cobalt); border-color: #c0d0e0; }
+.rb-own { background: var(--amber-lt); color: var(--amber); border-color: #e0cca8; }
+.rb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .7; }
+
+.nav-sec { padding: 12px 10px 4px; }
+.nav-sec-lbl {
+  font-size: .58rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--slate-300); padding: 0 8px; margin-bottom: 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 8px; border-radius: var(--r-xs);
+  cursor: pointer; color: var(--slate-500);
+  font-size: .79rem; font-weight: 400; letter-spacing: .01em;
+  border: none; background: none; width: 100%; text-align: left;
+  transition: all .13s;
+}
+.nav-item:hover { background: var(--slate-50); color: var(--slate-900); }
+.nav-item.active { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: .5; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-icon svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-pill {
+  margin-left: auto; font-size: .58rem; font-weight: 700; letter-spacing: .04em;
+  padding: 1px 6px; border-radius: 2px;
+}
+.pill-red { background: var(--crimson-lt); color: var(--crimson); }
+.pill-grn { background: var(--sage-wash); color: var(--forest); }
+.pill-amb { background: var(--amber-lt); color: var(--amber); }
+
+.sb-divider { height: 1px; background: var(--slate-100); margin: 6px 18px; }
+.sb-foot { margin-top: auto; padding: 14px 18px; border-top: 1px solid var(--slate-100); }
+.user-row { display: flex; align-items: center; gap: 10px; }
+.user-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .63rem; font-weight: 700; color: var(--white); flex-shrink: 0; letter-spacing: .04em;
+}
+.av-emp { background: linear-gradient(135deg, var(--sage), var(--forest-md)); }
+.av-mgr { background: linear-gradient(135deg, #7090b0, var(--cobalt)); }
+.av-own { background: linear-gradient(135deg, #c8a060, var(--amber)); }
+.user-name { font-size: .77rem; font-weight: 500; color: var(--slate-900); }
+.user-role { font-size: .63rem; color: var(--slate-400); }
+.ent-badge {
+  margin-left: auto; font-size: .55rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; background: var(--forest); color: var(--white);
+  border-radius: 2px; padding: 2px 6px; cursor: pointer; transition: background .14s;
+}
+.ent-badge:hover { background: var(--forest-md); }
+
+/* ═══════════════════════════════════════════
+   MAIN + TOPBAR
+═══════════════════════════════════════════ */
+.main { margin-left: 224px; flex: 1; display: flex; flex-direction: column; min-height: calc(100vh - 38px); }
+.topbar {
+  height: 52px; background: var(--white); border-bottom: 1px solid var(--slate-100);
+  padding: 0 30px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 38px; z-index: 90;
+}
+.topbar-crumb { font-size: .74rem; color: var(--slate-400); display: flex; align-items: center; gap: 7px; }
+.crumb-sep { color: var(--slate-200); }
+.crumb-cur { color: var(--slate-900); font-weight: 500; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.tb-date {
+  font-size: .69rem; color: var(--slate-400); letter-spacing: .04em;
+  padding: 5px 12px; background: var(--slate-50); border: 1px solid var(--slate-100); border-radius: var(--r-xs);
+}
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 18px; border-radius: var(--r-xs); border: 1px solid;
+  font-family: var(--font-ui); font-size: .71rem; font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase; cursor: pointer;
+  transition: all .14s; white-space: nowrap;
+}
+.btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.btn-ghost { background: transparent; border-color: var(--slate-200); color: var(--slate-500); }
+.btn-ghost:hover { background: var(--slate-50); border-color: var(--slate-300); color: var(--slate-900); }
+.btn-primary { background: var(--forest); border-color: var(--forest); color: var(--white); }
+.btn-primary:hover { background: var(--forest-md); box-shadow: 0 3px 12px rgba(30,58,47,.25); }
+.btn-danger { background: var(--crimson); border-color: var(--crimson); color: var(--white); }
+.btn-danger:hover { background: #7a2e2e; }
+.btn-sm { padding: 5px 12px; font-size: .64rem; }
+.btn-xs { padding: 3px 9px; font-size: .61rem; }
+.btn-full { width: 100%; justify-content: center; }
+.btn-icon { padding: 7px; border-radius: var(--r-xs); border: 1px solid var(--slate-200); background: var(--white); cursor: pointer; color: var(--slate-500); transition: all .13s; display: flex; align-items: center; }
+.btn-icon:hover { background: var(--slate-50); color: var(--slate-900); }
+.btn-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+
+/* ═══════════════════════════════════════════
+   CONTENT & PAGES
+═══════════════════════════════════════════ */
+.content { padding: 28px 30px 56px; flex: 1; }
+.page { display: none; }
+.page.active { display: block; animation: pageIn .25s ease; }
+@keyframes pageIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.page-head { margin-bottom: 26px; }
+.page-head h1 {
+  font-family: var(--font-display); font-size: 1.8rem; font-weight: 400;
+  color: var(--slate-900); letter-spacing: -.01em; line-height: 1.15; margin-bottom: 5px;
+}
+.page-head h1 em { font-style: italic; color: var(--forest); }
+.page-head p { font-size: .79rem; color: var(--slate-500); max-width: 520px; font-weight: 300; }
+
+/* ═══════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════ */
+.card {
+  background: var(--white); border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+}
+.card-head {
+  padding: 15px 20px 13px; border-bottom: 1px solid var(--slate-100);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.card-title { font-size: .77rem; font-weight: 600; color: var(--slate-900); letter-spacing: .03em; text-transform: uppercase; }
+.card-sub { font-size: .69rem; color: var(--slate-400); margin-top: 2px; font-weight: 300; }
+.card-body { padding: 18px 20px; }
+.card-foot { padding: 12px 20px; border-top: 1px solid var(--slate-100); background: var(--slate-50); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+
+/* ── KPI / STAT CARDS ── */
+.kpi-grid { display: grid; gap: 14px; margin-bottom: 22px; }
+.g5 { grid-template-columns: repeat(5,1fr); }
+.g4 { grid-template-columns: repeat(4,1fr); }
+.g3 { grid-template-columns: repeat(3,1fr); }
+.g2 { grid-template-columns: repeat(2,1fr); }
+
+.kpi {
+  background: var(--white); border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg); padding: 18px 20px 16px; box-shadow: var(--shadow-xs);
+  transition: box-shadow .2s;
+}
+.kpi:hover { box-shadow: var(--shadow-md); }
+.kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.kpi-lbl { font-size: .61rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-400); }
+.kpi-delta { font-size: .61rem; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 2px; }
+.delta-up   { background: var(--sage-wash); color: var(--forest); }
+.delta-down { background: var(--crimson-lt); color: var(--crimson); }
+.delta-flat { background: var(--slate-100); color: var(--slate-500); }
+.kpi-val {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 400;
+  color: var(--slate-900); line-height: 1; letter-spacing: -.02em; margin-bottom: 4px;
+}
+.kpi-meta { font-size: .67rem; color: var(--slate-400); font-weight: 300; }
+
+/* ── LAYOUT HELPERS ── */
+.col-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+.col-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.col-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.mb-4  { margin-bottom: 4px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-14 { margin-bottom: 14px; }
+.mb-18 { margin-bottom: 18px; }
+.mb-22 { margin-bottom: 22px; }
+.mt-14 { margin-top: 14px; }
+
+/* ── BADGES & CHIPS ── */
+.badge {
+  display: inline-block; font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 2px;
+}
+.badge-pos  { background: var(--sage-wash); color: var(--forest); }
+.badge-neu  { background: var(--slate-100); color: var(--slate-500); }
+.badge-neg  { background: var(--crimson-lt); color: var(--crimson); }
+.badge-warn { background: var(--amber-lt); color: var(--amber); }
+.badge-info { background: var(--cobalt-lt); color: var(--cobalt); }
+
+.chip {
+  font-size: .62rem; font-weight: 600; letter-spacing: .04em;
+  padding: 2px 8px; border-radius: var(--r-xs);
+}
+.chip-g { background: var(--sage-wash); color: var(--forest); }
+.chip-a { background: var(--amber-lt); color: var(--amber); }
+.chip-b { background: var(--cobalt-lt); color: var(--cobalt); }
+.chip-r { background: var(--crimson-lt); color: var(--crimson); }
+.chip-s { background: var(--slate-100); color: var(--slate-600); }
+
+/* ── TOGGLES ── */
+.toggle {
+  width: 34px; height: 18px; border-radius: 9px; background: var(--slate-200);
+  position: relative; cursor: pointer; border: none; transition: background .18s; flex-shrink: 0;
+}
+.toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px; background: var(--white); border-radius: 50%;
+  transition: transform .18s; box-shadow: var(--shadow-xs);
+}
+.toggle.on { background: var(--forest); }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ── FORM ELEMENTS ── */
+textarea, input[type="text"], input[type="email"] {
+  width: 100%; background: var(--slate-50); border: 1px solid var(--slate-100);
+  border-radius: var(--r-sm); padding: 11px 14px;
+  font-family: var(--font-ui); font-size: .81rem; font-weight: 300;
+  color: var(--slate-900); line-height: 1.7; outline: none;
+  transition: border-color .15s, background .15s;
+}
+textarea { resize: vertical; min-height: 120px; }
+textarea:focus, input[type="text"]:focus, input[type="email"]:focus {
+  border-color: var(--sage); background: var(--white);
+}
+textarea::placeholder, input::placeholder { color: var(--slate-300); }
+select {
+  width: 100%; background: var(--slate-50); border: 1px solid var(--slate-100);
+  border-radius: var(--r-xs); padding: 7px 10px;
+  font-family: var(--font-ui); font-size: .75rem; color: var(--slate-900);
+  outline: none; cursor: pointer; margin-bottom: 10px;
+}
+select:focus { border-color: var(--sage); }
+input[type="range"] { width: 100%; accent-color: var(--forest); margin-top: 5px; }
+.range-labs { display: flex; justify-content: space-between; font-size: .6rem; color: var(--slate-300); margin-top: 2px; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ── SETTINGS ROWS ── */
+.settings-layout { display: grid; grid-template-columns: 180px 1fr; gap: 22px; }
+.s-nav { display: flex; flex-direction: column; gap: 2px; }
+.s-item {
+  padding: 8px 10px; border-radius: var(--r-xs); font-size: .76rem; font-weight: 400;
+  color: var(--slate-500); cursor: pointer; border: none; background: none;
+  text-align: left; transition: all .12s;
+}
+.s-item:hover { background: var(--slate-50); color: var(--slate-900); }
+.s-item.active { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 0; border-bottom: 1px solid var(--slate-100);
+}
+.settings-row:last-child { border-bottom: none; }
+.sr-title { font-size: .79rem; font-weight: 500; color: var(--slate-900); }
+.sr-sub   { font-size: .67rem; color: var(--slate-400); margin-top: 1px; font-weight: 300; }
+
+/* ── LIST ITEMS ── */
+.list-item { padding: 14px 0; border-bottom: 1px solid var(--slate-100); }
+.list-item:last-child { border-bottom: none; }
+.list-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.list-item-title { font-size: .81rem; font-weight: 600; color: var(--slate-900); }
+.list-item-body { font-size: .75rem; color: var(--slate-500); line-height: 1.65; font-weight: 300; margin-bottom: 7px; }
+.tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.dept-tag {
+  background: var(--slate-50); border: 1px solid var(--slate-100);
+  border-radius: var(--r-xs); padding: 2px 8px;
+  font-size: .62rem; color: var(--slate-500); font-weight: 500; letter-spacing: .04em;
+}
+
+/* ── SECTION LABELS ── */
+.sec-lbl {
+  font-size: .59rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--slate-300); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--slate-100); }
+
+/* ── BAR CHARTS ── */
+.bar-set { margin-top: 6px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.bar-lbl { font-size: .7rem; font-weight: 500; color: var(--slate-700); }
+.bar-track { flex: 1; height: 6px; background: var(--slate-100); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 1.1s cubic-bezier(.4,0,.2,1); }
+.fill-forest  { background: linear-gradient(90deg, var(--sage-lt), var(--forest-lt)); }
+.fill-crimson { background: linear-gradient(90deg, #d4918a, var(--crimson)); }
+.fill-amber   { background: linear-gradient(90deg, #d4b87a, var(--amber)); }
+.fill-cobalt  { background: linear-gradient(90deg, #90b0d0, var(--cobalt)); }
+.bar-pct { font-size: .69rem; font-weight: 700; width: 34px; text-align: right; }
+
+/* ── DONUT CHART (CSS) ── */
+.donut-wrap { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
+.donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut-bg { fill: none; stroke: var(--slate-100); stroke-width: 12; }
+.donut-pos { fill: none; stroke: var(--forest-lt); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.donut-neu { fill: none; stroke: var(--slate-300); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.donut-neg { fill: none; stroke: var(--crimson); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.donut-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; pointer-events: none;
+}
+.donut-center-val { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: var(--slate-900); line-height: 1; }
+.donut-center-lbl { font-size: .58rem; color: var(--slate-400); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+
+/* ── TREND CHART (mini sparkline) ── */
+.trend-chart { display: flex; align-items: flex-end; gap: 4px; height: 50px; margin-top: 10px; }
+.tc-bar { flex: 1; border-radius: 2px 2px 0 0; transition: height .8s ease; }
+.tc-grn { background: var(--forest-lt); }
+.tc-amb { background: var(--amber); opacity: .7; }
+.tc-red { background: var(--crimson); opacity: .7; }
+.trend-labels { display: flex; justify-content: space-between; font-size: .58rem; color: var(--slate-300); margin-top: 4px; letter-spacing: .04em; }
+
+/* ── SENTIMENT GAUGE ── */
+.sentiment-track {
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--crimson) 0%, #d4a060 45%, var(--forest-lt) 100%);
+  position: relative; margin: 8px 0;
+}
+.sentiment-needle {
+  position: absolute; top: -5px;
+  width: 16px; height: 16px; background: var(--white); border-radius: 50%;
+  border: 2px solid var(--slate-700); transform: translateX(-50%);
+  box-shadow: var(--shadow-sm); transition: left .8s ease;
+}
+.sentiment-ends { display: flex; justify-content: space-between; font-size: .6rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ── ALERT CARDS ── */
+.alert-card {
+  border-radius: var(--r-md); padding: 14px 16px;
+  border: 1px solid; display: flex; gap: 12px; align-items: flex-start;
+  margin-bottom: 10px; transition: box-shadow .2s;
+}
+.alert-card:last-child { margin-bottom: 0; }
+.alert-card:hover { box-shadow: var(--shadow-sm); }
+.alert-icon {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.alert-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.alert-critical { background: var(--crimson-lt); border-color: #dcc0be; }
+.alert-critical .alert-icon { background: var(--crimson); color: var(--white); }
+.alert-warn { background: var(--amber-lt); border-color: #dbc8a0; }
+.alert-warn .alert-icon { background: var(--amber); color: var(--white); }
+.alert-info { background: var(--cobalt-lt); border-color: #c0d0e0; }
+.alert-info .alert-icon { background: var(--cobalt); color: var(--white); }
+.alert-body { flex: 1; }
+.alert-title { font-size: .8rem; font-weight: 700; color: var(--slate-900); margin-bottom: 2px; }
+.alert-desc  { font-size: .73rem; color: var(--slate-600); line-height: 1.6; font-weight: 300; }
+.alert-meta  { font-size: .63rem; color: var(--slate-400); margin-top: 6px; letter-spacing: .04em; }
+.alert-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+/* ── SUGGESTION CARDS ── */
+.suggestion-card {
+  background: var(--white); border: 1px solid var(--slate-100);
+  border-radius: var(--r-md); padding: 16px 18px; margin-bottom: 10px;
+  display: flex; gap: 14px; align-items: flex-start; box-shadow: var(--shadow-xs);
+  transition: box-shadow .2s;
+}
+.suggestion-card:hover { box-shadow: var(--shadow-md); }
+.vote-box {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-width: 42px; padding: 6px 0;
+}
+.vote-count { font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; color: var(--slate-900); line-height: 1; }
+.vote-lbl   { font-size: .57rem; color: var(--slate-400); letter-spacing: .08em; text-transform: uppercase; }
+.vote-btn {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--slate-200);
+  background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .14s; color: var(--slate-400);
+}
+.vote-btn:hover { background: var(--sage-tint); border-color: var(--sage-lt); color: var(--forest); }
+.vote-btn.voted { background: var(--forest); border-color: var(--forest); color: var(--white); }
+.vote-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.sug-body { flex: 1; }
+.sug-title { font-size: .82rem; font-weight: 600; color: var(--slate-900); margin-bottom: 4px; }
+.sug-desc  { font-size: .74rem; color: var(--slate-500); line-height: 1.65; font-weight: 300; margin-bottom: 8px; }
+.sug-meta  { font-size: .63rem; color: var(--slate-400); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.sug-status { font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+.status-open     { background: var(--cobalt-lt); color: var(--cobalt); }
+.status-review   { background: var(--amber-lt); color: var(--amber); }
+.status-planned  { background: var(--sage-wash); color: var(--forest); }
+.status-done     { background: var(--sage-tint); color: var(--forest-md); }
+
+/* ── JOURNAL TAGS SELECTOR ── */
+.tag-selector { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.tag-opt {
+  padding: 4px 10px; border-radius: 2px; border: 1px solid var(--slate-200);
+  font-size: .67rem; font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
+  cursor: pointer; color: var(--slate-500); transition: all .12s; user-select: none;
+}
+.tag-opt:hover { border-color: var(--sage-lt); color: var(--forest); }
+.tag-opt.on { background: var(--sage-tint); border-color: var(--sage); color: var(--forest); font-weight: 600; }
+
+/* ── PRIVACY SELECTOR ── */
+.privacy-sel { display: flex; gap: 8px; margin-bottom: 14px; }
+.priv-opt {
+  flex: 1; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--slate-200); cursor: pointer; text-align: center;
+  transition: all .14s; background: var(--white);
+}
+.priv-opt:hover { border-color: var(--sage-lt); }
+.priv-opt.on { border-color: var(--forest); background: var(--sage-tint); }
+.priv-opt svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; display: block; margin: 0 auto 6px; color: var(--slate-400); }
+.priv-opt.on svg { color: var(--forest); }
+.priv-opt-name { font-size: .68rem; font-weight: 600; color: var(--slate-700); text-transform: uppercase; letter-spacing: .06em; }
+.priv-opt-desc { font-size: .62rem; color: var(--slate-400); margin-top: 2px; font-weight: 300; }
+
+/* ── FEED ── */
+.feed-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--slate-100); }
+.feed-item:last-child { border-bottom: none; }
+.feed-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.dot-g { background: var(--forest-lt); }
+.dot-a { background: var(--amber); }
+.dot-r { background: var(--crimson); }
+.dot-b { background: var(--cobalt); }
+.feed-text { font-size: .75rem; color: var(--slate-500); line-height: 1.55; flex: 1; font-weight: 300; }
+.feed-text strong { color: var(--slate-800); font-weight: 600; }
+.feed-time { font-size: .63rem; color: var(--slate-300); white-space: nowrap; }
+
+/* ── AI INSIGHT PANEL ── */
+.ai-panel {
+  display: none; background: var(--white); border: 1px solid var(--sage-lt);
+  border-radius: var(--r-lg); padding: 22px 24px; box-shadow: var(--shadow-md);
+  position: relative; overflow: hidden; margin-top: 4px;
+}
+.ai-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--forest), var(--sage)); }
+.ai-panel.open { display: block; animation: pageIn .3s ease; }
+.ai-panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.ai-chip {
+  font-size: .58rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  background: var(--sage-tint); color: var(--forest); border: 1px solid var(--sage-wash);
+  border-radius: var(--r-xs); padding: 3px 9px;
+}
+.ai-title { font-family: var(--font-display); font-size: 1rem; font-weight: 400; color: var(--slate-900); }
+.ai-loading { display: flex; align-items: center; gap: 9px; color: var(--slate-400); font-size: .77rem; }
+.spinner { width: 14px; height: 14px; border: 1.5px solid var(--slate-200); border-top-color: var(--forest); border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-body { font-size: .81rem; line-height: 1.85; color: var(--slate-700); font-weight: 300; }
+.ai-body p { margin-bottom: 10px; }
+.ai-body p:last-child { margin-bottom: 0; }
+.ai-action-lbl { font-size: .59rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--forest); margin: 14px 0 4px; }
+.ai-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--slate-100); }
+.ai-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.ai-meta-lbl { font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-300); font-weight: 700; }
+.ai-meta-val { font-size: .76rem; font-weight: 500; color: var(--slate-900); }
+
+/* ── ROLE PANELS ── */
+.role-panel { display: none; }
+.role-panel.active { display: flex; flex-direction: column; min-height: calc(100vh - 38px); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--slate-900); color: var(--white); border-radius: var(--r-xs);
+  padding: 10px 18px; font-size: .73rem; font-weight: 400; letter-spacing: .02em;
+  z-index: 2000; opacity: 0; transform: translateY(14px);
+  transition: all .3s cubic-bezier(.34,1.56,.64,1); box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── PULSE HERO ── */
+.pulse-hero {
+  background: var(--forest); border-radius: var(--r-lg); padding: 24px 28px;
+  margin-bottom: 22px; color: var(--white); position: relative; overflow: hidden;
+}
+.pulse-hero::after { content: ''; position: absolute; top: -50px; right: -50px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,.03); }
+.pulse-hero-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; margin-bottom: 3px; position: relative; }
+.pulse-hero-sub   { font-size: .72rem; opacity: .55; font-weight: 300; position: relative; }
+.pulse-kpis { display: flex; gap: 28px; margin-top: 18px; flex-wrap: wrap; position: relative; }
+.pk-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; line-height: 1; }
+.pk-lbl { font-size: .58rem; opacity: .55; margin-top: 3px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+
+/* ── EXEC SUMMARY ── */
+.exec-doc { background: var(--white); border: 1px solid var(--slate-100); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 22px; }
+.exec-head { background: var(--forest); color: var(--white); padding: 26px 30px; position: relative; overflow: hidden; }
+.exec-head::after { content: ''; position: absolute; bottom: -30px; right: -30px; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,.025); }
+.exec-doc-label { font-size: .57rem; letter-spacing: .18em; text-transform: uppercase; opacity: .5; margin-bottom: 5px; position: relative; font-weight: 600; }
+.exec-doc-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 400; position: relative; }
+.exec-doc-sub   { font-size: .73rem; opacity: .45; font-weight: 300; margin-top: 3px; position: relative; }
+.exec-kpis { display: flex; gap: 28px; margin-top: 18px; flex-wrap: wrap; position: relative; }
+.ek-val { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; line-height: 1; }
+.ek-lbl { font-size: .57rem; opacity: .5; margin-top: 3px; letter-spacing: .1em; text-transform: uppercase; }
+.exec-body { padding: 26px 30px; }
+.exec-section { margin-bottom: 22px; }
+.exec-section:last-child { margin-bottom: 0; }
+.exec-sec-lbl { font-size: .59rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--slate-300); margin-bottom: 9px; padding-bottom: 7px; border-bottom: 1px solid var(--slate-100); }
+
+/* ── OWNER HERO ── */
+.owner-hero { background: linear-gradient(135deg, var(--slate-950) 0%, var(--forest-lt) 100%); border-radius: var(--r-lg); padding: 26px 28px; margin-bottom: 22px; color: var(--white); position: relative; overflow: hidden; }
+.owner-hero::before { content: ''; position: absolute; bottom: -30px; right: -30px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.025); }
+.owner-hero-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; margin-bottom: 3px; position: relative; }
+.owner-hero-sub   { font-size: .72rem; opacity: .45; font-weight: 300; position: relative; }
+
+/* ── REVENUE TABLE ── */
+.rev-table { width: 100%; border-collapse: collapse; }
+.rev-table th { text-align: left; font-size: .59rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-400); padding: 0 0 10px; border-bottom: 1px solid var(--slate-100); }
+.rev-table td { padding: 11px 0; font-size: .77rem; color: var(--slate-700); border-bottom: 1px solid var(--slate-100); vertical-align: middle; }
+.rev-table tr:last-child td { border-bottom: none; }
+.rev-table td:last-child { text-align: right; font-weight: 600; color: var(--slate-900); }
+.plan-badge { display: inline-block; font-size: .59rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: var(--r-xs); }
+.plan-ent { background: var(--amber-lt); color: var(--amber); }
+.plan-pro { background: var(--sage-wash); color: var(--forest); }
+.plan-str { background: var(--slate-100); color: var(--slate-500); }
+.status-dot-sm { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.dot-active { background: var(--forest-lt); }
+.dot-trial  { background: var(--amber); }
+.dot-risk   { background: var(--crimson); }
+
+/* ── SPARK ── */
+.spark { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 12px; }
+.spark-b { flex: 1; border-radius: 2px 2px 0 0; background: var(--slate-100); transition: height .8s ease; }
+.spark-b.hi { background: var(--forest-lt); }
+
+/* ── PLAN DIST ── */
+.pdr-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.pdr-lbl { font-size: .72rem; font-weight: 500; color: var(--slate-700); width: 90px; }
+.pdr-track { flex: 1; height: 6px; background: var(--slate-100); border-radius: 2px; overflow: hidden; }
+.pdr-fill { height: 100%; border-radius: 2px; }
+.pdr-count { font-size: .68rem; color: var(--slate-400); width: 55px; text-align: right; }
+
+/* ── MODALS ── */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(15,22,20,.45);
+  z-index: 1500; align-items: center; justify-content: center;
+}
+.overlay.open { display: flex; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--white); border-radius: var(--r-xl); box-shadow: var(--shadow-xl);
+  animation: scaleIn .2s ease; max-width: 90vw;
+}
+@keyframes scaleIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+.modal-sm { width: 400px; padding: 32px; text-align: center; }
+.modal-lg { width: 560px; }
+.modal-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.modal-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.modal-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 400; color: var(--slate-900); margin-bottom: 8px; }
+.modal-body  { font-size: .79rem; color: var(--slate-500); line-height: 1.75; margin-bottom: 20px; font-weight: 300; }
+.modal-body strong { color: var(--forest); font-weight: 600; }
+.modal-head { padding: 20px 24px 16px; border-bottom: 1px solid var(--slate-100); display: flex; align-items: center; justify-content: space-between; }
+.modal-head-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 400; color: var(--slate-900); }
+.modal-close { width: 28px; height: 28px; border: 1px solid var(--slate-200); border-radius: var(--r-xs); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--slate-400); transition: all .13s; }
+.modal-close:hover { background: var(--slate-50); color: var(--slate-900); }
+.modal-close svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.modal-content { padding: 20px 24px; }
+.modal-foot { padding: 14px 24px; border-top: 1px solid var(--slate-100); display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── VOICE MODAL ── */
+.voice-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--sage-tint); border: 2px solid var(--sage-wash);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+  transition: background .2s, border-color .2s;
+}
+.voice-ring.recording { background: var(--crimson-lt); border-color: #dcc0be; animation: pulseRing 1.2s infinite; }
+@keyframes pulseRing { 0%,100% { box-shadow: 0 0 0 0 rgba(139,58,58,.2); } 50% { box-shadow: 0 0 0 10px rgba(139,58,58,0); } }
+.voice-ring svg { width: 28px; height: 28px; stroke: var(--forest); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.voice-ring.recording svg { stroke: var(--crimson); }
+.waveform { height: 40px; display: flex; align-items: center; justify-content: center; gap: 4px; margin: 14px 0; }
+.wv { width: 3px; border-radius: 2px; background: var(--slate-200); }
+.waveform.active .wv { background: var(--forest-lt); animation: wvAnim .55s ease-in-out infinite alternate; }
+.wv:nth-child(1){height:8px;animation-delay:0s}
+.wv:nth-child(2){height:14px;animation-delay:.06s}
+.wv:nth-child(3){height:22px;animation-delay:.12s}
+.wv:nth-child(4){height:28px;animation-delay:.18s}
+.wv:nth-child(5){height:34px;animation-delay:.24s}
+.wv:nth-child(6){height:28px;animation-delay:.30s}
+.wv:nth-child(7){height:22px;animation-delay:.36s}
+.wv:nth-child(8){height:14px;animation-delay:.42s}
+.wv:nth-child(9){height:8px;animation-delay:.48s}
+@keyframes wvAnim { to { height: 4px; } }
+.voice-timer { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; color: var(--slate-900); margin-bottom: 20px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1080px) {
+  .g5 { grid-template-columns: repeat(3,1fr); }
+  .g4 { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .g4, .g3 { grid-template-columns: 1fr 1fr; }
+  .col-3-2, .col-2-1, .col-2 { grid-template-columns: 1fr; }
+  .content { padding: 18px 16px; }
+  .topbar { padding: 0 16px; }
+}
+@media (max-width: 560px) {
+  .g4, .g3, .g2 { grid-template-columns: 1fr; }
+  .pulse-kpis, .exec-kpis { gap: 16px; flex-wrap: wrap; }
+  .privacy-sel { flex-direction: column; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════
+     ROLE SWITCHER
+════════════════════════════════════════════════════════ -->
+</head><body><div class="role-bar">
+  <span class="role-bar-label">View As</span>
+  <button class="role-btn active" onclick="switchRole(&#39;employee&#39;,this)">Employee</button>
+  <button class="role-btn" onclick="switchRole(&#39;manager&#39;,this)">Manager</button>
+  <button class="role-btn" onclick="switchRole(&#39;owner&#39;,this)">Owner</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     EMPLOYEE PANEL
+════════════════════════════════════════════════════════ -->
+<div class="role-panel active" id="panel-employee">
+<div class="app-wrap">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <div class="sb-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+        <div class="sb-name">Logue</div>
+      </div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-emp"><div class="rb-dot"></div>Employee</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">My Workspace</div>
+      <button class="nav-item active" onclick="nav(&#39;emp&#39;,&#39;journal&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
+        Daily Journal
+      </button>
+      <button class="nav-item" onclick="nav(&#39;emp&#39;,&#39;history&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+        My History
+      </button>
+      <button class="nav-item" onclick="nav(&#39;emp&#39;,&#39;goals&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+        Personal Goals
+      </button>
+      <button class="nav-item" onclick="nav(&#39;emp&#39;,&#39;suggestions&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+        Suggestions
+        <span class="nav-pill pill-grn">3</span>
+      </button>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Account</div>
+      <button class="nav-item" onclick="nav(&#39;emp&#39;,&#39;settings&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Settings
+      </button>
+    </div>
+    <div class="sb-foot">
+      <div class="user-row">
+        <div class="user-av av-emp">JR</div>
+        <div style="flex:1"><div class="user-name">Jamie Rivera</div><div class="user-role">Marketing</div></div>
+        <div class="ent-badge" onclick="openModal(&#39;pro-modal&#39;)">Enterprise</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue <span class="crumb-sep">›</span> <span class="crumb-cur" id="emp-crumb">Daily Journal</span></div>
+      <div class="topbar-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm">Notifications</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ── JOURNAL PAGE ── -->
+      <div class="page active" id="emp-journal">
+        <div class="page-head">
+          <h1>Daily <em>Journal</em></h1>
+          <p>Your private work reflection. Entries are anonymised before any management sees them — they see patterns, not your words.</p>
+        </div>
+
+        <!-- Privacy selector -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--slate-400);margin-bottom:8px;">Entry Visibility</div>
+          <div class="privacy-sel">
+            <div class="priv-opt on" onclick="selectPrivacy(this,&#39;private&#39;)">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <div class="priv-opt-name">Private</div>
+              <div class="priv-opt-desc">Only you</div>
+            </div>
+            <div class="priv-opt" onclick="selectPrivacy(this,&#39;anonymous&#39;)">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg>
+              <div class="priv-opt-name">Anonymous</div>
+              <div class="priv-opt-desc">AI trends only</div>
+            </div>
+            <div class="priv-opt" onclick="selectPrivacy(this,&#39;share&#39;)">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <div class="priv-opt-name">Share</div>
+              <div class="priv-opt-desc">Share with manager</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journal textarea -->
+        <div class="card mb-14">
+          <div class="card-head">
+            <div><div class="card-title">Today's Reflection</div><div class="card-sub">What shaped your day?</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="openVoice()">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              Voice Entry
+            </button>
+          </div>
+          <div class="card-body">
+            <textarea id="journal-text" rows="6" placeholder="How did today go? What went well, what was frustrating, what do you wish was different? Write freely — this is your space.
+
+e.g. &#39;The team standup ran over again and I couldn&#39;t start focused work until 11am. The Miller account call went really well though...&#39;"></textarea>
+          </div>
+        </div>
+
+        <!-- Topic tags -->
+        <div class="card mb-14">
+          <div class="card-head"><div class="card-title">Topics</div><div class="card-sub">Select all that apply</div></div>
+          <div class="card-body">
+            <div class="tag-selector" id="topic-tags">
+              <div class="tag-opt" onclick="toggleTag(this)">Workload</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Stress</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Team Collaboration</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Communication</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Management Feedback</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Tools &amp; Software</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Work-Life Balance</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Recognition</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Suggestions</div>
+              <div class="tag-opt" onclick="toggleTag(this)">Career Growth</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mood + productivity -->
+        <div class="kpi-grid g3 mb-14">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Energy Level</div></div>
+            <div class="card-body">
+              <div style="display:flex;gap:6px;">
+                <button style="flex:1;padding:8px 4px;border-radius:var(--r-xs);border:1px solid var(--slate-100);background:var(--slate-50);font-size:16px;cursor:pointer;transition:all .12s;" class="mood-btn" onclick="pickMood(this,&#39;Drained&#39;)">😔</button>
+                <button style="flex:1;padding:8px 4px;border-radius:var(--r-xs);border:1px solid var(--slate-100);background:var(--slate-50);font-size:16px;cursor:pointer;transition:all .12s;" class="mood-btn" onclick="pickMood(this,&#39;Low&#39;)">😐</button>
+                <button style="flex:1;padding:8px 4px;border-radius:var(--r-xs);border:1px solid var(--slate-100);background:var(--slate-50);font-size:16px;cursor:pointer;transition:all .12s;" class="mood-btn" onclick="pickMood(this,&#39;Neutral&#39;)">🙂</button>
+                <button style="flex:1;padding:8px 4px;border-radius:var(--r-xs);border:1px solid var(--slate-100);background:var(--slate-50);font-size:16px;cursor:pointer;transition:all .12s;border-color:var(--sage);background:var(--sage-tint);" class="mood-btn active" onclick="pickMood(this,&#39;Good&#39;)">😊</button>
+                <button style="flex:1;padding:8px 4px;border-radius:var(--r-xs);border:1px solid var(--slate-100);background:var(--slate-50);font-size:16px;cursor:pointer;transition:all .12s;" class="mood-btn" onclick="pickMood(this,&#39;Excellent&#39;)">🚀</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Productivity (1–10)</div></div>
+            <div class="card-body">
+              <input type="range" min="1" max="10" value="7" id="prod-slider" oninput="document.getElementById(&#39;prod-val&#39;).textContent=this.value">
+              <div class="range-labs"><span>Low</span><span id="prod-val" style="color:var(--forest);font-weight:600;">7</span><span>High</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Department</div></div>
+            <div class="card-body">
+              <select><option>Marketing</option><option>Sales</option><option>Engineering</option><option>Operations</option><option>Customer Success</option></select>
+              <select><option selected="">End of Day</option><option>Mid-Day Check-In</option><option>Project Debrief</option><option>Sprint Retro</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="card mb-14" style="border-color:var(--sage-lt);">
+          <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:28px;height:28px;background:var(--sage-tint);border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="13" height="13" viewBox="0 0 24 24" stroke="var(--forest)" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div>
+                <div style="font-size:.76rem;font-weight:600;color:var(--slate-900);">Privacy Protected</div>
+                <div style="font-size:.67rem;color:var(--slate-400);font-weight:300;">Anonymised before analysis. Management sees trends, never your words.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost" onclick="showToast(&#39;Draft saved&#39;)">Save Draft</button>
+              <button class="btn btn-primary" onclick="runAI()">
+                <svg viewBox="0 0 24 24" width="12" height="12"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Analyse &amp; Submit
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI insight panel -->
+        <div class="ai-panel" id="ai-panel">
+          <div class="ai-panel-head"><span class="ai-chip">Logue AI</span><span class="ai-title">Personal Insight</span></div>
+          <div id="ai-loading" class="ai-loading"><div class="spinner"></div><span>Analysing your entry…</span></div>
+          <div id="ai-body" class="ai-body" style="display:none;"></div>
+          <div id="ai-meta" class="ai-meta" style="display:none;">
+            <div class="ai-meta-item"><span class="ai-meta-lbl">Sentiment</span><span class="ai-meta-val" id="m-sentiment">—</span></div>
+            <div class="ai-meta-item"><span class="ai-meta-lbl">Theme</span><span class="ai-meta-val" id="m-theme">—</span></div>
+            <div class="ai-meta-item"><span class="ai-meta-lbl">Impact</span><span class="ai-meta-val" id="m-impact">—</span></div>
+            <div class="ai-meta-item"><span class="ai-meta-lbl">Tomorrow</span><span class="ai-meta-val" id="m-focus">—</span></div>
+          </div>
+        </div>
+      </div><!-- /emp-journal -->
+
+      <!-- ── HISTORY ── -->
+      <div class="page" id="emp-history">
+        <div class="page-head"><h1>My <em>History</em></h1><p>28 entries this month. Your personal archive is only ever visible to you.</p></div>
+        <div class="kpi-grid g3 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Day Streak</div><span class="kpi-delta delta-up">+12%</span></div><div class="kpi-val">18</div><div class="kpi-meta">Personal record: 22 days</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Entries This Month</div><span class="kpi-delta delta-up">+5</span></div><div class="kpi-val">28</div><div class="kpi-meta">Target: 22 / month</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Avg Productivity</div><span class="kpi-delta delta-flat">Stable</span></div><div class="kpi-val">7.4</div><div class="kpi-meta">Out of 10</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Recent Entries</div></div>
+          <div class="card-body">
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">3 Mar — Strong collaboration day</div><span class="badge badge-pos">Positive</span></div><div class="list-item-body">Wins: Closed two deals. Friction: approval workflow delay. Mood: Energised · Productivity: 9/10</div><div class="tag-row"><span class="chip chip-g">High Productivity</span><span class="chip chip-b">Team Collab</span></div></div>
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">2 Mar — File-sharing friction flagged</div><span class="badge badge-neu">Neutral</span></div><div class="list-item-body">Wins: Campaign brief approved. Friction: 40 min lost navigating shared drive. Productivity: 5/10</div><div class="tag-row"><span class="chip chip-r">Blocker Flagged</span><span class="chip chip-a">Tool Issue</span></div></div>
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">28 Feb — Best day this month</div><span class="badge badge-pos">Positive</span></div><div class="list-item-body">Q1 campaign launched. No friction reported. Mood: Excellent · Productivity: 10/10</div><div class="tag-row"><span class="chip chip-g">Top Performance</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GOALS ── -->
+      <div class="page" id="emp-goals">
+        <div class="page-head"><h1>Personal <em>Goals</em></h1><p>Set intentions. Logue AI tracks progress through your journal entries automatically.</p></div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Active Goals</div><button class="btn btn-primary btn-sm">+ Add Goal</button></div>
+            <div class="card-body">
+              <div class="list-item"><div class="list-item-top"><div class="list-item-title">Reduce meeting time to under 90 min/day</div><span class="badge badge-warn">60%</span></div><div class="list-item-body">3 of 5 days achieved this week.</div><div class="bar-set"><div class="bar-row"><div class="bar-track" style="height:5px;"><div class="bar-fill fill-forest" style="width: 60%;"></div></div></div></div></div>
+              <div class="list-item"><div class="list-item-top"><div class="list-item-title">Journal 5 days per week</div><span class="badge badge-warn">80%</span></div><div class="list-item-body">4 of 5 days. 18-day streak active.</div><div class="bar-set"><div class="bar-row"><div class="bar-track" style="height:5px;"><div class="bar-fill fill-forest" style="width: 80%;"></div></div></div></div></div>
+              <div class="list-item"><div class="list-item-top"><div class="list-item-title">Keep productivity above 7.0</div><span class="badge badge-pos">On Track</span></div><div class="list-item-body">Current average: 7.4/10</div><div class="bar-set"><div class="bar-row"><div class="bar-track" style="height:5px;"><div class="bar-fill fill-forest" style="width: 74%;"></div></div></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">AI Suggestions</div><div class="card-sub">From your last 10 entries</div></div>
+            <div class="card-body">
+              <div class="list-item"><div class="list-item-top"><div class="list-item-title">Block two focus hours daily</div><span class="badge badge-info">AI</span></div><div class="list-item-body">"Interrupted" appears in 6 of your last 10 entries.</div><div class="tag-row"><button class="btn btn-ghost btn-xs">Add Goal</button></div></div>
+              <div class="list-item"><div class="list-item-top"><div class="list-item-title">Batch notifications twice daily</div><span class="badge badge-info">AI</span></div><div class="list-item-body">Context switching is a recurring friction theme.</div><div class="tag-row"><button class="btn btn-ghost btn-xs">Add Goal</button></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EMPLOYEE SUGGESTIONS ── -->
+      <div class="page" id="emp-suggestions">
+        <div class="page-head">
+          <h1>Workplace <em>Suggestions</em></h1>
+          <p>Submit ideas for improving your workplace. Vote on colleagues' suggestions. All submissions can be anonymous.</p>
+        </div>
+        <div class="col-2 mb-18">
+          <div>
+            <div class="card mb-14">
+              <div class="card-head"><div class="card-title">Submit a Suggestion</div></div>
+              <div class="card-body">
+                <input type="text" id="sug-title-input" placeholder="e.g. Flexible start times between 7–10am" style="margin-bottom:10px;">
+                <textarea id="sug-body-input" rows="3" placeholder="Describe your suggestion and why it would help the team..."></textarea>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px;">
+                  <label style="display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--slate-500);cursor:pointer;">
+                    <input type="checkbox" id="sug-anon" accent-color="var(--forest)" checked="" style="width:13px;height:13px;"> Submit anonymously
+                  </label>
+                  <button class="btn btn-primary btn-sm" onclick="submitSuggestion()">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Category Filter</div></div>
+            <div class="card-body">
+              <div class="tag-selector">
+                <div class="tag-opt on" onclick="toggleTag(this)">All</div>
+                <div class="tag-opt" onclick="toggleTag(this)">Flexibility</div>
+                <div class="tag-opt" onclick="toggleTag(this)">Tools</div>
+                <div class="tag-opt" onclick="toggleTag(this)">Training</div>
+                <div class="tag-opt" onclick="toggleTag(this)">Culture</div>
+                <div class="tag-opt" onclick="toggleTag(this)">Process</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Top Suggestions</div>
+        <div id="suggestions-list">
+    <div class="suggestion-card" id="scard-1">
+      <div class="vote-box">
+        <button class="vote-btn " onclick="castVote(1)" title="Upvote">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <div class="vote-count" id="vc-1">42</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Flexible work hours — 7–10am start window</div>
+        <div class="sug-desc">Allow employees to choose start time within a 3-hour window. Trust-based output model. Many team members have mentioned commute stress in journal entries.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-review">review</span>
+          <span>Anonymous</span>
+          <span>12 Feb 2026</span>
+          <span class="chip chip-s">Flexibility</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="scard-2">
+      <div class="vote-box">
+        <button class="vote-btn " onclick="castVote(2)" title="Upvote">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <div class="vote-count" id="vc-2">38</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Better onboarding for new tools before rollout</div>
+        <div class="sug-desc">Before company-wide tool changes, provide a 2-week training period with optional hands-on sessions. Would have prevented the shared drive confusion we're currently experiencing.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-planned">planned</span>
+          <span>Anonymous</span>
+          <span>28 Jan 2026</span>
+          <span class="chip chip-s">Training</span><span class="chip chip-s">Tools</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="scard-3">
+      <div class="vote-box">
+        <button class="vote-btn " onclick="castVote(3)" title="Upvote">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <div class="vote-count" id="vc-3">31</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Monthly all-hands Q&amp;A with leadership</div>
+        <div class="sug-desc">A 30-minute open Q&amp;A session with senior leadership each month would improve communication transparency. Anonymous question submission option requested.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Named</span>
+          <span>3 Feb 2026</span>
+          <span class="chip chip-s">Culture</span><span class="chip chip-s">Communication</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="scard-4">
+      <div class="vote-box">
+        <button class="vote-btn " onclick="castVote(4)" title="Upvote">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <div class="vote-count" id="vc-4">27</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Dedicated focus time — no meetings before 10am</div>
+        <div class="sug-desc">Block meetings before 10am company-wide. Survey data from async standup showed 67% of employees want protected morning focus time.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Anonymous</span>
+          <span>19 Feb 2026</span>
+          <span class="chip chip-s">Flexibility</span><span class="chip chip-s">Process</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="scard-5">
+      <div class="vote-box">
+        <button class="vote-btn " onclick="castVote(5)" title="Upvote">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <div class="vote-count" id="vc-5">19</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Peer recognition micro-awards (monthly)</div>
+        <div class="sug-desc">A lightweight peer-to-peer recognition system. Nominees proposed by team, winner announced at all-hands. No cash required — just visibility and appreciation.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Named</span>
+          <span>25 Feb 2026</span>
+          <span class="chip chip-s">Culture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="page" id="emp-settings">
+        <div class="page-head"><h1>Account <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="s-nav">
+              <button class="s-item active" onclick="sTab(this)">Notifications</button>
+              <button class="s-item" onclick="sTab(this)">Privacy</button>
+              <button class="s-item" onclick="sTab(this)">Integrations</button>
+            </div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Daily journal reminder</div><div class="sr-sub">Nudge at 4:30 PM</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">AI insights on submissions</div><div class="sr-sub">Personal synthesis after each entry</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Full anonymisation</div><div class="sr-sub">Management sees trends only — never your name</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Opt out of leaderboard</div><div class="sr-sub">Hide your streak from team rankings</div></div><button class="toggle" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Weekly personal digest</div><div class="sr-sub">Email summary of your own trends every Friday</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div>
+</div><!-- /panel-employee -->
+
+<!-- ═══════════════════════════════════════════════════════
+     MANAGER PANEL
+     NOTE: No individual employee entries are ever shown here.
+     Only AI-aggregated patterns, trends and summaries.
+════════════════════════════════════════════════════════ -->
+<div class="role-panel" id="panel-manager">
+<div class="app-wrap">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo"><div class="sb-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div><div class="sb-name">Logue</div></div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-mgr"><div class="rb-dot"></div>Manager</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Insights</div>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;pulse&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+        Team Pulse <span class="nav-pill pill-red">3</span>
+      </button>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;sentiment&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></div>
+        Sentiment
+      </button>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;trends&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+        Trends
+      </button>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;alerts&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+        Smart Alerts <span class="nav-pill pill-red">2</span>
+      </button>
+      <button class="nav-item active" onclick="nav(&#39;mgr&#39;,&#39;suggestions-mgr&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+        Suggestions <span class="nav-pill pill-amb">8</span>
+      </button>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Reports</div>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;exec&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+        Executive Summary
+      </button>
+      <button class="nav-item" onclick="nav(&#39;mgr&#39;,&#39;msettings&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Settings
+      </button>
+    </div>
+    <div class="sb-foot">
+      <div class="user-row">
+        <div class="user-av av-mgr">SM</div>
+        <div><div class="user-name">Sarah Mitchell</div><div class="user-role">Operations Manager</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue <span class="crumb-sep">›</span> <span class="crumb-cur" id="mgr-crumb">Employee Suggestions</span></div>
+      <div class="topbar-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast(&#39;Exporting report…&#39;)">Export</button>
+        <button class="btn btn-primary btn-sm" onclick="showToast(&#39;Generating summary…&#39;)">Generate Report</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ── TEAM PULSE ── -->
+      <div class="page" id="mgr-pulse">
+        <div class="page-head">
+          <h1>Team <em>Pulse</em></h1>
+          <p>Aggregated from 47 anonymous entries this week. No individual entries are visible here.</p>
+        </div>
+        <div class="pulse-hero">
+          <div class="pulse-hero-title">Week of 4 March 2026</div>
+          <div class="pulse-hero-sub">All data anonymised and aggregated — individual entries are never surfaced in this view</div>
+          <div class="pulse-kpis">
+            <div><div class="pk-val">47</div><div class="pk-lbl">Entries</div></div>
+            <div><div class="pk-val">89%</div><div class="pk-lbl">Participation</div></div>
+            <div><div class="pk-val">7.2</div><div class="pk-lbl">Morale Score</div></div>
+            <div><div class="pk-val">14</div><div class="pk-lbl">Friction Points</div></div>
+            <div><div class="pk-val">68%</div><div class="pk-lbl">Positive Sentiment</div></div>
+          </div>
+        </div>
+
+        <div class="col-3-2">
+          <div>
+            <!-- Sentiment breakdown with donut -->
+            <div class="card mb-18">
+              <div class="card-head"><div class="card-title">Sentiment Breakdown</div><div class="card-sub">Based on 47 anonymised entries</div></div>
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:24px;">
+                  <div class="donut-wrap">
+                    <svg class="donut-svg" viewBox="0 0 120 120">
+                      <circle class="donut-bg" cx="60" cy="60" r="48"></circle>
+                      <!-- pos: 68%, circ=301.6, offset=301.6*(1-.68)=96.5 -->
+                      <circle class="donut-pos" cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="96.5"></circle>
+                      <!-- neu: 20%, starts after pos -->
+                      <circle class="donut-neu" cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="241.3" transform="rotate(244.8 60 60)"></circle>
+                      <!-- neg: 12% -->
+                      <circle class="donut-neg" cx="60" cy="60" r="48" stroke-dasharray="301.6" stroke-dashoffset="265.4" transform="rotate(316.8 60 60)"></circle>
+                    </svg>
+                    <div class="donut-center"><div class="donut-center-val">68%</div><div class="donut-center-lbl">Positive</div></div>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="bar-row mb-8"><div class="bar-lbl" style="width:80px;color:var(--forest);">Positive</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 68%;"></div></div><div class="bar-pct" style="color:var(--forest);">68%</div></div>
+                    <div class="bar-row mb-8"><div class="bar-lbl" style="width:80px;color:var(--slate-500);">Neutral</div><div class="bar-track"><div class="bar-fill" style="width: 20%; background: var(--slate-300);"></div></div><div class="bar-pct" style="color:var(--slate-500);">20%</div></div>
+                    <div class="bar-row"><div class="bar-lbl" style="width:80px;color:var(--crimson);">Negative</div><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 12%;"></div></div><div class="bar-pct" style="color:var(--crimson);">12%</div></div>
+                    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--slate-100);">
+                      <div style="font-size:.67rem;color:var(--slate-400);font-weight:300;">Trend: <span style="color:var(--forest);font-weight:600;">+7% positive vs last week</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top concerns -->
+            <div class="card mb-18">
+              <div class="card-head"><div class="card-title">Top Employee Concerns</div><div class="card-sub">AI-extracted from anonymised entries</div></div>
+              <div class="card-body">
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">1. Workload &amp; Stress</div><span class="badge badge-neg">High</span></div>
+                  <div class="list-item-body">Mentioned in 31% of this week's entries. Common themes: too many concurrent projects, unclear priorities, insufficient recovery time between sprints.</div>
+                  <div class="tag-row"><span class="dept-tag">Engineering · 9</span><span class="dept-tag">Operations · 7</span></div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">2. Communication Issues</div><span class="badge badge-warn">Medium</span></div>
+                  <div class="list-item-body">Cross-department communication gaps mentioned in 24% of entries. Recurring phrase: "waited for a reply." Q2 approval chain unclear to 4 departments.</div>
+                  <div class="tag-row"><span class="dept-tag">Sales · 5</span><span class="dept-tag">Finance · 4</span><span class="dept-tag">Ops · 3</span></div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">3. Requests for Flexible Work</div><span class="badge badge-info">Noted</span></div>
+                  <div class="list-item-body">18% of entries mention desire for flexibility in start times or remote work days. Appears as a consistent theme across three consecutive months.</div>
+                  <div class="tag-row"><span class="dept-tag">Marketing · 6</span><span class="dept-tag">Eng · 4</span></div>
+                </div>
+                <div class="list-item">
+                  <div class="list-item-top"><div class="list-item-title">4. Tool &amp; Software Friction</div><span class="badge badge-warn">Medium</span></div>
+                  <div class="list-item-body">62% of Marketing &amp; Design report losing ~25 min/day with the new shared drive. Escalating trend since Monday.</div>
+                  <div class="tag-row"><span class="dept-tag">Marketing · 12</span><span class="dept-tag">Design · 8</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div>
+            <div class="card mb-18">
+              <div class="card-head"><div class="card-title">Team Morale Score</div></div>
+              <div class="card-body">
+                <div style="font-family:var(--font-display);font-size:2.4rem;font-weight:400;color:var(--slate-900);line-height:1;margin-bottom:4px;">7.2 <span style="font-size:1rem;color:var(--slate-400);">/ 10</span></div>
+                <div style="font-size:.68rem;color:var(--forest);font-weight:600;margin-bottom:12px;">+0.4 vs last week</div>
+                <div class="sentiment-track"><div class="sentiment-needle" style="left:64%"></div></div>
+                <div class="sentiment-ends"><span>Critical</span><span>Excellent</span></div>
+                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--slate-100);">
+                  <div class="bar-row" style="margin-bottom:8px;"><div class="bar-lbl" style="width:100px;font-size:.68rem;">Marketing</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 84%;"></div></div><div class="bar-pct" style="font-size:.68rem;color:var(--forest);">8.4</div></div>
+                  <div class="bar-row" style="margin-bottom:8px;"><div class="bar-lbl" style="width:100px;font-size:.68rem;">Sales</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 78%;"></div></div><div class="bar-pct" style="font-size:.68rem;color:var(--forest);">7.8</div></div>
+                  <div class="bar-row" style="margin-bottom:8px;"><div class="bar-lbl" style="width:100px;font-size:.68rem;">Engineering</div><div class="bar-track"><div class="bar-fill fill-amber" style="width: 70%;"></div></div><div class="bar-pct" style="font-size:.68rem;color:var(--amber);">7.0</div></div>
+                  <div class="bar-row" style="margin-bottom:8px;"><div class="bar-lbl" style="width:100px;font-size:.68rem;">Operations</div><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 58%;"></div></div><div class="bar-pct" style="font-size:.68rem;color:var(--crimson);">5.8</div></div>
+                  <div class="bar-row"><div class="bar-lbl" style="width:100px;font-size:.68rem;">Cust. Success</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 82%;"></div></div><div class="bar-pct" style="font-size:.68rem;color:var(--forest);">8.2</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><div class="card-title">Wins This Week</div></div>
+              <div class="card-body">
+                <div class="list-item" style="padding-top:0;"><div class="list-item-top"><div class="list-item-title">Async standup bot praised</div><span class="badge badge-pos">Replicate</span></div><div class="list-item-body">11 independent positive mentions. "Saves 20 minutes" most repeated phrase.</div></div>
+                <div class="list-item"><div class="list-item-top"><div class="list-item-title">Q1 campaign launched</div><span class="badge badge-pos">Celebrate</span></div><div class="list-item-body">8 Marketing entries celebrate milestone. Public recognition recommended.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SENTIMENT ── -->
+      <div class="page" id="mgr-sentiment">
+        <div class="page-head"><h1>Sentiment <em>Analysis</em></h1><p>AI-extracted themes and sentiment patterns from anonymised entries. No individual data shown.</p></div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Positive Sentiment</div><span class="kpi-delta delta-up">+7%</span></div><div class="kpi-val">68%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Neutral Sentiment</div><span class="kpi-delta delta-flat">—</span></div><div class="kpi-val">20%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Negative Sentiment</div><span class="kpi-delta delta-down">-3%</span></div><div class="kpi-val">12%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Avg Productivity</div><span class="kpi-delta delta-up">+0.4</span></div><div class="kpi-val">7.8</div><div class="kpi-meta">Out of 10</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Common Themes — This Week</div></div>
+            <div class="card-body">
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Tool / Software Issues</div><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 74%;"></div></div><div class="bar-pct" style="color:var(--crimson);">74%</div></div>
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Meeting Overload</div><div class="bar-track"><div class="bar-fill fill-amber" style="width: 58%;"></div></div><div class="bar-pct" style="color:var(--amber);">58%</div></div>
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Missing Documentation</div><div class="bar-track"><div class="bar-fill fill-amber" style="width: 41%;"></div></div><div class="bar-pct" style="color:var(--amber);">41%</div></div>
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Communication Gaps</div><div class="bar-track"><div class="bar-fill fill-cobalt" style="width: 35%;"></div></div><div class="bar-pct" style="color:var(--cobalt);">35%</div></div>
+              <div class="bar-row"><div class="bar-lbl" style="width:160px;">Work-Life Balance</div><div class="bar-track"><div class="bar-fill fill-crimson" style="width: 28%;"></div></div><div class="bar-pct" style="color:var(--crimson);">28%</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Positive Themes</div></div>
+            <div class="card-body">
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Team Collaboration</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 72%;"></div></div><div class="bar-pct" style="color:var(--forest);">72%</div></div>
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Async Tools Praised</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 64%;"></div></div><div class="bar-pct" style="color:var(--forest);">64%</div></div>
+              <div class="bar-row mb-8"><div class="bar-lbl" style="width:160px;">Project Wins</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 48%;"></div></div><div class="bar-pct" style="color:var(--forest);">48%</div></div>
+              <div class="bar-row"><div class="bar-lbl" style="width:160px;">Clear Direction</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 38%;"></div></div><div class="bar-pct" style="color:var(--forest);">38%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TRENDS ── -->
+      <div class="page" id="mgr-trends">
+        <div class="page-head"><h1>Workplace <em>Trends</em></h1><p>6-month view of key engagement and wellbeing metrics. Declining trends are highlighted automatically.</p></div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Employee Morale</div><span class="kpi-delta delta-down">Declining</span></div><div class="kpi-val">61%</div><div class="kpi-meta">Was 72% in Oct</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Stress Levels</div><span class="kpi-delta delta-down">Rising</span></div><div class="kpi-val">High</div><div class="kpi-meta">31% flagging stress</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Engagement</div><span class="kpi-delta delta-up">+4%</span></div><div class="kpi-val">89%</div><div class="kpi-meta">Participation rate</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Comms Satisfaction</div><span class="kpi-delta delta-down">Declining</span></div><div class="kpi-val">64%</div><div class="kpi-meta">Was 78% in Nov</div></div>
+        </div>
+
+        <div class="col-2 mb-18">
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Employee Morale — 6 Months</div><div class="card-sub" style="color:var(--crimson);">Declining trend — action recommended</div></div>
+            </div>
+            <div class="card-body">
+              <div class="trend-chart" id="morale-chart"><div class="tc-bar tc-amb" style="height:72%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:71%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:69%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:68%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:64%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:61%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div></div>
+              <div class="trend-labels"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+              <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--slate-100);display:flex;gap:16px;">
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);">Oct</div><div style="font-size:.9rem;font-family:var(--font-display);">72%</div></div>
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);">Nov</div><div style="font-size:.9rem;font-family:var(--font-display);">71%</div></div>
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);">Dec</div><div style="font-size:.9rem;font-family:var(--font-display);">69%</div></div>
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);">Jan</div><div style="font-size:.9rem;font-family:var(--font-display);">68%</div></div>
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);">Feb</div><div style="font-size:.9rem;font-family:var(--font-display);">64%</div></div>
+                <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-300);font-weight:600;">Mar</div><div style="font-size:.9rem;font-family:var(--font-display);color:var(--crimson);">61%</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Communication Satisfaction</div><div class="card-sub" style="color:var(--crimson);">Declining — needs attention</div></div></div>
+            <div class="card-body">
+              <div class="trend-chart" id="comms-chart"><div class="tc-bar tc-grn" style="height:78%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:76%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:72%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:70%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-amb" style="height:67%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:64%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div></div>
+              <div class="trend-labels"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Engagement Levels</div><div class="card-sub" style="color:var(--forest);">Positive trend</div></div>
+            <div class="card-body">
+              <div class="trend-chart" id="engage-chart"><div class="tc-bar tc-grn" style="height:82%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:83%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:84%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:86%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:87%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-grn" style="height:89%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div></div>
+              <div class="trend-labels"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Stress Levels</div><div class="card-sub" style="color:var(--crimson);">Rising — intervention needed</div></div>
+            <div class="card-body">
+              <div class="trend-chart" id="stress-chart"><div class="tc-bar tc-red" style="height:18%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:20%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:22%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:25%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:28%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div><div class="tc-bar tc-red" style="height:31%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div></div>
+              <div class="trend-labels"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SMART ALERTS ── -->
+      <div class="page" id="mgr-alerts">
+        <div class="page-head"><h1>Smart <em>Alerts</em></h1><p>AI-detected signals that may indicate emerging workplace problems. All based on anonymised pattern analysis.</p></div>
+        <div style="margin-bottom:22px;">
+          <div class="sec-lbl">Critical — Immediate Attention</div>
+          <div class="alert-card alert-critical">
+            <div class="alert-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Burnout Risk Detected — Operations Team</div>
+              <div class="alert-desc">Stress-related language has increased 40% in Operations entries over three weeks. Common phrases: "exhausted," "overwhelmed," "no time to think." Morale at 5.8/10 and declining. Recommend immediate manager check-in and workload review.</div>
+              <div class="alert-meta">Detected: 4 March 2026 · Affected: ~7 employees (anonymised) · Confidence: High</div>
+              <div class="alert-actions">
+                <button class="btn btn-ghost btn-xs">Mark as Reviewed</button>
+                <button class="btn btn-primary btn-xs">Schedule Review</button>
+              </div>
+            </div>
+          </div>
+          <div class="alert-card alert-critical">
+            <div class="alert-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Morale Declining — Company-Wide Trend</div>
+              <div class="alert-desc">Company morale has dropped from 72% to 61% over 6 months. Trend is consistent and accelerating. No single department explains the full drop — this appears systemic. Recommend senior leadership review.</div>
+              <div class="alert-meta">Detected: 3 March 2026 · Pattern duration: 6 months · Confidence: High</div>
+              <div class="alert-actions">
+                <button class="btn btn-ghost btn-xs">Mark as Reviewed</button>
+                <button class="btn btn-primary btn-xs">Escalate to Leadership</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-lbl">Warning — Monitor Closely</div>
+          <div class="alert-card alert-warn">
+            <div class="alert-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Increased Negative Sentiment — Engineering Department</div>
+              <div class="alert-desc">Engineering sentiment has shifted negative over 2 weeks. Predominant themes: unclear sprint priorities, lack of design sign-off before development begins. Productivity score dropped from 8.1 to 7.0.</div>
+              <div class="alert-meta">Detected: 2 March 2026 · Duration: 2 weeks · Confidence: Medium</div>
+              <div class="alert-actions"><button class="btn btn-ghost btn-xs">Dismiss</button><button class="btn btn-primary btn-xs">Investigate</button></div>
+            </div>
+          </div>
+          <div class="alert-card alert-warn">
+            <div class="alert-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Multiple Employees Reporting High Workload</div>
+              <div class="alert-desc">31% of this week's entries mention workload as a concern — up from 18% last week. The increase cuts across Engineering, Operations, and Sales. May be linked to Q1 close period.</div>
+              <div class="alert-meta">Detected: 4 March 2026 · Scope: Company-wide · Confidence: Medium</div>
+              <div class="alert-actions"><button class="btn btn-ghost btn-xs">Dismiss</button><button class="btn btn-primary btn-xs">Review</button></div>
+            </div>
+          </div>
+          <div class="alert-card alert-info">
+            <div class="alert-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Flexible Work Requests — Consistent Theme for 3 Months</div>
+              <div class="alert-desc">18% of monthly entries mention desire for flexible hours or remote work. Theme has appeared consistently for 3 months across Marketing and Engineering. May warrant a formal policy discussion.</div>
+              <div class="alert-meta">First detected: December 2025 · Scope: Marketing, Engineering · Confidence: Medium</div>
+              <div class="alert-actions"><button class="btn btn-ghost btn-xs">Dismiss</button><button class="btn btn-primary btn-xs">Add to Agenda</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUGGESTIONS (MGR VIEW) ── -->
+      <div class="page active" id="mgr-suggestions-mgr">
+        <div class="page-head"><h1>Employee <em>Suggestions</em></h1><p>Most requested improvements from your team. Anonymous submissions are aggregated and ranked by votes.</p></div>
+        <div class="kpi-grid g3 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Total Suggestions</div><span class="kpi-delta delta-up">+3</span></div><div class="kpi-val">24</div><div class="kpi-meta">8 awaiting review</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Total Votes Cast</div><span class="kpi-delta delta-up">+12</span></div><div class="kpi-val">187</div><div class="kpi-meta">This month</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Implemented</div><span class="kpi-delta delta-up">+1</span></div><div class="kpi-val">5</div><div class="kpi-meta">From 24 total</div></div>
+        </div>
+        <div class="sec-lbl">Most Requested Changes</div>
+        <div id="mgr-suggestions-list">
+    <div class="suggestion-card" id="mscard-1">
+      <div class="vote-box">
+        <div class="vote-count">42</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Flexible work hours — 7–10am start window</div>
+        <div class="sug-desc">Allow employees to choose start time within a 3-hour window. Trust-based output model. Many team members have mentioned commute stress in journal entries.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-review">review</span>
+          <span>Anonymous submission</span>
+          <span>12 Feb 2026</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(1,&#39;open&#39;)">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(1,&#39;review&#39;)">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(1,&#39;planned&#39;)">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(1,&#39;done&#39;)">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="mscard-2">
+      <div class="vote-box">
+        <div class="vote-count">38</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Better onboarding for new tools before rollout</div>
+        <div class="sug-desc">Before company-wide tool changes, provide a 2-week training period with optional hands-on sessions. Would have prevented the shared drive confusion we're currently experiencing.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-planned">planned</span>
+          <span>Anonymous submission</span>
+          <span>28 Jan 2026</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(2,&#39;open&#39;)">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(2,&#39;review&#39;)">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(2,&#39;planned&#39;)">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(2,&#39;done&#39;)">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="mscard-3">
+      <div class="vote-box">
+        <div class="vote-count">31</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Monthly all-hands Q&amp;A with leadership</div>
+        <div class="sug-desc">A 30-minute open Q&amp;A session with senior leadership each month would improve communication transparency. Anonymous question submission option requested.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Named submission</span>
+          <span>3 Feb 2026</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(3,&#39;open&#39;)">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(3,&#39;review&#39;)">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(3,&#39;planned&#39;)">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(3,&#39;done&#39;)">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="mscard-4">
+      <div class="vote-box">
+        <div class="vote-count">27</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Dedicated focus time — no meetings before 10am</div>
+        <div class="sug-desc">Block meetings before 10am company-wide. Survey data from async standup showed 67% of employees want protected morning focus time.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Anonymous submission</span>
+          <span>19 Feb 2026</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(4,&#39;open&#39;)">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(4,&#39;review&#39;)">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(4,&#39;planned&#39;)">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(4,&#39;done&#39;)">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="suggestion-card" id="mscard-5">
+      <div class="vote-box">
+        <div class="vote-count">19</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">Peer recognition micro-awards (monthly)</div>
+        <div class="sug-desc">A lightweight peer-to-peer recognition system. Nominees proposed by team, winner announced at all-hands. No cash required — just visibility and appreciation.</div>
+        <div class="sug-meta">
+          <span class="sug-status status-open">open</span>
+          <span>Named submission</span>
+          <span>25 Feb 2026</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(5,&#39;open&#39;)">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(5,&#39;review&#39;)">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(5,&#39;planned&#39;)">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(5,&#39;done&#39;)">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <!-- ── EXEC SUMMARY ── -->
+      <div class="page" id="mgr-exec">
+        <div class="page-head"><h1>Executive <em>Summary</em></h1><p>Formal weekly report — 26 Feb – 4 Mar 2026.</p></div>
+        <div class="exec-doc mb-22">
+          <div class="exec-head">
+            <div class="exec-doc-label">Confidential — Internal Distribution Only</div>
+            <div class="exec-doc-title">Weekly Executive Summary</div>
+            <div class="exec-doc-sub">Logue Workplace Intelligence · 26 February – 4 March 2026</div>
+            <div class="exec-kpis">
+              <div><div class="ek-val">47</div><div class="ek-lbl">Entries Analysed</div></div>
+              <div><div class="ek-val">68%</div><div class="ek-lbl">Positive Sentiment</div></div>
+              <div><div class="ek-val">14</div><div class="ek-lbl">Friction Points</div></div>
+              <div><div class="ek-val">89%</div><div class="ek-lbl">Participation</div></div>
+            </div>
+          </div>
+          <div class="exec-body">
+            <div class="exec-section">
+              <div class="exec-sec-lbl">Executive Overview</div>
+              <p style="font-size:.81rem;color:var(--slate-600);line-height:1.85;font-weight:300;">This report summarises anonymised employee feedback collected during the week of 26 February to 4 March 2026. Overall sentiment has improved 7% week-on-week, driven primarily by the async communication pilot in Marketing and Sales. However, a sustained 6-month morale decline requires senior leadership attention. Operations department morale remains below company average at 5.8/10, with burnout risk patterns detected.</p>
+            </div>
+            <div class="exec-section">
+              <div class="exec-sec-lbl">Priority Recommendations</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;gap:12px;"><div style="width:22px;height:22px;border-radius:50%;background:var(--forest);color:white;display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:700;flex-shrink:0;margin-top:2px;">1</div><div><div style="font-size:.81rem;font-weight:600;color:var(--slate-900);margin-bottom:3px;">Conduct Operations team review — burnout risk detected</div><div style="font-size:.75rem;color:var(--slate-500);font-weight:300;">Stress indicators have risen 40% over 3 weeks. A 1:1 manager check-in series and workload audit should be initiated this week.</div></div></div>
+                <div style="display:flex;gap:12px;"><div style="width:22px;height:22px;border-radius:50%;background:var(--forest);color:white;display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:700;flex-shrink:0;margin-top:2px;">2</div><div><div style="font-size:.81rem;font-weight:600;color:var(--slate-900);margin-bottom:3px;">Address company-wide morale decline with leadership</div><div style="font-size:.75rem;color:var(--slate-500);font-weight:300;">Morale has dropped 11 points over 6 months. Structural review of workload, communication practices, and flexibility policies is recommended.</div></div></div>
+                <div style="display:flex;gap:12px;"><div style="width:22px;height:22px;border-radius:50%;background:var(--forest);color:white;display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:700;flex-shrink:0;margin-top:2px;">3</div><div><div style="font-size:.81rem;font-weight:600;color:var(--slate-900);margin-bottom:3px;">File-sharing onboarding session for Marketing &amp; Design</div><div style="font-size:.75rem;color:var(--slate-500);font-weight:300;">62% losing ~25 min/day. A single walkthrough recovers an estimated 12+ hours/week. Assign to IT this week.</div></div></div>
+              </div>
+            </div>
+            <div class="exec-section" style="margin-bottom:0;">
+              <div class="exec-sec-lbl">Privacy Note</div>
+              <p style="font-size:.79rem;color:var(--slate-600);line-height:1.8;font-weight:300;">All data in this report is fully anonymised. No individual employee entries, names, or identifiable information has been used. Patterns and themes are derived from AI analysis of aggregated, anonymised submissions only.</p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="showToast(&#39;Generating PDF…&#39;)">Export PDF</button>
+          <button class="btn btn-ghost" onclick="showToast(&#39;Exporting…&#39;)">Export to Sheets</button>
+          <button class="btn btn-primary" onclick="showToast(&#39;Report sent&#39;)">Email to Leadership</button>
+        </div>
+      </div>
+
+      <!-- ── MGR SETTINGS ── -->
+      <div class="page" id="mgr-msettings">
+        <div class="page-head"><h1>Manager <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="s-nav"><button class="s-item active" onclick="sTab(this)">Alerts</button><button class="s-item" onclick="sTab(this)">Privacy</button><button class="s-item" onclick="sTab(this)">Reports</button></div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Critical friction alerts</div><div class="sr-sub">Notify when High Priority issue is detected</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Burnout risk notifications</div><div class="sr-sub">Alert when stress patterns detected in a department</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Weekly summary auto-send</div><div class="sr-sub">Email executive summary every Monday morning</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Anonymisation enforced</div><div class="sr-sub">Prevent individual attribution in all reports</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Morale decline alert threshold</div><div class="sr-sub">Alert when score drops more than 5% in a week</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div><!-- /panel-manager -->
+
+<!-- ═══════════════════════════════════════════════════════
+     OWNER PANEL
+     DATA WALL: Revenue/billing data is completely isolated.
+     No employee feedback data is ever accessible here.
+════════════════════════════════════════════════════════ -->
+<div class="role-panel" id="panel-owner">
+<div class="app-wrap">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo"><div class="sb-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div><div class="sb-name">Logue</div></div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-own"><div class="rb-dot"></div>Owner</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Business Health</div>
+      <button class="nav-item active" onclick="nav(&#39;own&#39;,&#39;overview&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></div>
+        Overview
+      </button>
+      <button class="nav-item" onclick="nav(&#39;own&#39;,&#39;revenue&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+        Revenue &amp; MRR
+      </button>
+      <button class="nav-item" onclick="nav(&#39;own&#39;,&#39;users&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+        Users &amp; Growth
+      </button>
+      <button class="nav-item" onclick="nav(&#39;own&#39;,&#39;billing&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div>
+        Billing &amp; Subscriptions
+      </button>
+      <button class="nav-item" onclick="nav(&#39;own&#39;,&#39;cac&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+        CAC &amp; Unit Economics
+      </button>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Platform</div>
+      <button class="nav-item" onclick="nav(&#39;own&#39;,&#39;ownsettings&#39;,this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        Platform Settings
+      </button>
+    </div>
+    <div class="sb-foot">
+      <div class="user-row">
+        <div class="user-av av-own">AO</div>
+        <div><div class="user-name">Alex Owen</div><div class="user-role">Founder &amp; Owner</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-crumb">Logue <span class="crumb-sep">›</span> <span class="crumb-cur" id="own-crumb">Business Overview</span></div>
+      <div class="topbar-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast(&#39;Downloading…&#39;)">Download Report</button>
+        <button class="btn btn-primary btn-sm" onclick="showToast(&#39;Opening billing portal…&#39;)">Billing Portal</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page active" id="own-overview">
+        <div class="page-head">
+          <h1>Business <em>Overview</em></h1>
+          <p>Platform health metrics. No employee feedback data is accessible in this view — revenue and user data are strictly separated.</p>
+        </div>
+        <div class="owner-hero">
+          <div class="owner-hero-title">Logue Platform — March 2026</div>
+          <div class="owner-hero-sub">Revenue, users, and billing metrics only. Employee feedback is kept in a separate, isolated data layer.</div>
+        </div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Monthly Recurring Revenue</div><span class="kpi-delta delta-up">+18%</span></div><div class="kpi-val">$42.8k</div><div class="kpi-meta">+$6.5k vs February</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Users</div><span class="kpi-delta delta-up">+312</span></div><div class="kpi-val">1,847</div><div class="kpi-meta">94 organisations</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Monthly Churn Rate</div><span class="kpi-delta delta-down">+0.3%</span></div><div class="kpi-val">2.1%</div><div class="kpi-meta">Industry avg: 4.7%</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Customer Acquisition Cost</div><span class="kpi-delta delta-down">-$12</span></div><div class="kpi-val">$284</div><div class="kpi-meta">Blended CAC · LTV: $1,360</div></div>
+        </div>
+        <div class="col-3-2">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">MRR Growth</div><div class="card-sub">Last 8 months</div></div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;">
+                <div><div style="font-family:var(--font-display);font-size:2.2rem;font-weight:400;color:var(--slate-900);line-height:1;">$42,840</div><div style="font-size:.67rem;color:var(--slate-400);margin-top:4px;font-weight:300;">Current MRR</div></div>
+                <span class="kpi-delta delta-up">+18% MoM</span>
+              </div>
+              <div class="spark">
+                <div class="spark-b" style="height:28%"></div><div class="spark-b" style="height:38%"></div>
+                <div class="spark-b" style="height:45%"></div><div class="spark-b" style="height:52%"></div>
+                <div class="spark-b" style="height:61%"></div><div class="spark-b" style="height:72%"></div>
+                <div class="spark-b" style="height:84%"></div><div class="spark-b hi" style="height:100%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.59rem;color:var(--slate-300);margin-top:4px;"><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="kpi mb-14"><div class="kpi-top"><div class="kpi-lbl">Annual Recurring Revenue</div><span class="kpi-delta delta-up">+21%</span></div><div class="kpi-val">$514k</div><div class="kpi-meta">Projected: $610k</div></div>
+            <div class="kpi mb-14"><div class="kpi-top"><div class="kpi-lbl">Net Revenue Retention</div><span class="kpi-delta delta-up">Top decile</span></div><div class="kpi-val">118%</div><div class="kpi-meta">Expansion positive</div></div>
+            <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">LTV / CAC Ratio</div><span class="kpi-delta delta-up">Strong</span></div><div class="kpi-val">4.8×</div><div class="kpi-meta">Payback: 8.2 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REVENUE ── -->
+      <div class="page" id="own-revenue">
+        <div class="page-head"><h1>Revenue <em>&amp; MRR</em></h1><p>Financial health of the Logue platform. Entirely isolated from employee data.</p></div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">MRR</div><span class="kpi-delta delta-up">+18%</span></div><div class="kpi-val">$42.8k</div><div class="kpi-meta">+$6.5k vs last month</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">ARR</div><span class="kpi-delta delta-up">+21%</span></div><div class="kpi-val">$514k</div><div class="kpi-meta">Projected: $610k</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">New MRR</div><span class="kpi-delta delta-up">+$8.2k</span></div><div class="kpi-val">$11.4k</div><div class="kpi-meta">From new orgs</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Churned MRR</div><span class="kpi-delta delta-flat">Low</span></div><div class="kpi-val">$890</div><div class="kpi-meta">Net expansion positive</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card"><div class="card-head"><div class="card-title">Revenue by Plan</div></div><div class="card-body">
+            <div class="pdr-row" style="margin-bottom:14px;"><div class="pdr-lbl">Enterprise</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 48%; background: var(--amber); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="color:var(--amber);font-weight:700;">$20.6k</div></div>
+            <div class="pdr-row" style="margin-bottom:14px;"><div class="pdr-lbl">Professional</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 43%; background: var(--forest-lt); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="color:var(--forest);font-weight:700;">$18.4k</div></div>
+            <div class="pdr-row"><div class="pdr-lbl">Starter</div><div class="pdr-track" style="height:8px;"><div class="pdr-fill" style="width: 9%; background: var(--slate-300); height: 100%; border-radius: 2px;"></div></div><div class="pdr-count" style="font-weight:700;">$3.8k</div></div>
+          </div></div>
+          <div class="card"><div class="card-head"><div class="card-title">Key Metrics</div></div><div class="card-body">
+            <div class="settings-row"><div><div class="sr-title">Net Revenue Retention</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--forest);">118%</div></div>
+            <div class="settings-row"><div><div class="sr-title">Avg Contract Value</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--slate-900);">$456</div></div>
+            <div class="settings-row"><div><div class="sr-title">Payback Period</div></div><div style="font-family:var(--font-display);font-size:1.3rem;color:var(--slate-900);">8.2 mo</div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ── USERS ── -->
+      <div class="page" id="own-users">
+        <div class="page-head"><h1>Users <em>&amp; Growth</em></h1><p>Platform metrics across all organisations.</p></div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Total Active Users</div><span class="kpi-delta delta-up">+312</span></div><div class="kpi-val">1,847</div><div class="kpi-meta">+20% MoM</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Orgs</div><span class="kpi-delta delta-up">+11</span></div><div class="kpi-val">94</div><div class="kpi-meta">+13% MoM</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Churn Rate</div><span class="kpi-delta delta-down">+0.3%</span></div><div class="kpi-val">2.1%</div><div class="kpi-meta">Below industry avg</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Trial Conversion</div><span class="kpi-delta delta-up">+4%</span></div><div class="kpi-val">38%</div><div class="kpi-meta">Trial-to-paid</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Growth Drivers</div></div>
+          <div class="card-body">
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">Word-of-mouth referrals driving 41% of signups</div><span class="badge badge-pos">Organic</span></div><div class="list-item-body">No paid acquisition required to hit current growth targets.</div></div>
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">Enterprise expansion = 60% of net new MRR</div><span class="badge badge-warn">Expansion</span></div><div class="list-item-body">Pro customers upgrading to Enterprise is the dominant revenue growth lever. NRR at 118%.</div></div>
+            <div class="list-item"><div class="list-item-top"><div class="list-item-title">Starter churn — onboarding gap at day 10</div><span class="badge badge-neg">Action Required</span></div><div class="list-item-body">83% of churned accounts in last 60 days were Starter with low week-2 engagement.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BILLING ── -->
+      <div class="page" id="own-billing">
+        <div class="page-head"><h1>Billing <em>&amp; Subscriptions</em></h1><p>Manage all active plans, invoices, and customer subscription status.</p></div>
+        <div class="kpi-grid g3 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Subscriptions</div><span class="kpi-delta delta-up">+11</span></div><div class="kpi-val">94</div><div class="kpi-meta">All tiers</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Renewals This Month</div><span class="kpi-delta delta-flat">On track</span></div><div class="kpi-val">18</div><div class="kpi-meta">$84.2k renewal value</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">At Risk / Overdue</div><span class="kpi-delta delta-down">+2</span></div><div class="kpi-val">3</div><div class="kpi-meta">Requires follow-up</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Active Subscriptions</div><div class="card-sub">Billing data is isolated from employee feedback</div></div><button class="btn btn-primary btn-sm" onclick="showToast(&#39;Opening portal…&#39;)">Manage in Portal</button></div>
+          <div class="card-body">
+            <table class="rev-table">
+              <thead><tr><th>Organisation</th><th>Plan</th><th>Status</th><th>Users</th><th>MRR</th><th>Next Renewal</th></tr></thead>
+              <tbody>
+                <tr><td>Nexora Inc.</td><td><span class="plan-badge plan-ent">Enterprise</span></td><td><span class="status-dot-sm dot-active"></span>Active</td><td>210</td><td>$4,620</td><td>1 Apr 2026</td></tr>
+                <tr><td>Brightfield Co.</td><td><span class="plan-badge plan-pro">Professional</span></td><td><span class="status-dot-sm dot-active"></span>Active</td><td>80</td><td>$1,760</td><td>15 Mar 2026</td></tr>
+                <tr><td>Luma Studio</td><td><span class="plan-badge plan-pro">Professional</span></td><td><span class="status-dot-sm dot-active"></span>Active</td><td>43</td><td>$946</td><td>22 Mar 2026</td></tr>
+                <tr><td>Meridian Group</td><td><span class="plan-badge plan-ent">Enterprise</span></td><td><span class="status-dot-sm dot-trial"></span>Trial</td><td>155</td><td>—</td><td>Trial ends 18 Mar</td></tr>
+                <tr><td>Foxfield Ltd.</td><td><span class="plan-badge plan-str">Starter</span></td><td><span class="status-dot-sm dot-risk"></span>At risk</td><td>12</td><td>$108</td><td>Overdue</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CAC ── -->
+      <div class="page" id="own-cac">
+        <div class="page-head"><h1>CAC <em>&amp; Unit Economics</em></h1><p>Customer acquisition cost breakdown and lifetime value analysis.</p></div>
+        <div class="kpi-grid g4 mb-22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Blended CAC</div><span class="kpi-delta delta-down">-$12</span></div><div class="kpi-val">$284</div><div class="kpi-meta">Improving MoM</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Customer LTV</div><span class="kpi-delta delta-up">+$80</span></div><div class="kpi-val">$1,360</div><div class="kpi-meta">Based on 24-month avg</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">LTV:CAC Ratio</div><span class="kpi-delta delta-up">Healthy</span></div><div class="kpi-val">4.8×</div><div class="kpi-meta">Target: &gt;3×</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Payback Period</div><span class="kpi-delta delta-up">Improving</span></div><div class="kpi-val">8.2 mo</div><div class="kpi-meta">Target: &lt;12 months</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card"><div class="card-head"><div class="card-title">CAC by Channel</div></div><div class="card-body">
+            <div class="bar-row mb-8"><div class="bar-lbl" style="width:130px;">Word of mouth</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 41%;"></div></div><div class="bar-pct" style="color:var(--forest);">41%</div></div>
+            <div class="bar-row mb-8"><div class="bar-lbl" style="width:130px;">Content / SEO</div><div class="bar-track"><div class="bar-fill fill-forest" style="width: 28%;"></div></div><div class="bar-pct" style="color:var(--forest);">28%</div></div>
+            <div class="bar-row mb-8"><div class="bar-lbl" style="width:130px;">Paid search</div><div class="bar-track"><div class="bar-fill fill-amber" style="width: 18%;"></div></div><div class="bar-pct" style="color:var(--amber);">18%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:130px;">Direct / Other</div><div class="bar-track"><div class="bar-fill" style="width: 13%; background: var(--slate-300);"></div></div><div class="bar-pct">13%</div></div>
+          </div></div>
+          <div class="card"><div class="card-head"><div class="card-title">LTV by Plan</div></div><div class="card-body">
+            <div class="settings-row"><div><div class="sr-title">Enterprise</div><div class="sr-sub">Avg 36-month retention</div></div><div style="font-family:var(--font-display);font-size:1.2rem;color:var(--amber);">$8,640</div></div>
+            <div class="settings-row"><div><div class="sr-title">Professional</div><div class="sr-sub">Avg 24-month retention</div></div><div style="font-family:var(--font-display);font-size:1.2rem;color:var(--forest);">$1,584</div></div>
+            <div class="settings-row"><div><div class="sr-title">Starter</div><div class="sr-sub">Avg 10-month retention</div></div><div style="font-family:var(--font-display);font-size:1.2rem;color:var(--slate-500);">$700</div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ── OWNER SETTINGS ── -->
+      <div class="page" id="own-ownsettings">
+        <div class="page-head"><h1>Platform <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-layout">
+            <div class="s-nav"><button class="s-item active" onclick="sTab(this)">Security</button><button class="s-item" onclick="sTab(this)">Data Policy</button><button class="s-item" onclick="sTab(this)">Integrations</button></div>
+            <div>
+              <div class="settings-row"><div><div class="sr-title">Platform-wide anonymisation enforced</div><div class="sr-sub">No dashboard can surface individual employee data</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Owner ↔ Manager data wall</div><div class="sr-sub">Revenue metrics never accessible in manager or employee views</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">Two-factor authentication required</div><div class="sr-sub">All admin and owner accounts</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              <div class="settings-row"><div><div class="sr-title">GDPR data retention (12 months)</div><div class="sr-sub">Auto-delete anonymised entries older than 12 months</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /panel-owner -->
+
+
+<!-- ═══════════════════════════════ MODALS ══════════════════════════════ -->
+
+<!-- Pro Modal -->
+<div class="overlay" id="pro-modal">
+  <div class="modal modal-sm">
+    <div class="modal-icon" style="background:var(--sage-tint);color:var(--forest);"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+    <div class="modal-title">Logue Enterprise</div>
+    <div class="modal-body">Your organisation is currently on the <strong>Enterprise Plan</strong>.<br><br>All premium features — AI synthesis, team pulse reports, executive summaries, smart alerts, and advanced analytics — are fully unlocked and managed by your administrator.<br><br>To discuss your plan, contact your Logue account manager.</div>
+    <button class="btn btn-primary btn-full" onclick="closeModal(&#39;pro-modal&#39;)">Understood</button>
+  </div>
+</div>
+
+<!-- Voice Modal -->
+<div class="overlay" id="voice-modal">
+  <div class="modal modal-sm">
+    <div class="voice-ring" id="v-ring">
+      <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+    </div>
+    <div class="modal-title" id="v-title">Voice Entry</div>
+    <div class="modal-body" id="v-sub" style="margin-bottom:0;">Press Record to begin. Logue AI transcribes your speech into your journal.</div>
+    <div class="waveform" id="v-wave">
+      <div class="wv"></div><div class="wv"></div><div class="wv"></div><div class="wv"></div><div class="wv"></div>
+      <div class="wv"></div><div class="wv"></div><div class="wv"></div><div class="wv"></div>
+    </div>
+    <div class="voice-timer" id="v-timer">0:00</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeVoice()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;" id="v-btn" onclick="toggleVoice()">Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="toast-txt"></span></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   LOGUE v3 — APPLICATION LOGIC
+   
+   ARCHITECTURE & DATA SEPARATION:
+   ─────────────────────────────────
+   employeeStore  → Holds journal entries, suggestions, votes
+                    Feeds ONLY into manager aggregated analytics
+                    Individual entries NEVER sent to manager views
+   
+   managerStore   → Derived aggregates only. No raw entries.
+                    Patterns, themes, sentiment %s, trend data.
+   
+   ownerStore     → Revenue, billing, user counts.
+                    Completely isolated. Never touches employee data.
+   
+   PRIVACY MODEL:
+   ─────────────────────────────────
+   private   → Only the employee sees it. Excluded from all analysis.
+   anonymous → Included in AI analysis. No name/identifier ever stored.
+   share     → Included in analysis. Manager can see it came from
+               "a team member" but still no name unless employee sets one.
+   
+   ROLE-BASED ACCESS:
+   ─────────────────────────────────
+   employee  → Journal, history, goals, suggestions, settings
+   manager   → Aggregated pulse, sentiment, trends, alerts, suggestions mgr view
+   owner     → Revenue, users, billing, CAC metrics ONLY
+   
+   In production: enforce via server-side session/JWT + row-level DB security.
+   Revenue data served from a separate API endpoint with owner-only auth.
+═══════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────
+   DATA STORES (in production: replace with
+   API calls to your backend + database)
+────────────────────────────────────────── */
+
+/**
+ * employeeStore — all employee-generated content.
+ * In production: PostgreSQL table `journal_entries`
+ * with columns: id, user_id (FK), org_id (FK),
+ * content (encrypted at rest), tags[], privacy_level,
+ * mood, productivity, department, created_at, is_deleted
+ */
+const employeeStore = {
+  entries: [],          // Raw journal entries
+  privacyMode: 'anonymous', // Current session privacy selection
+
+  addEntry(entry) {
+    const e = {
+      id: Date.now(),
+      ...entry,
+      timestamp: new Date().toISOString(),
+      // Never store name if anonymous
+      author: entry.privacy === 'private' || entry.privacy === 'anonymous' ? null : 'Jamie Rivera'
+    };
+    this.entries.push(e);
+    return e;
+  },
+
+  // Returns only entries the current employee authored
+  getMyEntries() {
+    return [...this.entries].reverse();
+  }
+};
+
+/**
+ * suggestionsStore — employee suggestions + votes.
+ * In production: PostgreSQL table `suggestions`
+ * with columns: id, org_id, title, body, is_anonymous,
+ * author_id (null if anon), votes, status, created_at
+ */
+const suggestionsStore = {
+  items: [
+    { id: 1, title: 'Flexible work hours — 7–10am start window', body: 'Allow employees to choose start time within a 3-hour window. Trust-based output model. Many team members have mentioned commute stress in journal entries.', votes: 42, voted: false, status: 'review', tags: ['Flexibility'], anon: true, date: '12 Feb 2026' },
+    { id: 2, title: 'Better onboarding for new tools before rollout', body: 'Before company-wide tool changes, provide a 2-week training period with optional hands-on sessions. Would have prevented the shared drive confusion we\'re currently experiencing.', votes: 38, voted: false, status: 'planned', tags: ['Training', 'Tools'], anon: true, date: '28 Jan 2026' },
+    { id: 3, title: 'Monthly all-hands Q&A with leadership', body: 'A 30-minute open Q&A session with senior leadership each month would improve communication transparency. Anonymous question submission option requested.', votes: 31, voted: false, status: 'open', tags: ['Culture', 'Communication'], anon: false, date: '3 Feb 2026' },
+    { id: 4, title: 'Dedicated focus time — no meetings before 10am', body: 'Block meetings before 10am company-wide. Survey data from async standup showed 67% of employees want protected morning focus time.', votes: 27, voted: false, status: 'open', tags: ['Flexibility', 'Process'], anon: true, date: '19 Feb 2026' },
+    { id: 5, title: 'Peer recognition micro-awards (monthly)', body: 'A lightweight peer-to-peer recognition system. Nominees proposed by team, winner announced at all-hands. No cash required — just visibility and appreciation.', votes: 19, voted: false, status: 'open', tags: ['Culture'], anon: false, date: '25 Feb 2026' }
+  ],
+  nextId: 6,
+
+  add(item) {
+    this.items.unshift({ id: this.nextId++, votes: 0, voted: false, status: 'open', date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }), ...item });
+  },
+
+  vote(id) {
+    const item = this.items.find(i => i.id === id);
+    if (!item) return;
+    if (item.voted) { item.votes--; item.voted = false; }
+    else { item.votes++; item.voted = true; }
+    return item;
+  },
+
+  getSorted() {
+    return [...this.items].sort((a, b) => b.votes - a.votes);
+  }
+};
+
+/**
+ * ownerStore — business metrics ONLY.
+ * Completely isolated from employee data.
+ * In production: served from a separate /api/owner/* 
+ * endpoint that requires owner-level JWT token.
+ * Never joined with journal_entries table.
+ */
+const ownerStore = {
+  mrr: 42840, arr: 514000, churn: 2.1, cac: 284,
+  activeOrgs: 94, activeUsers: 1847, nrr: 118, ltv: 1360
+};
+
+/* Current privacy selection */
+let currentPrivacy = 'anonymous';
+let currentMood = 'Good';
+
+/* ──────────────────────────────────────────
+   ROLE SWITCHING
+   Switches between the three completely
+   separate panel instances.
+────────────────────────────────────────── */
+function switchRole(role, btn) {
+  document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + role).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ──────────────────────────────────────────
+   PAGE NAVIGATION
+   Each role panel has its own independent
+   page navigation system.
+────────────────────────────────────────── */
+
+/** Page ID → breadcrumb label map */
+const PAGE_LABELS = {
+  journal: 'Daily Journal', history: 'My History', goals: 'Personal Goals',
+  suggestions: 'Suggestions', settings: 'Settings',
+  pulse: 'Team Pulse', sentiment: 'Sentiment Analysis', trends: 'Workplace Trends',
+  alerts: 'Smart Alerts', 'suggestions-mgr': 'Employee Suggestions',
+  exec: 'Executive Summary', msettings: 'Settings',
+  overview: 'Business Overview', revenue: 'Revenue & MRR', users: 'Users & Growth',
+  billing: 'Billing & Subscriptions', cac: 'CAC & Unit Economics', ownsettings: 'Platform Settings'
+};
+
+function nav(role, pageKey, el) {
+  // Determine panel prefix and crumb element
+  const prefixMap = { emp: 'emp', mgr: 'mgr', own: 'own' };
+  const panelMap  = { emp: 'employee', mgr: 'manager', own: 'owner' };
+  const prefix  = prefixMap[role];
+  const panelEl = document.getElementById('panel-' + panelMap[role]);
+
+  // Deactivate all pages and nav items in this panel
+  panelEl.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  panelEl.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // Activate target page and nav item
+  const pageEl = document.getElementById(prefix + '-' + pageKey);
+  if (pageEl) pageEl.classList.add('active');
+  if (el) el.classList.add('active');
+
+  // Update breadcrumb
+  const crumbEl = document.getElementById(prefix + '-crumb');
+  if (crumbEl) crumbEl.textContent = PAGE_LABELS[pageKey] || pageKey;
+
+  window.scrollTo(0, 0);
+}
+
+/* ──────────────────────────────────────────
+   JOURNAL HELPERS
+────────────────────────────────────────── */
+
+/** Toggle a topic tag on/off */
+function toggleTag(el) {
+  el.classList.toggle('on');
+}
+
+/** Select privacy level — mutually exclusive */
+function selectPrivacy(el, mode) {
+  document.querySelectorAll('.priv-opt').forEach(o => o.classList.remove('on'));
+  el.classList.add('on');
+  currentPrivacy = mode;
+}
+
+/** Select mood — mutually exclusive */
+function pickMood(btn, mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.style.borderColor = 'var(--slate-100)';
+    b.style.background  = 'var(--slate-50)';
+    b.classList.remove('active');
+  });
+  btn.style.borderColor = 'var(--sage)';
+  btn.style.background  = 'var(--sage-tint)';
+  btn.classList.add('active');
+  currentMood = mood;
+}
+
+/** Settings tab switcher */
+function sTab(el) {
+  const nav = el.closest('.settings-layout').querySelector('.s-nav');
+  nav.querySelectorAll('.s-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ──────────────────────────────────────────
+   AI JOURNAL ANALYSIS
+   
+   Calls Anthropic Claude API with a structured
+   prompt. Extracts sentiment, theme, and action.
+   
+   SECURITY NOTE for production:
+   - NEVER call the API directly from the browser
+   - API key must live on your server (Node.js/Python)
+   - Create a POST /api/analyse endpoint that:
+     1. Validates user session
+     2. Strips any PII from text before sending
+     3. Calls Claude API server-side
+     4. Returns only the structured analysis
+     5. Stores result with NO direct link to user if anonymous
+────────────────────────────────────────── */
+async function runAI() {
+  const text  = document.getElementById('journal-text').value.trim();
+  const prod  = document.getElementById('prod-slider').value;
+  const tags  = [...document.querySelectorAll('#topic-tags .tag-opt.on')].map(t => t.textContent).join(', ');
+
+  if (!text) { showToast('Please write something before submitting'); return; }
+
+  // Store the entry (anonymised if applicable)
+  employeeStore.addEntry({
+    text,
+    mood: currentMood,
+    productivity: prod,
+    tags: tags || 'None',
+    privacy: currentPrivacy,
+    department: document.querySelector('#emp-journal select')?.value || 'Marketing'
+  });
+
+  // Show the AI panel with loading state
+  const panel   = document.getElementById('ai-panel');
+  const loading = document.getElementById('ai-loading');
+  const body    = document.getElementById('ai-body');
+  const meta    = document.getElementById('ai-meta');
+
+  panel.classList.add('open');
+  loading.style.display = 'flex';
+  body.style.display    = 'none';
+  meta.style.display    = 'none';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  /* 
+   * Structured prompt asking Claude for a 4-section personal insight.
+   * The META line gives us machine-readable sentiment data.
+   * In production: this call happens server-side.
+   */
+  const prompt = `You are Logue AI, a sophisticated and empathetic workplace intelligence assistant.
+
+An employee has submitted their daily work journal:
+TEXT: ${text}
+MOOD: ${currentMood}
+PRODUCTIVITY: ${prod}/10
+TOPICS TAGGED: ${tags || 'None selected'}
+PRIVACY: ${currentPrivacy}
+
+Write a structured personal synthesis in exactly four sections, separated by the literal text [SECTION]:
+
+Section 1 (2 sentences): Acknowledge a specific, genuine strength or win from their entry. Be concrete and precise — reference what they actually wrote.
+Section 2 (2 sentences): Identify the primary friction or challenge. Name the pattern in <strong>bold tags</strong>. Briefly explain the root cause professionally.
+Section 3 (2 sentences): Begin with exactly "Tomorrow's Recommended Action" as the first line. Then one concrete, immediately actionable step to address the friction.
+Section 4 (1 sentence): A grounded, warm closing that is direct and professional. Avoid motivational clichés.
+
+Then on a new line, output exactly:
+META: [Sentiment: Positive|Neutral|Negative] [Theme: 2-3 words] [Impact: High|Medium|Low] [Focus: 2-3 words]
+
+Rules: No bullet points. Flowing prose. Executive tone. Warm but not patronising.`;
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // In production: this header is set server-side, never in browser JS
+        // 'x-api-key': 'YOUR_KEY_HERE',
+        // 'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data   = await res.json();
+    const rawText = data.content?.map(b => b.text || '').join('') || '';
+
+    // Parse META line
+    const metaMatch = rawText.match(/META:\s*\[Sentiment:\s*([^\]]+)\]\s*\[Theme:\s*([^\]]+)\]\s*\[Impact:\s*([^\]]+)\]\s*\[Focus:\s*([^\]]+)\]/i);
+    const mainText  = rawText.replace(/META:.*$/s, '').trim();
+
+    // Split into sections and render
+    const sections = mainText.split('[SECTION]').map(s => s.trim()).filter(Boolean);
+    let html = '';
+    sections.forEach(s => {
+      const lines = s.split('\n').map(l => l.trim()).filter(Boolean);
+      if (lines[0]?.toLowerCase().includes("tomorrow")) {
+        html += `<div class="ai-action-lbl">${lines[0]}</div><p>${lines.slice(1).join(' ')}</p>`;
+      } else {
+        html += `<p>${s}</p>`;
+      }
+    });
+
+    loading.style.display = 'none';
+    body.innerHTML = html || '<p>Your entry has been recorded and anonymised.</p>';
+    body.style.display = 'block';
+
+    if (metaMatch) {
+      document.getElementById('m-sentiment').textContent = metaMatch[1];
+      document.getElementById('m-theme').textContent     = metaMatch[2];
+      document.getElementById('m-impact').textContent    = metaMatch[3];
+      document.getElementById('m-focus').textContent     = metaMatch[4];
+      meta.style.display = 'flex';
+    }
+
+    showToast('Entry submitted and anonymised');
+
+  } catch (err) {
+    // Graceful degradation — entry still saved, AI unavailable
+    loading.style.display = 'none';
+    body.innerHTML = `<p style="color:var(--slate-400);">Your entry has been recorded and anonymised for team analysis. AI synthesis is currently unavailable — your data is safe and will be included in the next manager report.</p>`;
+    body.style.display = 'block';
+    showToast('Entry saved — AI synthesis unavailable');
+  }
+}
+
+/* ──────────────────────────────────────────
+   VOICE RECORDING
+   
+   Integration point for Speech-to-Text.
+   Currently uses a placeholder simulation.
+   
+   To integrate real transcription:
+   Option A — Web Speech API (free, browser-native):
+     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+     recognition.continuous = true;
+     recognition.onresult = (e) => { transcribedText += e.results[...][0].transcript; }
+     recognition.start();
+   
+   Option B — OpenAI Whisper API (server-side):
+     Send audio blob to POST /api/transcribe
+     which calls OpenAI /v1/audio/transcriptions
+   
+   Option C — Deepgram (real-time streaming):
+     ws://api.deepgram.com with streaming audio
+────────────────────────────────────────── */
+let voiceActive = false;
+let voiceSecs   = 0;
+let voiceTimer  = null;
+
+function openVoice() {
+  document.getElementById('voice-modal').classList.add('open');
+  resetVoice();
+}
+
+function closeVoice() {
+  stopVoiceRec();
+  document.getElementById('voice-modal').classList.remove('open');
+}
+
+function resetVoice() {
+  voiceActive = false; voiceSecs = 0;
+  document.getElementById('v-timer').textContent = '0:00';
+  document.getElementById('v-title').textContent = 'Voice Entry';
+  document.getElementById('v-sub').textContent   = 'Press Record to begin. Logue AI transcribes your speech into your journal.';
+  document.getElementById('v-ring').classList.remove('recording');
+  document.getElementById('v-wave').classList.remove('active');
+  const btn = document.getElementById('v-btn');
+  btn.textContent  = 'Record';
+  btn.className    = 'btn btn-primary';
+}
+
+function toggleVoice() {
+  voiceActive ? stopAndTranscribe() : startVoiceRec();
+}
+
+function startVoiceRec() {
+  voiceActive = true;
+  document.getElementById('v-ring').classList.add('recording');
+  document.getElementById('v-wave').classList.add('active');
+  document.getElementById('v-title').textContent = 'Recording…';
+  document.getElementById('v-sub').textContent   = 'Speak clearly. Press Stop when finished.';
+  const btn = document.getElementById('v-btn');
+  btn.textContent = 'Stop';
+  btn.className   = 'btn btn-danger';
+  voiceTimer = setInterval(() => {
+    voiceSecs++;
+    const m = Math.floor(voiceSecs / 60);
+    const s = voiceSecs % 60;
+    document.getElementById('v-timer').textContent = `${m}:${String(s).padStart(2, '0')}`;
+  }, 1000);
+}
+
+function stopVoiceRec() {
+  voiceActive = false;
+  clearInterval(voiceTimer);
+}
+
+function stopAndTranscribe() {
+  stopVoiceRec();
+  document.getElementById('v-title').textContent = 'Transcribing…';
+  document.getElementById('v-sub').textContent   = 'Converting speech to text…';
+  document.getElementById('v-ring').classList.remove('recording');
+  document.getElementById('v-wave').classList.remove('active');
+  document.getElementById('v-btn').disabled = true;
+  document.getElementById('v-btn').textContent = 'Processing…';
+  // Simulate API latency — replace this with real STT API call
+  setTimeout(applyTranscription, 1500);
+}
+
+function applyTranscription() {
+  /* PLACEHOLDER — in production replace with:
+     const text = await callWhisperAPI(audioBlob);
+     document.getElementById('journal-text').value += '\n' + text;
+  */
+  const sample = "The morning standup ran over again — it could easily be cut to 15 minutes with async status updates in Slack. Couldn't find the Q1 assets folder for the third time this week, had to ask two colleagues before locating it.";
+  const ta = document.getElementById('journal-text');
+  ta.value = (ta.value ? ta.value + '\n\n' : '') + sample;
+  closeVoice();
+  showToast('Voice entry transcribed');
+}
+
+/* ──────────────────────────────────────────
+   SUGGESTIONS SYSTEM
+   
+   Renders suggestion cards for both
+   employee view (vote-focused) and
+   manager view (status management).
+   
+   In production:
+   - POST /api/suggestions → create
+   - POST /api/suggestions/:id/vote → toggle vote
+   - GET  /api/suggestions?sort=votes → list
+   - PATCH /api/suggestions/:id/status (manager only)
+────────────────────────────────────────── */
+
+/** Render employee-facing suggestion list */
+function renderSuggestions() {
+  const container = document.getElementById('suggestions-list');
+  if (!container) return;
+  const items = suggestionsStore.getSorted();
+
+  container.innerHTML = items.map(s => `
+    <div class="suggestion-card" id="scard-${s.id}">
+      <div class="vote-box">
+        <button class="vote-btn ${s.voted ? 'voted' : ''}" onclick="castVote(${s.id})" title="${s.voted ? 'Remove vote' : 'Upvote'}">
+          <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+        <div class="vote-count" id="vc-${s.id}">${s.votes}</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">${escHtml(s.title)}</div>
+        <div class="sug-desc">${escHtml(s.body)}</div>
+        <div class="sug-meta">
+          <span class="sug-status ${statusClass(s.status)}">${s.status}</span>
+          <span>${s.anon ? 'Anonymous' : 'Named'}</span>
+          <span>${s.date}</span>
+          ${s.tags ? s.tags.map(t => `<span class="chip chip-s">${t}</span>`).join('') : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/** Render manager-facing suggestion list */
+function renderManagerSuggestions() {
+  const container = document.getElementById('mgr-suggestions-list');
+  if (!container) return;
+  const items = suggestionsStore.getSorted();
+
+  container.innerHTML = items.map(s => `
+    <div class="suggestion-card" id="mscard-${s.id}">
+      <div class="vote-box">
+        <div class="vote-count">${s.votes}</div>
+        <div class="vote-lbl">votes</div>
+      </div>
+      <div class="sug-body">
+        <div class="sug-title">${escHtml(s.title)}</div>
+        <div class="sug-desc">${escHtml(s.body)}</div>
+        <div class="sug-meta">
+          <span class="sug-status ${statusClass(s.status)}">${s.status}</span>
+          <span>${s.anon ? 'Anonymous submission' : 'Named submission'}</span>
+          <span>${s.date}</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(${s.id},'open')">Open</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(${s.id},'review')">Under Review</button>
+          <button class="btn btn-ghost btn-xs" onclick="setSugStatus(${s.id},'planned')">Planned</button>
+          <button class="btn btn-primary btn-xs" onclick="setSugStatus(${s.id},'done')">Mark Done</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function castVote(id) {
+  const item = suggestionsStore.vote(id);
+  if (!item) return;
+  document.getElementById(`vc-${id}`).textContent = item.votes;
+  const btn = document.querySelector(`#scard-${id} .vote-btn`);
+  if (btn) btn.classList.toggle('voted', item.voted);
+  showToast(item.voted ? 'Vote recorded' : 'Vote removed');
+}
+
+function setSugStatus(id, status) {
+  const item = suggestionsStore.items.find(i => i.id === id);
+  if (item) { item.status = status; renderManagerSuggestions(); showToast(`Status updated to "${status}"`); }
+}
+
+function submitSuggestion() {
+  const title = document.getElementById('sug-title-input').value.trim();
+  const body  = document.getElementById('sug-body-input').value.trim();
+  const anon  = document.getElementById('sug-anon').checked;
+
+  if (!title) { showToast('Please add a title for your suggestion'); return; }
+
+  suggestionsStore.add({ title, body: body || '—', anon, tags: [] });
+  document.getElementById('sug-title-input').value = '';
+  document.getElementById('sug-body-input').value  = '';
+
+  renderSuggestions();
+  renderManagerSuggestions();
+  showToast('Suggestion submitted' + (anon ? ' anonymously' : ''));
+}
+
+function statusClass(s) {
+  return { open: 'status-open', review: 'status-review', planned: 'status-planned', done: 'status-done' }[s] || 'status-open';
+}
+
+/* ──────────────────────────────────────────
+   TREND CHARTS
+   Pure CSS bar charts rendered with JS.
+   In production: replace with Chart.js,
+   Recharts, or D3 for interactive charts.
+────────────────────────────────────────── */
+
+/**
+ * @param {string} containerId - DOM element id
+ * @param {number[]} values    - 0–100 percentage values
+ * @param {'grn'|'amb'|'red'} type - colour theme
+ */
+function buildTrendChart(containerId, values, type) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = values.map(v => {
+    // Determine bar class based on value and type
+    let cls = 'tc-grn';
+    if (type === 'red' || (type === 'auto' && v < 65)) cls = 'tc-red';
+    else if (type === 'amb' || (type === 'auto' && v < 75)) cls = 'tc-amb';
+    return `<div class="tc-bar ${cls}" style="height:${v}%;flex:1;border-radius:2px 2px 0 0;transition:height .8s ease;"></div>`;
+  }).join('');
+}
+
+/* ──────────────────────────────────────────
+   MODALS
+────────────────────────────────────────── */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+// Close overlay on background click
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+/* ──────────────────────────────────────────
+   UTILITIES
+────────────────────────────────────────── */
+
+/** Escape HTML to prevent XSS */
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/** Toast notification */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-txt').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/** Animate bar fills from 0 to target width */
+function animateBars() {
+  document.querySelectorAll('.bar-fill, .pdr-fill').forEach(el => {
+    const w = el.style.width;
+    el.style.width = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => { el.style.width = w; }));
+  });
+}
+
+/* ──────────────────────────────────────────
+   INIT — run on page load
+────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Render suggestion lists
+  renderSuggestions();
+  renderManagerSuggestions();
+
+  // Build trend charts
+  // Morale: declining from Oct to Mar
+  buildTrendChart('morale-chart',  [72, 71, 69, 68, 64, 61], 'auto');
+  // Comms: also declining
+  buildTrendChart('comms-chart',   [78, 76, 72, 70, 67, 64], 'auto');
+  // Engagement: stable/improving
+  buildTrendChart('engage-chart',  [82, 83, 84, 86, 87, 89], 'grn');
+  // Stress: rising (higher = worse, shown in red)
+  buildTrendChart('stress-chart',  [18, 20, 22, 25, 28, 31], 'red');
+
+  // Animate bar fills after a short delay
+  setTimeout(animateBars, 400);
+
+  // Productivity slider label
+  const slider = document.getElementById('prod-slider');
+  if (slider) {
+    slider.addEventListener('input', () => {
+      document.getElementById('prod-val').textContent = slider.value;
+    });
+  }
+});
+
+</script>
+
+
+</body></html>
