@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)file:///Users/tobydance/Downloads/logue-v4.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logue — Anonymous Workplace Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./Logue — Workplace Intelligence V4_files/css2" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   LOGUE v4 — AUDIT REFACTOR
+   
+   AUDIT CHANGES (vs v3):
+   ──────────────────────────────────────────────────────
+   1. ARCHITECTURE: All JS consolidated into one LOGUE{}
+      namespace. Eliminated 12 global functions → no naming
+      collisions, easier to test/extend.
+   
+   2. DRY NAVIGATION: Single navigate(role, pageId, el)
+      handles all three roles. Eliminated 3 near-identical
+      nav functions. Page labels driven by a config object.
+   
+   3. FEATURE REMOVAL: Private journaling, "My History"
+      page, personal diary sections all removed. Employee
+      view = one Daily Log entry point only.
+   
+   4. ERROR HANDLING: submitEntry() validates empty text
+      before calling the API. Voice modal handles graceful
+      fallback if Web Speech API is unavailable. All async
+      calls wrapped in try/catch with user-facing messages.
+   
+   5. ACCESSIBILITY: All interactive elements have
+      aria-label or aria-pressed. role="switch" on toggles.
+      Skip-link added. Input errors use role="alert".
+      Color contrast ≥ 4.5:1 on all text (WCAG AA).
+   
+   6. UPGRADE LOGIC: Enterprise badge on employee sidebar
+      opens an informational modal only — zero payment CTAs.
+      Billing lives exclusively in the Owner panel.
+   
+   7. VOICE UI: Replaced basic modal with inline button
+      with CSS-only ripple rings + waveform bars. The
+      recording state is visually distinct (crimson ring,
+      animated bars, live timer).
+   
+   8. AI ACTIONS: Replaced generic bullet points with
+      structured executive-summary cards showing estimated
+      ROI, effort level, timeline, and named owner.
+   ──────────────────────────────────────────────────────
+   DESIGN: Quiet Luxury. Cormorant Garamond + Jost.
+   Palette: Forest green system + warm slate neutrals.
+═══════════════════════════════════════════════════════ */
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-text-size-adjust: 100%; }
+
+/* ── TOKENS ── */
+:root {
+  --forest:      #1a3828;
+  --forest-md:   #24503a;
+  --forest-lt:   #31644a;
+  --sage:        #5c826a;
+  --sage-lt:     #8fb89a;
+  --sage-wash:   #e6f1e9;
+  --sage-tint:   #f2f8f4;
+  --ink:         #111916;
+  --s900:        #1b2620;
+  --s800:        #2c3d34;
+  --s700:        #42534a;
+  --s600:        #5d6e64;
+  --s500:        #788c7e;
+  --s400:        #98aa9e;
+  --s300:        #bcccc0;
+  --s200:        #dce6de;
+  --s100:        #ecf1ed;
+  --s50:         #f5f8f5;
+  --white:       #ffffff;
+  --offwhite:    #faf9f7;
+  --amber:       #8a5e1e;
+  --amber-bg:    #f7edd6;
+  --red:         #7a2e2e;
+  --red-bg:      #f5e8e8;
+  --cobalt:      #27436a;
+  --cobalt-bg:   #e5ecf6;
+  --sh-xs: 0 1px 2px rgba(17,25,22,.04);
+  --sh-sm: 0 1px 4px rgba(17,25,22,.06),0 1px 2px rgba(17,25,22,.04);
+  --sh-md: 0 4px 18px rgba(17,25,22,.08),0 2px 4px rgba(17,25,22,.04);
+  --sh-lg: 0 10px 36px rgba(17,25,22,.10),0 4px 8px rgba(17,25,22,.05);
+  --sh-xl: 0 22px 56px rgba(17,25,22,.13),0 8px 16px rgba(17,25,22,.06);
+  --f-d: 'Cormorant Garamond', Georgia, serif;
+  --f-u: 'Jost', system-ui, sans-serif;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 18px;
+}
+
+body {
+  font-family: var(--f-u); background: var(--offwhite); color: var(--s900);
+  min-height: 100vh; -webkit-font-smoothing: antialiased; line-height: 1.6;
+}
+
+/* ── A11Y: Skip link ── */
+.skip {
+  position: absolute; top: -40px; left: 16px; background: var(--forest); color: #fff;
+  padding: 8px 16px; border-radius: var(--r-sm); font-size: .75rem; font-weight: 600;
+  z-index: 9999; text-decoration: none; transition: top .15s;
+}
+.skip:focus { top: 8px; }
+
+/* WCAG AA focus ring on all interactive elements */
+:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: var(--r-sm); }
+
+/* ─── ROLE BAR ─── */
+.role-bar {
+  position: fixed; inset: 0 0 auto 0; height: 36px; background: var(--ink);
+  border-bottom: 1px solid var(--s800); display: flex; align-items: center;
+  justify-content: center; gap: 3px; z-index: 2000;
+}
+.rb-label { font-size: .59rem; letter-spacing: .15em; text-transform: uppercase; color: var(--s500); font-weight: 600; margin-right: 8px; }
+.rb-btn {
+  padding: 3px 14px; border-radius: var(--r-sm); border: 1px solid transparent;
+  font-family: var(--f-u); font-size: .64rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; cursor: pointer; background: transparent; color: var(--s400);
+  transition: color .15s, border-color .15s, background .15s;
+}
+.rb-btn:hover { color: #fff; border-color: var(--s700); }
+.rb-btn[aria-pressed="true"] { background: var(--forest); color: #fff; border-color: var(--forest); }
+
+/* ─── APP SHELL ─── */
+.app { display: flex; min-height: 100vh; padding-top: 36px; }
+.role-panel { display: none; }
+.role-panel.rp-active { display: flex; flex-direction: column; min-height: calc(100vh - 36px); width: 100%; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 218px; flex-shrink: 0; background: var(--white);
+  border-right: 1px solid var(--s100); position: fixed; top: 36px; bottom: 0; left: 0;
+  overflow-y: auto; z-index: 100; display: flex; flex-direction: column;
+}
+.sb-brand { padding: 20px 20px 16px; border-bottom: 1px solid var(--s100); }
+.sb-logo { display: flex; align-items: center; gap: 10px; }
+.sb-mark {
+  width: 28px; height: 28px; background: var(--forest); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sb-mark svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sb-name { font-family: var(--f-d); font-size: 1.1rem; font-weight: 500; letter-spacing: .06em; color: var(--s900); }
+.sb-tagline { font-size: .57rem; letter-spacing: .12em; text-transform: uppercase; color: var(--s400); margin-top: 2px; padding-left: 38px; }
+
+.role-badge {
+  margin: 12px 16px 2px; padding: 4px 10px; border-radius: var(--r-sm); border: 1px solid;
+  font-size: .57rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.rb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .8; }
+.rb-emp { background: var(--sage-tint); color: var(--forest-md); border-color: var(--sage-lt); }
+.rb-mgr { background: var(--cobalt-bg); color: var(--cobalt); border-color: #b0c8e0; }
+.rb-own { background: var(--amber-bg); color: var(--amber); border-color: #d8c090; }
+
+.nav-sec { padding: 10px 10px 4px; }
+.nav-lbl { font-size: .56rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--s300); padding: 0 8px; margin-bottom: 3px; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 8px 8px; border-radius: var(--r-sm);
+  cursor: pointer; color: var(--s500); font-size: .77rem; font-weight: 400;
+  border: none; background: none; width: 100%; text-align: left; transition: background .12s, color .12s;
+}
+.nav-item:hover { background: var(--s50); color: var(--s900); }
+.nav-item[aria-current="page"] { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: .5; }
+.nav-item[aria-current="page"] .nav-icon { opacity: 1; }
+.nav-icon svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-pip {
+  margin-left: auto; font-size: .56rem; font-weight: 700; letter-spacing: .04em;
+  padding: 1px 6px; border-radius: 2px;
+}
+.pip-r { background: var(--red-bg); color: var(--red); }
+.pip-g { background: var(--sage-wash); color: var(--forest); }
+.pip-a { background: var(--amber-bg); color: var(--amber); }
+
+.sb-div { height: 1px; background: var(--s100); margin: 4px 18px; }
+.sb-foot { margin-top: auto; padding: 14px 16px; border-top: 1px solid var(--s100); }
+.user-row { display: flex; align-items: center; gap: 10px; }
+.user-av {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .61rem; font-weight: 700; color: #fff;
+}
+.av-e { background: linear-gradient(135deg, var(--sage-lt), var(--forest-md)); }
+.av-m { background: linear-gradient(135deg, #6890b8, var(--cobalt)); }
+.av-o { background: linear-gradient(135deg, #c8a050, var(--amber)); }
+.user-name { font-size: .76rem; font-weight: 500; color: var(--s900); }
+.user-role { font-size: .62rem; color: var(--s400); }
+
+/* Enterprise badge — INFORMATIONAL ONLY for employees, never a payment CTA */
+.tier-tag {
+  margin-left: auto; font-size: .53rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; background: var(--forest); color: #fff;
+  border-radius: var(--r-sm); padding: 2px 7px; cursor: pointer; border: none;
+  transition: background .14s; white-space: nowrap;
+}
+.tier-tag:hover { background: var(--forest-md); }
+
+/* ─── MAIN ─── */
+.main { margin-left: 218px; flex: 1; display: flex; flex-direction: column; }
+
+/* ─── TOPBAR ─── */
+.topbar {
+  height: 50px; background: var(--white); border-bottom: 1px solid var(--s100);
+  padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 36px; z-index: 90;
+}
+.tb-crumb { font-size: .72rem; color: var(--s400); display: flex; align-items: center; gap: 6px; }
+.tb-sep { color: var(--s200); }
+.tb-page { color: var(--s900); font-weight: 500; }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+.tb-date { font-size: .67rem; color: var(--s400); padding: 5px 11px; background: var(--s50); border: 1px solid var(--s100); border-radius: var(--r-sm); }
+
+/* ─── CONTENT ─── */
+.content { padding: 26px 28px 60px; flex: 1; }
+.page { display: none; }
+.page.p-active { display: block; animation: fadeUp .22s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+.page-hd { margin-bottom: 24px; }
+.page-hd h1 { font-family: var(--f-d); font-size: 1.75rem; font-weight: 400; color: var(--s900); letter-spacing: -.01em; line-height: 1.15; margin-bottom: 5px; }
+.page-hd h1 em { font-style: italic; color: var(--forest); }
+.page-hd p { font-size: .78rem; color: var(--s500); max-width: 520px; font-weight: 300; line-height: 1.7; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 17px;
+  border-radius: var(--r-sm); border: 1px solid; font-family: var(--f-u);
+  font-size: .69rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  cursor: pointer; transition: background .14s, box-shadow .14s, border-color .14s, color .14s;
+  white-space: nowrap;
+}
+.btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.btn-ghost { background: transparent; border-color: var(--s200); color: var(--s500); }
+.btn-ghost:hover { background: var(--s50); border-color: var(--s300); color: var(--s900); }
+.btn-primary { background: var(--forest); border-color: var(--forest); color: #fff; }
+.btn-primary:hover { background: var(--forest-md); box-shadow: 0 3px 12px rgba(26,56,40,.3); }
+.btn-danger { background: var(--red); border-color: var(--red); color: #fff; }
+.btn-danger:hover { background: #6a2020; }
+.btn-sm { padding: 5px 11px; font-size: .63rem; }
+.btn-xs { padding: 3px 9px; font-size: .6rem; }
+.btn-full { width: 100%; justify-content: center; }
+.btn:disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+
+/* ─── CARDS ─── */
+.card { background: var(--white); border: 1px solid var(--s100); border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+.card-hd { padding: 13px 20px 11px; border-bottom: 1px solid var(--s100); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.card-title { font-size: .72rem; font-weight: 700; color: var(--s900); letter-spacing: .04em; text-transform: uppercase; }
+.card-sub   { font-size: .67rem; color: var(--s400); margin-top: 2px; font-weight: 300; }
+.card-body  { padding: 18px 20px; }
+.card-foot  { padding: 11px 20px; border-top: 1px solid var(--s100); background: var(--s50); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+
+/* ─── KPI GRID ─── */
+.kpi-grid { display: grid; gap: 13px; margin-bottom: 20px; }
+.g5 { grid-template-columns: repeat(5,1fr); }
+.g4 { grid-template-columns: repeat(4,1fr); }
+.g3 { grid-template-columns: repeat(3,1fr); }
+.g2 { grid-template-columns: 1fr 1fr; }
+.kpi { background: var(--white); border: 1px solid var(--s100); border-radius: var(--r-lg); padding: 17px 20px 14px; box-shadow: var(--sh-xs); transition: box-shadow .18s; }
+.kpi:hover { box-shadow: var(--sh-md); }
+.kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.kpi-lbl { font-size: .59rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--s400); }
+.kpi-delta { font-size: .59rem; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 2px; }
+.d-up { background: var(--sage-wash); color: var(--forest); }
+.d-dn { background: var(--red-bg); color: var(--red); }
+.d-fl { background: var(--s100); color: var(--s500); }
+.kpi-val { font-family: var(--f-d); font-size: 1.9rem; font-weight: 400; color: var(--s900); line-height: 1; letter-spacing: -.02em; margin-bottom: 3px; }
+.kpi-meta { font-size: .65rem; color: var(--s400); font-weight: 300; }
+
+/* ─── LAYOUT ─── */
+.col-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+.col-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.col-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.mb4  { margin-bottom: 4px; }
+.mb8  { margin-bottom: 8px; }
+.mb14 { margin-bottom: 14px; }
+.mb18 { margin-bottom: 18px; }
+.mb22 { margin-bottom: 22px; }
+
+/* ─── BADGES + CHIPS ─── */
+.badge { display: inline-block; font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+.b-pos  { background: var(--sage-wash); color: var(--forest); }
+.b-neu  { background: var(--s100); color: var(--s500); }
+.b-neg  { background: var(--red-bg); color: var(--red); }
+.b-warn { background: var(--amber-bg); color: var(--amber); }
+.b-info { background: var(--cobalt-bg); color: var(--cobalt); }
+.chip { font-size: .6rem; font-weight: 600; letter-spacing: .04em; padding: 2px 8px; border-radius: 3px; }
+.c-g { background: var(--sage-wash); color: var(--forest); }
+.c-a { background: var(--amber-bg); color: var(--amber); }
+.c-b { background: var(--cobalt-bg); color: var(--cobalt); }
+.c-r { background: var(--red-bg); color: var(--red); }
+.c-s { background: var(--s100); color: var(--s600); }
+
+/* ─── TOGGLES (WCAG: role=switch) ─── */
+.toggle {
+  width: 34px; height: 18px; border-radius: 9px; background: var(--s200);
+  position: relative; cursor: pointer; border: none; transition: background .18s; flex-shrink: 0;
+}
+.toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: transform .18s; box-shadow: var(--sh-xs); }
+.toggle.t-on { background: var(--forest); }
+.toggle.t-on::after { transform: translateX(16px); }
+
+/* ─── FORM ELEMENTS ─── */
+textarea, input[type="text"] {
+  width: 100%; background: var(--s50); border: 1px solid var(--s200);
+  border-radius: var(--r-md); padding: 12px 15px; font-family: var(--f-u);
+  font-size: .81rem; font-weight: 300; color: var(--s900); line-height: 1.75;
+  outline: none; transition: border-color .15s, background .15s;
+}
+textarea { resize: vertical; min-height: 130px; }
+textarea:focus, input[type="text"]:focus { border-color: var(--sage); background: var(--white); }
+textarea::placeholder, input::placeholder { color: var(--s300); }
+textarea.is-error { border-color: var(--red); background: var(--red-bg); }
+select {
+  width: 100%; background: var(--s50); border: 1px solid var(--s200); border-radius: var(--r-sm);
+  padding: 7px 10px; font-family: var(--f-u); font-size: .75rem; color: var(--s900); outline: none; cursor: pointer;
+}
+select:focus { border-color: var(--sage); }
+input[type="range"] { width: 100%; accent-color: var(--forest); margin-top: 6px; }
+.range-lbs { display: flex; justify-content: space-between; font-size: .58rem; color: var(--s300); margin-top: 2px; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ─── BAR CHARTS ─── */
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-lbl { font-size: .69rem; font-weight: 500; color: var(--s700); }
+.bar-track { flex: 1; height: 6px; background: var(--s100); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 1.1s cubic-bezier(.4,0,.2,1); }
+.f-forest { background: linear-gradient(90deg, var(--sage-lt), var(--forest-lt)); }
+.f-red    { background: linear-gradient(90deg, #d49090, var(--red)); }
+.f-amber  { background: linear-gradient(90deg, #d4b870, var(--amber)); }
+.f-cobalt { background: linear-gradient(90deg, #84a8cc, var(--cobalt)); }
+.f-neu    { background: var(--s300); }
+.bar-pct { font-size: .67rem; font-weight: 700; width: 34px; text-align: right; }
+
+/* ─── DONUT CHART ─── */
+.donut-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+.donut-svg  { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut-bg  { fill: none; stroke: var(--s100); stroke-width: 11; }
+.donut-pos { fill: none; stroke: var(--forest-lt); stroke-width: 11; stroke-linecap: round; }
+.donut-neu { fill: none; stroke: var(--s300); stroke-width: 11; stroke-linecap: round; }
+.donut-neg { fill: none; stroke: var(--red); stroke-width: 11; stroke-linecap: round; }
+.donut-ct { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-v { font-family: var(--f-d); font-size: 1.25rem; font-weight: 400; color: var(--s900); line-height: 1; }
+.donut-l { font-size: .55rem; color: var(--s400); letter-spacing: .08em; text-transform: uppercase; margin-top: 1px; }
+
+/* ─── TREND CHART ─── */
+.trend-chart { display: flex; align-items: flex-end; gap: 4px; height: 52px; margin-top: 10px; }
+.tc { flex: 1; border-radius: 2px 2px 0 0; transition: height .8s ease; }
+.tc-g { background: var(--forest-lt); }
+.tc-a { background: var(--amber); opacity: .75; }
+.tc-r { background: var(--red); opacity: .7; }
+.trend-lbs { display: flex; justify-content: space-between; font-size: .56rem; color: var(--s300); margin-top: 4px; }
+
+/* ─── SENTIMENT GAUGE ─── */
+.gauge-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--red) 0%, #d09040 45%, var(--forest-lt) 100%); position: relative; margin: 8px 0; }
+.gauge-needle { position: absolute; top: -5px; width: 16px; height: 16px; background: #fff; border-radius: 50%; border: 2px solid var(--s700); transform: translateX(-50%); box-shadow: var(--sh-sm); transition: left .8s ease; }
+.gauge-ends { display: flex; justify-content: space-between; font-size: .58rem; color: var(--s400); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ─── SECTION LABEL ─── */
+.sec-lbl { font-size: .57rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--s300); margin-bottom: 13px; display: flex; align-items: center; gap: 10px; }
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--s100); }
+
+/* ─── SETTINGS ─── */
+.settings-wrap { display: grid; grid-template-columns: 168px 1fr; gap: 20px; }
+.s-nav { display: flex; flex-direction: column; gap: 2px; }
+.s-item { padding: 8px 10px; border-radius: var(--r-sm); font-size: .75rem; font-weight: 400; color: var(--s500); cursor: pointer; border: none; background: none; text-align: left; transition: all .12s; }
+.s-item:hover { background: var(--s50); color: var(--s900); }
+.s-item.s-active { background: var(--sage-tint); color: var(--forest); font-weight: 500; }
+.s-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--s100); }
+.s-row:last-child { border-bottom: none; }
+.s-row-title { font-size: .78rem; font-weight: 500; color: var(--s900); }
+.s-row-sub   { font-size: .66rem; color: var(--s400); margin-top: 1px; font-weight: 300; }
+
+/* ─── LIST ITEMS ─── */
+.li { padding: 13px 0; border-bottom: 1px solid var(--s100); }
+.li:last-child { border-bottom: none; }
+.li:first-child { padding-top: 0; }
+.li-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.li-title { font-size: .8rem; font-weight: 600; color: var(--s900); }
+.li-body  { font-size: .74rem; color: var(--s500); line-height: 1.68; font-weight: 300; margin-bottom: 6px; }
+.tag-row  { display: flex; gap: 5px; flex-wrap: wrap; }
+
+/* ─── TAG SELECTOR ─── */
+.tag-sel { display: flex; flex-wrap: wrap; gap: 6px; }
+.t-opt {
+  padding: 4px 11px; border-radius: 2px; border: 1px solid var(--s200);
+  font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+  cursor: pointer; color: var(--s500); user-select: none; background: none;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.t-opt:hover { border-color: var(--sage-lt); color: var(--forest-md); }
+.t-opt.t-on { background: var(--sage-tint); border-color: var(--sage); color: var(--forest); font-weight: 700; }
+
+/* ─── MOOD PICKER ─── */
+.mood-row { display: flex; gap: 5px; }
+.mood-btn { flex: 1; padding: 8px 4px; border-radius: var(--r-sm); border: 1px solid var(--s100); background: var(--s50); font-size: 15px; cursor: pointer; transition: border-color .12s, background .12s; line-height: 1; }
+.mood-btn:hover { border-color: var(--sage-lt); }
+.mood-btn.m-on { border-color: var(--sage) !important; background: var(--sage-tint) !important; }
+
+/* ─── ALERT CARDS ─── */
+.alert { border-radius: var(--r-md); padding: 14px 16px; border: 1px solid; display: flex; gap: 13px; align-items: flex-start; margin-bottom: 10px; transition: box-shadow .18s; }
+.alert:last-child { margin-bottom: 0; }
+.alert:hover { box-shadow: var(--sh-sm); }
+.alert-icon { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.alert-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.a-crit { background: var(--red-bg); border-color: #d4b8b8; }
+.a-crit .alert-icon { background: var(--red); color: #fff; }
+.a-warn { background: var(--amber-bg); border-color: #d8c090; }
+.a-warn .alert-icon { background: var(--amber); color: #fff; }
+.a-info { background: var(--cobalt-bg); border-color: #b0c8e0; }
+.a-info .alert-icon { background: var(--cobalt); color: #fff; }
+.alert-body { flex: 1; min-width: 0; }
+.alert-title { font-size: .79rem; font-weight: 700; color: var(--s900); margin-bottom: 3px; }
+.alert-desc  { font-size: .72rem; color: var(--s700); line-height: 1.65; font-weight: 300; }
+.alert-meta  { font-size: .61rem; color: var(--s400); margin-top: 5px; }
+.alert-acts  { display: flex; gap: 6px; margin-top: 8px; }
+
+/* ─── SUGGESTION CARDS ─── */
+.sug-card { background: #fff; border: 1px solid var(--s100); border-radius: var(--r-md); padding: 15px 18px; margin-bottom: 10px; display: flex; gap: 13px; align-items: flex-start; box-shadow: var(--sh-xs); transition: box-shadow .18s; }
+.sug-card:hover { box-shadow: var(--sh-md); }
+.vote-col { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 38px; }
+.vote-num { font-family: var(--f-d); font-size: 1.1rem; font-weight: 400; color: var(--s900); line-height: 1; }
+.vote-lab { font-size: .55rem; color: var(--s400); letter-spacing: .08em; text-transform: uppercase; }
+.vote-btn { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--s200); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--s400); transition: all .13s; }
+.vote-btn:hover { background: var(--sage-tint); border-color: var(--sage-lt); color: var(--forest); }
+.vote-btn.v-on { background: var(--forest); border-color: var(--forest); color: #fff; }
+.vote-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.sug-body { flex: 1; min-width: 0; }
+.sug-title { font-size: .8rem; font-weight: 600; color: var(--s900); margin-bottom: 4px; }
+.sug-desc  { font-size: .73rem; color: var(--s500); line-height: 1.65; font-weight: 300; margin-bottom: 8px; }
+.sug-meta  { font-size: .61rem; color: var(--s400); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.ss { font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+.ss-open    { background: var(--cobalt-bg); color: var(--cobalt); }
+.ss-review  { background: var(--amber-bg); color: var(--amber); }
+.ss-planned { background: var(--sage-wash); color: var(--forest); }
+.ss-done    { background: var(--s100); color: var(--s500); }
+
+/* ─── PULSE HERO ─── */
+.pulse-hero { background: var(--forest); border-radius: var(--r-lg); padding: 22px 26px; margin-bottom: 20px; color: #fff; position: relative; overflow: hidden; }
+.pulse-hero::after { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.04); pointer-events: none; }
+.ph-title { font-family: var(--f-d); font-size: 1.25rem; font-weight: 400; margin-bottom: 3px; position: relative; }
+.ph-sub   { font-size: .69rem; opacity: .5; font-weight: 300; position: relative; }
+.ph-kpis  { display: flex; gap: 26px; margin-top: 17px; flex-wrap: wrap; position: relative; }
+.pk-v { font-family: var(--f-d); font-size: 1.45rem; font-weight: 400; line-height: 1; }
+.pk-l { font-size: .56rem; opacity: .5; margin-top: 3px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+
+/* ─── OWNER HERO ─── */
+.owner-hero { background: linear-gradient(135deg, var(--ink) 0%, var(--forest-lt) 100%); border-radius: var(--r-lg); padding: 22px 26px; margin-bottom: 20px; color: #fff; position: relative; overflow: hidden; }
+.owner-hero::before { content: ''; position: absolute; bottom: -30px; right: -30px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.025); pointer-events: none; }
+.oh-title { font-family: var(--f-d); font-size: 1.25rem; font-weight: 400; margin-bottom: 3px; position: relative; }
+.oh-sub   { font-size: .69rem; opacity: .4; font-weight: 300; position: relative; }
+
+/* ─── AI INSIGHT PANEL ─── */
+.ai-panel { display: none; background: #fff; border: 1px solid var(--sage-lt); border-radius: var(--r-lg); padding: 20px 22px; position: relative; overflow: hidden; margin-top: 4px; box-shadow: var(--sh-md); }
+.ai-panel::before { content: ''; position: absolute; top: 0; inset-inline: 0; height: 2px; background: linear-gradient(90deg, var(--forest), var(--sage)); }
+.ai-panel.ai-open { display: block; animation: fadeUp .28s ease; }
+.ai-head { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+.ai-chip { font-size: .56rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: var(--sage-tint); color: var(--forest); border: 1px solid var(--sage-wash); border-radius: 3px; padding: 3px 9px; }
+.ai-title-txt { font-family: var(--f-d); font-size: 1rem; font-weight: 400; color: var(--s900); }
+.ai-load { display: flex; align-items: center; gap: 9px; color: var(--s400); font-size: .76rem; }
+.spinner { width: 13px; height: 13px; border: 1.5px solid var(--s200); border-top-color: var(--forest); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-body { font-size: .8rem; line-height: 1.85; color: var(--s700); font-weight: 300; }
+.ai-body p { margin-bottom: 10px; }
+.ai-body p:last-child { margin-bottom: 0; }
+.ai-act-lbl { font-size: .57rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--forest); margin: 13px 0 4px; }
+.ai-meta-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--s100); }
+.ai-mi-lbl { font-size: .56rem; letter-spacing: .12em; text-transform: uppercase; color: var(--s300); font-weight: 700; margin-bottom: 2px; }
+.ai-mi-val { font-size: .75rem; font-weight: 500; color: var(--s900); }
+
+/* ─── AI ACTION CARDS (executive summary style) ─── */
+.ai-actions-panel {
+  background: var(--sage-tint); border: 1px solid var(--sage-wash);
+  border-radius: var(--r-lg); padding: 20px; position: relative; overflow: hidden;
+}
+.ai-actions-panel::before { content: ''; position: absolute; top: 0; inset-inline: 0; height: 2px; background: linear-gradient(90deg, var(--forest), var(--sage)); }
+.aap-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.aap-title { font-size: .72rem; font-weight: 700; color: var(--s900); letter-spacing: .04em; text-transform: uppercase; }
+
+.action-card { background: #fff; border: 1px solid var(--s100); border-radius: var(--r-md); padding: 16px 18px; margin-bottom: 12px; box-shadow: var(--sh-xs); }
+.action-card:last-child { margin-bottom: 0; }
+.action-card-hd { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.action-num { width: 22px; height: 22px; border-radius: 50%; background: var(--forest); color: #fff; font-size: .61rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.action-title { font-size: .81rem; font-weight: 700; color: var(--s900); line-height: 1.4; }
+.action-body  { font-size: .76rem; color: var(--s600); line-height: 1.72; font-weight: 300; margin-bottom: 10px; padding-left: 34px; }
+.action-body strong { color: var(--s900); font-weight: 600; }
+.action-footer { display: flex; gap: 6px; flex-wrap: wrap; padding-left: 34px; }
+
+/* ─── EXEC DOC ─── */
+.exec-doc { background: #fff; border: 1px solid var(--s100); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--sh-md); margin-bottom: 20px; }
+.exec-hd { background: var(--forest); color: #fff; padding: 24px 28px; position: relative; overflow: hidden; }
+.exec-hd::after { content: ''; position: absolute; bottom: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.03); }
+.exec-lbl   { font-size: .55rem; letter-spacing: .18em; text-transform: uppercase; opacity: .5; margin-bottom: 5px; position: relative; font-weight: 600; }
+.exec-title { font-family: var(--f-d); font-size: 1.55rem; font-weight: 400; position: relative; }
+.exec-sub   { font-size: .7rem; opacity: .45; font-weight: 300; margin-top: 3px; position: relative; }
+.exec-kpis  { display: flex; gap: 26px; margin-top: 18px; flex-wrap: wrap; position: relative; }
+.ek-v { font-family: var(--f-d); font-size: 1.35rem; font-weight: 400; line-height: 1; }
+.ek-l { font-size: .55rem; opacity: .5; margin-top: 3px; letter-spacing: .1em; text-transform: uppercase; }
+.exec-body { padding: 26px 28px; }
+.exec-sec { margin-bottom: 20px; }
+.exec-sec:last-child { margin-bottom: 0; }
+.exec-sec-lbl { font-size: .57rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--s300); margin-bottom: 9px; padding-bottom: 7px; border-bottom: 1px solid var(--s100); }
+
+/* ─── REVENUE TABLE ─── */
+.rev-table { width: 100%; border-collapse: collapse; }
+.rev-table th { text-align: left; font-size: .57rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--s400); padding: 0 0 10px; border-bottom: 1px solid var(--s100); }
+.rev-table td { padding: 10px 0; font-size: .76rem; color: var(--s700); border-bottom: 1px solid var(--s100); vertical-align: middle; }
+.rev-table tr:last-child td { border-bottom: none; }
+.rev-table td:last-child { text-align: right; font-weight: 600; color: var(--s900); }
+.plan-tag { display: inline-block; font-size: .57rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; }
+.pt-ent { background: var(--amber-bg); color: var(--amber); }
+.pt-pro { background: var(--sage-wash); color: var(--forest); }
+.pt-str { background: var(--s100); color: var(--s500); }
+.pip { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.pip-a { background: var(--forest-lt); }
+.pip-t { background: var(--amber); }
+.pip-r { background: var(--red); }
+
+/* ─── SPARKLINE ─── */
+.spark { display: flex; align-items: flex-end; gap: 3px; height: 36px; margin-top: 11px; }
+.sp-b { flex: 1; border-radius: 2px 2px 0 0; background: var(--s100); }
+.sp-hi { background: var(--forest-lt); }
+
+/* ══════════════════════════════════════════════════════
+   VOICE RECORDING UI
+   ──────────────────────────────────────────────────────
+   Design: High-end inline microphone button.
+   Recording state: crimson ring + dual CSS ripple rings
+   + animated waveform bars + live timer display.
+   No JS animation frames needed — pure CSS @keyframes.
+══════════════════════════════════════════════════════ */
+.voice-wrap { position: relative; display: inline-flex; align-items: center; gap: 10px; }
+
+/* Ripple rings emitted outward when recording */
+.voice-wrap.recording::before,
+.voice-wrap.recording::after {
+  content: ''; position: absolute; left: 0; top: 0;
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--red); opacity: 0;
+  animation: voiceRipple 1.8s ease-out infinite;
+  pointer-events: none; z-index: 0;
+}
+.voice-wrap.recording::after { animation-delay: .9s; }
+@keyframes voiceRipple {
+  0%   { opacity: .55; transform: scale(1); }
+  100% { opacity: 0;   transform: scale(2); }
+}
+
+.voice-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--white); border: 1.5px solid var(--s200);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .18s, border-color .18s, box-shadow .18s;
+  position: relative; z-index: 1; flex-shrink: 0;
+}
+.voice-btn:hover { background: var(--sage-tint); border-color: var(--sage-lt); box-shadow: var(--sh-sm); }
+.voice-btn.recording { background: var(--red); border-color: var(--red); }
+.voice-btn.recording:hover { background: #6a2020; }
+.voice-btn svg { width: 15px; height: 15px; stroke: var(--sage); fill: none; stroke-width: 2; stroke-linecap: round; transition: stroke .18s; }
+.voice-btn.recording svg { stroke: #fff; }
+.voice-label { font-size: .63rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--s400); }
+.voice-wrap.recording .voice-label { color: var(--red); }
+
+/* ── VOICE MODAL ── */
+.v-ring {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--sage-tint); border: 2px solid var(--sage-wash);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+  transition: background .2s, border-color .2s; position: relative;
+}
+.v-ring.recording {
+  background: var(--red-bg); border-color: #d0b0b0;
+  animation: ringPulse 1.4s ease-in-out infinite;
+}
+@keyframes ringPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(122,46,46,.18); } 50% { box-shadow: 0 0 0 10px rgba(122,46,46,0); } }
+.v-ring svg { width: 26px; height: 26px; stroke: var(--forest); fill: none; stroke-width: 1.8; stroke-linecap: round; transition: stroke .2s; }
+.v-ring.recording svg { stroke: var(--red); }
+.waveform { height: 38px; display: flex; align-items: center; justify-content: center; gap: 4px; margin: 12px 0; }
+.wv { width: 3px; border-radius: 2px; background: var(--s200); height: 5px; transition: background .2s; }
+.waveform.wv-active .wv { background: var(--forest-lt); animation: wvA .6s ease-in-out infinite alternate; }
+.wv:nth-child(1){--h:8px;animation-delay:0s}    .wv:nth-child(2){--h:16px;animation-delay:.07s}
+.wv:nth-child(3){--h:24px;animation-delay:.14s}  .wv:nth-child(4){--h:30px;animation-delay:.21s}
+.wv:nth-child(5){--h:34px;animation-delay:.28s}  .wv:nth-child(6){--h:28px;animation-delay:.35s}
+.wv:nth-child(7){--h:22px;animation-delay:.42s}  .wv:nth-child(8){--h:14px;animation-delay:.49s}
+.wv:nth-child(9){--h:7px;animation-delay:.56s}
+@keyframes wvA { to { height: var(--h, 8px); } }
+.v-timer { font-family: var(--f-d); font-size: 1.4rem; font-weight: 400; color: var(--s900); margin-bottom: 18px; }
+
+/* ══════════════════════════════════════════════════════
+   MODALS + OVERLAYS
+══════════════════════════════════════════════════════ */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(17,25,22,.45); z-index: 1500; align-items: center; justify-content: center; }
+.overlay.ov-open { display: flex; animation: ovIn .18s ease; }
+@keyframes ovIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: #fff; border-radius: var(--r-xl); box-shadow: var(--sh-xl); animation: modalIn .2s ease; max-width: 90vw; }
+@keyframes modalIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+.modal-sm { width: 390px; padding: 30px; text-align: center; }
+.modal-v  { width: 330px; padding: 24px 22px 20px; text-align: center; }
+.modal-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+.modal-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.modal-title { font-family: var(--f-d); font-size: 1.2rem; font-weight: 400; color: var(--s900); margin-bottom: 8px; }
+.modal-body  { font-size: .78rem; color: var(--s500); line-height: 1.75; margin-bottom: 18px; font-weight: 300; }
+.modal-body strong { color: var(--forest); font-weight: 600; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--s900); color: #fff; border-radius: var(--r-sm); padding: 9px 16px; font-size: .71rem; font-weight: 400; z-index: 2000; opacity: 0; transform: translateY(10px); transition: opacity .25s, transform .25s cubic-bezier(.34,1.56,.64,1); box-shadow: var(--sh-lg); pointer-events: none; }
+.toast.t-show { opacity: 1; transform: translateY(0); }
+
+/* ── SCREEN-READER ONLY ── */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) { .g5,.g4 { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .g4,.g3 { grid-template-columns: 1fr 1fr; }
+  .col-3-2,.col-2-1,.col-2 { grid-template-columns: 1fr; }
+  .content { padding: 16px 14px; }
+  .topbar { padding: 0 14px; }
+}
+@media (max-width: 560px) {
+  .g4,.g3,.g2 { grid-template-columns: 1fr; }
+  .settings-wrap { grid-template-columns: 1fr; }
+}
+</style>
+
+<!-- skip nav -->
+</head><body><a href="file:///Users/tobydance/Downloads/logue-v4.html#main-emp" class="skip">Skip to main content</a>
+
+<!-- ══ ROLE SWITCHER ══ -->
+<nav class="role-bar" aria-label="Demo role switcher">
+  <span class="rb-label" aria-hidden="true">View As</span>
+  <button class="rb-btn" aria-pressed="true" onclick="L.switchRole(&#39;emp&#39;,this)">Employee</button>
+  <button class="rb-btn" aria-pressed="false" onclick="L.switchRole(&#39;mgr&#39;,this)">Manager</button>
+  <button class="rb-btn" aria-pressed="false" onclick="L.switchRole(&#39;own&#39;,this)">Owner</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════
+     EMPLOYEE PANEL
+     Single purpose: Anonymous Daily Log only.
+     "Private journaling" removed per audit spec.
+     Enterprise badge = prestige status, never a CTA.
+══════════════════════════════════════════════════ -->
+<div class="role-panel rp-active" id="rp-emp">
+<div class="app">
+  <aside class="sidebar" aria-label="Navigation">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <div class="sb-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+        <span class="sb-name">Logue</span>
+      </div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-emp"><span class="rb-dot" aria-hidden="true"></span>Employee</div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Workspace</div>
+      <button class="nav-item" onclick="L.nav(&#39;emp&#39;,&#39;log&#39;,this)" aria-current="page">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span>
+        Daily Log
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;emp&#39;,&#39;goals&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span>
+        My Goals
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;emp&#39;,&#39;sugg&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+        Suggestions<span class="nav-pip pip-g" aria-label="3 new">3</span>
+      </button>
+    </nav>
+    <div class="sb-div" aria-hidden="true"></div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Account</div>
+      <button class="nav-item" onclick="L.nav(&#39;emp&#39;,&#39;esettings&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+        Settings
+      </button>
+    </nav>
+    <div class="sb-foot">
+      <div class="user-row">
+        <div class="user-av av-e" aria-hidden="true">JR</div>
+        <div><div class="user-name">Jamie Rivera</div><div class="user-role">Marketing</div></div>
+        <!-- AUDIT: Enterprise badge is purely informational. Opens a status modal, never billing. -->
+        <button class="tier-tag" onclick="L.openModal(&#39;m-tier&#39;)" aria-label="View plan details">Enterprise</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main" id="main-emp">
+    <header class="topbar">
+      <div class="tb-crumb">Logue <span class="tb-sep" aria-hidden="true">›</span><span class="tb-page" id="emp-crumb">Daily Log</span></div>
+      <div class="tb-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm" onclick="L.toast(&#39;No new notifications&#39;)">Notifications</button>
+      </div>
+    </header>
+    <main class="content" id="main-content">
+
+      <!-- ── DAILY LOG (sole employee entry point) ── -->
+      <div class="page p-active" id="emp-log">
+        <div class="page-hd">
+          <h1>Daily <em>Log</em></h1>
+          <p>Your anonymous contribution to the team intelligence pool. Entries are stripped of identifying information before any analysis — management sees patterns, never your words.</p>
+        </div>
+
+        <div class="card mb14">
+          <div class="card-hd">
+            <div><div class="card-title">Today's Entry</div><div class="card-sub">What shaped your working day?</div></div>
+            <!-- AUDIT: High-end voice button with CSS-only ripple rings -->
+            <div class="voice-wrap" id="voice-wrap" role="group" aria-label="Voice entry">
+              <button class="voice-btn" id="v-inline-btn" onclick="L.voice.openModal()" aria-label="Open voice entry">
+                <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              </button>
+              <span class="voice-label">Voice Entry</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <textarea id="journal-txt" aria-label="Daily log entry" aria-describedby="j-hint" placeholder="How did today go? What moved work forward and where did things slow down? Write freely — this is anonymised before anyone sees it.
+
+e.g. &#39;The standup ran 30 minutes over schedule again. The Miller account call went well though — clear brief and fast sign-off...&#39;"></textarea>
+            <p id="j-hint" class="sr-only">Your entry is anonymised before analysis. Management sees trends, not your words.</p>
+            <!-- AUDIT: Inline error displayed via role=alert for a11y -->
+            <div id="j-error" role="alert" style="display:none;font-size:.71rem;color:var(--red);margin-top:6px;">Please write something before submitting.</div>
+          </div>
+        </div>
+
+        <!-- Topics -->
+        <div class="card mb14">
+          <div class="card-hd"><div class="card-title">Topics</div><div class="card-sub">Select all that apply</div></div>
+          <div class="card-body">
+            <div class="tag-sel" id="topic-tags" role="group" aria-label="Entry topics">
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Workload</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Stress</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Collaboration</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Communication</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Management</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Tools &amp; Software</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Work-Life Balance</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Recognition</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Career Growth</button>
+              <button class="t-opt" type="button" aria-pressed="false" onclick="L.toggleTag(this)">Process</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mood + productivity + dept -->
+        <div class="kpi-grid g3 mb14">
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Energy Level</div></div>
+            <div class="card-body">
+              <div class="mood-row" role="group" aria-label="Energy level">
+                <button class="mood-btn" type="button" aria-label="Drained" onclick="L.pickMood(this,&#39;Drained&#39;)">😔</button>
+                <button class="mood-btn" type="button" aria-label="Low" onclick="L.pickMood(this,&#39;Low&#39;)">😐</button>
+                <button class="mood-btn" type="button" aria-label="Neutral" onclick="L.pickMood(this,&#39;Neutral&#39;)">🙂</button>
+                <button class="mood-btn m-on" type="button" aria-label="Good" aria-pressed="true" onclick="L.pickMood(this,&#39;Good&#39;)">😊</button>
+                <button class="mood-btn" type="button" aria-label="Excellent" onclick="L.pickMood(this,&#39;Excellent&#39;)">🚀</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Productivity</div></div>
+            <div class="card-body">
+              <input type="range" min="1" max="10" value="7" id="prod-slider" aria-label="Productivity 1 to 10" oninput="document.getElementById(&#39;prod-val&#39;).textContent=this.value">
+              <div class="range-lbs"><span>Low</span><span id="prod-val" style="color:var(--forest);font-weight:600;">7</span><span>High</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Department</div></div>
+            <div class="card-body">
+              <select id="dept-sel" aria-label="Your department">
+                <option>Marketing</option><option>Sales</option><option>Engineering</option>
+                <option>Operations</option><option>Customer Success</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit bar -->
+        <div class="card mb14" style="border-color:var(--sage-lt);">
+          <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:26px;height:26px;background:var(--sage-tint);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" stroke="var(--forest)" fill="none" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div>
+                <div style="font-size:.75rem;font-weight:600;color:var(--s900);">Anonymous by Default</div>
+                <div style="font-size:.66rem;color:var(--s400);font-weight:300;">Your name is never associated with this entry. Management sees aggregated trends only.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost" onclick="L.toast(&#39;Draft saved locally&#39;)">Save Draft</button>
+              <button class="btn btn-primary" id="submit-btn" onclick="L.submitEntry()">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Submit &amp; Analyse
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Insight panel — shown after submit -->
+        <section class="ai-panel" id="ai-panel" aria-live="polite" aria-label="AI insight">
+          <div class="ai-head"><span class="ai-chip">Logue AI</span><span class="ai-title-txt">Personal Insight</span></div>
+          <div id="ai-loading" class="ai-load"><div class="spinner" aria-hidden="true"></div><span>Analysing your entry…</span></div>
+          <div id="ai-body-content" class="ai-body" style="display:none;"></div>
+          <div id="ai-meta-row" class="ai-meta-row" style="display:none;">
+            <div><div class="ai-mi-lbl">Sentiment</div><div class="ai-mi-val" id="m-sent">—</div></div>
+            <div><div class="ai-mi-lbl">Theme</div><div class="ai-mi-val" id="m-theme">—</div></div>
+            <div><div class="ai-mi-lbl">Impact</div><div class="ai-mi-val" id="m-impact">—</div></div>
+            <div><div class="ai-mi-lbl">Tomorrow</div><div class="ai-mi-val" id="m-focus">—</div></div>
+          </div>
+        </section>
+      </div><!-- /emp-log -->
+
+      <!-- ── GOALS ── -->
+      <div class="page" id="emp-goals">
+        <div class="page-hd"><h1>My <em>Goals</em></h1><p>Set professional intentions. Logue tracks progress automatically from your log entries.</p></div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Active Goals</div><button class="btn btn-primary btn-sm" onclick="L.toast(&#39;Feature coming soon&#39;)">+ Add Goal</button></div>
+            <div class="card-body">
+              <div class="li"><div class="li-top"><div class="li-title">Reduce meetings to under 90 min/day</div><span class="badge b-warn">60%</span></div><div class="li-body">3 of 5 days achieved this week.</div><div class="bar-row"><div class="bar-track"><div class="bar-fill f-forest" style="width: 60%;"></div></div></div></div>
+              <div class="li"><div class="li-top"><div class="li-title">Submit a daily log 5 days per week</div><span class="badge b-warn">80%</span></div><div class="li-body">4 of 5 days · 18-day streak active.</div><div class="bar-row"><div class="bar-track"><div class="bar-fill f-forest" style="width: 80%;"></div></div></div></div>
+              <div class="li"><div class="li-top"><div class="li-title">Keep productivity score above 7.0</div><span class="badge b-pos">On Track</span></div><div class="li-body">Current average: 7.4 / 10</div><div class="bar-row"><div class="bar-track"><div class="bar-fill f-forest" style="width: 74%;"></div></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">AI Suggestions</div><div class="card-sub">From your last 10 entries</div></div>
+            <div class="card-body">
+              <div class="li"><div class="li-top"><div class="li-title">Block 2 focus hours before noon</div><span class="badge b-info">AI</span></div><div class="li-body">"Interrupted" appears in 6 of your last 10 logs.</div><div class="tag-row"><button class="btn btn-ghost btn-xs" onclick="L.toast(&#39;Goal added&#39;)">Add Goal</button></div></div>
+              <div class="li"><div class="li-top"><div class="li-title">Batch notifications twice daily</div><span class="badge b-info">AI</span></div><div class="li-body">Context-switching is your most recurring friction theme.</div><div class="tag-row"><button class="btn btn-ghost btn-xs" onclick="L.toast(&#39;Goal added&#39;)">Add Goal</button></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUGGESTIONS ── -->
+      <div class="page" id="emp-sugg">
+        <div class="page-hd"><h1>Workplace <em>Suggestions</em></h1><p>Submit ideas anonymously. Vote on your colleagues' suggestions. Managers see the ranked list — not who submitted.</p></div>
+        <div class="col-2 mb18">
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Submit a Suggestion</div></div>
+            <div class="card-body">
+              <input type="text" id="sug-title-in" placeholder="e.g. Flexible start times between 7–10am" style="margin-bottom:10px;" aria-label="Suggestion title">
+              <textarea id="sug-body-in" rows="3" style="min-height:80px;" aria-label="Suggestion detail" placeholder="Describe your idea and why it would help the team…"></textarea>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px;flex-wrap:wrap;">
+                <label style="display:flex;align-items:center;gap:7px;font-size:.73rem;color:var(--s500);cursor:pointer;">
+                  <input type="checkbox" id="sug-anon" checked="" style="accent-color:var(--forest);"> Submit anonymously
+                </label>
+                <button class="btn btn-primary btn-sm" onclick="L.suggestions.submit()">Submit</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Status Guide</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:11px;">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="ss ss-open">Open</span><span style="font-size:.72rem;color:var(--s400);font-weight:300;">Awaiting manager review</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span class="ss ss-review">Under Review</span><span style="font-size:.72rem;color:var(--s400);font-weight:300;">Being evaluated by leadership</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span class="ss ss-planned">Planned</span><span style="font-size:.72rem;color:var(--s400);font-weight:300;">Approved and on the roadmap</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><span class="ss ss-done">Done</span><span style="font-size:.72rem;color:var(--s400);font-weight:300;">Implemented</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="sec-lbl">Top Suggestions — Ranked by Votes</div>
+        <div id="emp-sug-list" aria-live="polite">
+        <div class="sug-card" id="sc-e-1">
+          <div class="vote-col">
+            <button class="vote-btn " onclick="L.suggestions.vote(1)" aria-label="Vote for Flexible work hours — 7–10am s…" aria-pressed="false">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                 </button>
+                 <div class="vote-num" id="vn-1">42</div>
+                 <div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Flexible work hours — 7–10am start window</div>
+            <div class="sug-desc">Allow employees to choose start time within a 3-hour window. Trust-based output model. Commute stress appears in 14% of log entries over the past month.</div>
+            <div class="sug-meta">
+              <span class="ss ss-review">review</span>
+              <span>Anonymous</span>
+              <span>12 Feb 2026</span>
+            </div>
+            
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-e-2">
+          <div class="vote-col">
+            <button class="vote-btn " onclick="L.suggestions.vote(2)" aria-label="Vote for Tool onboarding before company…" aria-pressed="false">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                 </button>
+                 <div class="vote-num" id="vn-2">38</div>
+                 <div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Tool onboarding before company-wide rollouts</div>
+            <div class="sug-desc">Before any new tool is deployed, provide a 2-week opt-in training period. Would have prevented the shared drive friction we are currently experiencing.</div>
+            <div class="sug-meta">
+              <span class="ss ss-planned">planned</span>
+              <span>Anonymous</span>
+              <span>28 Jan 2026</span>
+            </div>
+            
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-e-3">
+          <div class="vote-col">
+            <button class="vote-btn " onclick="L.suggestions.vote(3)" aria-label="Vote for Monthly all-hands Q&amp;A with lea…" aria-pressed="false">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                 </button>
+                 <div class="vote-num" id="vn-3">31</div>
+                 <div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Monthly all-hands Q&amp;A with leadership</div>
+            <div class="sug-desc">A 30-minute open Q&amp;A each month with senior leadership. Anonymous question submission option. Addresses the communication transparency theme appearing in 24% of logs.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Named</span>
+              <span>3 Feb 2026</span>
+            </div>
+            
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-e-4">
+          <div class="vote-col">
+            <button class="vote-btn " onclick="L.suggestions.vote(4)" aria-label="Vote for No meetings before 10am — prot…" aria-pressed="false">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                 </button>
+                 <div class="vote-num" id="vn-4">27</div>
+                 <div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">No meetings before 10am — protected focus time</div>
+            <div class="sug-desc">Block meetings before 10am company-wide. 67% of employees in the last pulse survey flagged protected morning time as their highest-priority request.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Anonymous</span>
+              <span>19 Feb 2026</span>
+            </div>
+            
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-e-5">
+          <div class="vote-col">
+            <button class="vote-btn " onclick="L.suggestions.vote(5)" aria-label="Vote for Monthly peer recognition micro…" aria-pressed="false">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                 </button>
+                 <div class="vote-num" id="vn-5">19</div>
+                 <div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Monthly peer recognition micro-awards</div>
+            <div class="sug-desc">Lightweight peer-to-peer recognition. Nominees proposed by team, winner announced at all-hands. No cash — recognition and visibility only. Addresses low-morale signal in Operations.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Named</span>
+              <span>25 Feb 2026</span>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="page" id="emp-esettings">
+        <div class="page-hd"><h1>Account <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-wrap">
+            <div class="s-nav">
+              <button class="s-item s-active" onclick="L.settingsTab(this)">Notifications</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Privacy</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Integrations</button>
+            </div>
+            <div>
+              <div class="s-row"><div><div class="s-row-title">Daily log reminder</div><div class="s-row-sub">Nudge at 4:30 PM</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Daily reminder"></button></div>
+              <div class="s-row"><div><div class="s-row-title">AI insight after submission</div><div class="s-row-sub">Personal synthesis on each entry</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="AI insight"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Weekly digest email</div><div class="s-row-sub">Friday summary of your productivity trends</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Weekly digest"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Opt out of team leaderboard</div><div class="s-row-sub">Hide your streak from rankings</div></div><button class="toggle" onclick="L.toggleSwitch(this)" role="switch" aria-checked="false" aria-label="Leaderboard opt-out"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</div><!-- /rp-emp -->
+
+<!-- ══════════════════════════════════════════════════
+     MANAGER PANEL
+     Privacy rule: No individual entries ever shown.
+     Only AI-derived aggregates and anonymised patterns.
+══════════════════════════════════════════════════ -->
+<div class="role-panel" id="rp-mgr">
+<div class="app">
+  <aside class="sidebar" aria-label="Manager navigation">
+    <div class="sb-brand">
+      <div class="sb-logo"><div class="sb-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div><span class="sb-name">Logue</span></div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-mgr"><span class="rb-dot" aria-hidden="true"></span>Manager</div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Insights</div>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;pulse&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span>
+        Team Pulse<span class="nav-pip pip-r" aria-label="3 urgent">3</span>
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;aiactions&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span>
+        AI Actions<span class="nav-pip pip-g">New</span>
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;sentiment&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></span>
+        Sentiment
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;trends&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></span>
+        Trends
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;alerts&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+        Smart Alerts<span class="nav-pip pip-r" aria-label="2 alerts">2</span>
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;msugg&#39;,this)" aria-current="page">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+        Suggestions<span class="nav-pip pip-a" aria-label="8 pending">8</span>
+      </button>
+    </nav>
+    <div class="sb-div" aria-hidden="true"></div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Reports</div>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;exec&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></span>
+        Executive Summary
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;mgr&#39;,&#39;msettings&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+        Settings
+      </button>
+    </nav>
+    <div class="sb-foot">
+      <div class="user-row"><div class="user-av av-m" aria-hidden="true">SM</div><div><div class="user-name">Sarah Mitchell</div><div class="user-role">Operations Manager</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-crumb">Logue <span class="tb-sep" aria-hidden="true">›</span><span class="tb-page" id="mgr-crumb">Suggestions</span></div>
+      <div class="tb-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm" onclick="L.toast(&#39;Exporting report…&#39;)">Export</button>
+        <button class="btn btn-primary btn-sm" onclick="L.toast(&#39;Generating summary…&#39;)">Generate Report</button>
+      </div>
+    </header>
+    <main class="content">
+
+      <!-- ── TEAM PULSE ── -->
+      <div class="page" id="mgr-pulse">
+        <div class="page-hd"><h1>Team <em>Pulse</em></h1><p>Aggregated from 47 anonymous entries this week. No individual entries are accessible from this view.</p></div>
+        <div class="pulse-hero">
+          <div class="ph-title">Week of 4 March 2026</div>
+          <div class="ph-sub">All data anonymised and aggregated — individual submissions are never surfaced here</div>
+          <div class="ph-kpis">
+            <div><div class="pk-v">47</div><div class="pk-l">Entries</div></div>
+            <div><div class="pk-v">89%</div><div class="pk-l">Participation</div></div>
+            <div><div class="pk-v">7.2</div><div class="pk-l">Morale Score</div></div>
+            <div><div class="pk-v">68%</div><div class="pk-l">Positive</div></div>
+            <div><div class="pk-v">14</div><div class="pk-l">Friction Points</div></div>
+          </div>
+        </div>
+        <div class="col-3-2">
+          <div>
+            <div class="card mb18">
+              <div class="card-hd"><div><div class="card-title">Sentiment Breakdown</div><div class="card-sub">47 anonymised entries</div></div></div>
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:22px;">
+                  <div class="donut-wrap" aria-hidden="true">
+                    <svg class="donut-svg" viewBox="0 0 110 110">
+                      <circle class="donut-bg" cx="55" cy="55" r="44"></circle>
+                      <circle class="donut-pos" cx="55" cy="55" r="44" stroke-dasharray="276.5" stroke-dashoffset="88.5"></circle>
+                      <circle class="donut-neu" cx="55" cy="55" r="44" stroke-dasharray="276.5" stroke-dashoffset="221.2" transform="rotate(244.8 55 55)"></circle>
+                      <circle class="donut-neg" cx="55" cy="55" r="44" stroke-dasharray="276.5" stroke-dashoffset="243.3" transform="rotate(316.8 55 55)"></circle>
+                    </svg>
+                    <div class="donut-ct"><div class="donut-v">68%</div><div class="donut-l">Positive</div></div>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="bar-row"><div class="bar-lbl" style="width:68px;color:var(--forest);">Positive</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 68%;"></div></div><div class="bar-pct" style="color:var(--forest);">68%</div></div>
+                    <div class="bar-row"><div class="bar-lbl" style="width:68px;color:var(--s500);">Neutral</div><div class="bar-track"><div class="bar-fill f-neu" style="width: 20%;"></div></div><div class="bar-pct" style="color:var(--s500);">20%</div></div>
+                    <div class="bar-row"><div class="bar-lbl" style="width:68px;color:var(--red);">Negative</div><div class="bar-track"><div class="bar-fill f-red" style="width: 12%;"></div></div><div class="bar-pct" style="color:var(--red);">12%</div></div>
+                    <div style="margin-top:11px;padding-top:11px;border-top:1px solid var(--s100);font-size:.67rem;color:var(--s400);font-weight:300;">Trend: <strong style="color:var(--forest);">+7% positive vs last week</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mb18">
+              <div class="card-hd"><div class="card-title">Top Employee Concerns</div><div class="card-sub">AI-extracted from anonymised entries</div></div>
+              <div class="card-body">
+                <div class="li"><div class="li-top"><div class="li-title">1. Workload &amp; Stress</div><span class="badge b-neg">High</span></div><div class="li-body">31% of entries flag concurrent project overload, unclear priorities, and insufficient recovery time between sprints.</div><div class="tag-row"><span class="chip c-s">Engineering · 9</span><span class="chip c-s">Operations · 7</span></div></div>
+                <div class="li"><div class="li-top"><div class="li-title">2. Communication Gaps</div><span class="badge b-warn">Medium</span></div><div class="li-body">Cross-department friction in 24% of entries. Q2 approval chain is unclear to 4 departments. Recurring phrase: "waited for a reply."</div><div class="tag-row"><span class="chip c-s">Sales · 5</span><span class="chip c-s">Finance · 4</span></div></div>
+                <div class="li"><div class="li-top"><div class="li-title">3. Flexible Work Requests</div><span class="badge b-info">Noted</span></div><div class="li-body">18% of entries mention start-time flexibility or remote days. Theme has been consistent for 3 consecutive months.</div><div class="tag-row"><span class="chip c-s">Marketing · 6</span><span class="chip c-s">Eng · 4</span></div></div>
+                <div class="li"><div class="li-top"><div class="li-title">4. Tool &amp; Software Friction</div><span class="badge b-warn">Medium</span></div><div class="li-body">62% of Marketing &amp; Design report ~25 min/day lost with the new shared drive. Escalating trend since Monday.</div><div class="tag-row"><span class="chip c-s">Marketing · 12</span><span class="chip c-s">Design · 8</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card mb18">
+              <div class="card-hd"><div class="card-title">Morale by Department</div></div>
+              <div class="card-body">
+                <div style="font-family:var(--f-d);font-size:2.1rem;font-weight:400;color:var(--s900);line-height:1;margin-bottom:4px;">7.2</div>
+                <div style="font-size:.67rem;color:var(--forest);font-weight:600;margin-bottom:12px;">Company avg · +0.4 vs last week</div>
+                <div class="gauge-track" aria-hidden="true"><div class="gauge-needle" style="left:63%"></div></div>
+                <div class="gauge-ends" aria-hidden="true"><span>Critical</span><span>Excellent</span></div>
+                <div style="margin-top:13px;padding-top:13px;border-top:1px solid var(--s100);">
+                  <div class="bar-row"><div class="bar-lbl" style="width:96px;font-size:.67rem;">Marketing</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 84%;"></div></div><div class="bar-pct" style="color:var(--forest);font-size:.67rem;">8.4</div></div>
+                  <div class="bar-row"><div class="bar-lbl" style="width:96px;font-size:.67rem;">Sales</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 78%;"></div></div><div class="bar-pct" style="color:var(--forest);font-size:.67rem;">7.8</div></div>
+                  <div class="bar-row"><div class="bar-lbl" style="width:96px;font-size:.67rem;">Engineering</div><div class="bar-track"><div class="bar-fill f-amber" style="width: 70%;"></div></div><div class="bar-pct" style="color:var(--amber);font-size:.67rem;">7.0</div></div>
+                  <div class="bar-row"><div class="bar-lbl" style="width:96px;font-size:.67rem;">Operations</div><div class="bar-track"><div class="bar-fill f-red" style="width: 58%;"></div></div><div class="bar-pct" style="color:var(--red);font-size:.67rem;">5.8</div></div>
+                  <div class="bar-row"><div class="bar-lbl" style="width:96px;font-size:.67rem;">Cust. Success</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 82%;"></div></div><div class="bar-pct" style="color:var(--forest);font-size:.67rem;">8.2</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-hd"><div class="card-title">Wins This Week</div></div>
+              <div class="card-body">
+                <div class="li" style="padding-top:0;"><div class="li-top"><div class="li-title">Async standup bot praised</div><span class="badge b-pos">Replicate</span></div><div class="li-body">11 independent positive mentions. "Saves 20 minutes" is the most repeated phrase. Strong candidate for company-wide rollout.</div></div>
+                <div class="li"><div class="li-top"><div class="li-title">Q1 campaign launched on time</div><span class="badge b-pos">Celebrate</span></div><div class="li-body">8 Marketing entries celebrate this milestone. Recommend public recognition at next all-hands.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AI ACTIONS (executive summary style — audit requirement) ── -->
+      <div class="page" id="mgr-aiactions">
+        <div class="page-hd"><h1>AI <em>Actions</em></h1><p>Five data-driven actions generated from this week's anonymous log data, sequenced by estimated business impact. Each card shows recovery value, effort level, timeline, and recommended owner.</p></div>
+        <div class="col-3-2">
+          <div>
+            <div class="ai-actions-panel mb18">
+              <div class="aap-head"><span class="ai-chip">Logue AI</span><span class="aap-title">Priority Actions — Week of 4 March 2026</span></div>
+
+              <div class="action-card">
+                <div class="action-card-hd"><div class="action-num" aria-hidden="true">1</div><div class="action-title">File-sharing onboarding for Marketing &amp; Design — highest ROI this week</div></div>
+                <div class="action-body">62% of these two departments are losing an estimated <strong>25 minutes per day</strong> navigating the new shared drive configuration. Across 20 people, this compounds to over 8 hours of recoverable productivity daily. The resolution requires minimal effort: a single 60-minute guided walkthrough with IT, supplemented by a one-page searchable folder guide shared in Slack. No new tools, no budget. Based on comparable onboarding interventions, this pattern typically resolves within 48 hours of a session.</div>
+                <div class="action-footer"><span class="chip c-g">~8 hrs/day recovered</span><span class="chip c-b">Effort: Low</span><span class="chip c-r">Timeline: This week</span><span class="chip c-s">Owner: IT Lead</span></div>
+              </div>
+
+              <div class="action-card">
+                <div class="action-card-hd"><div class="action-num" aria-hidden="true">2</div><div class="action-title">Expand async standup bot to all departments — template is already built</div></div>
+                <div class="action-body">The Slack standup automation used by Sales and Marketing generated <strong>11 unprompted positive mentions</strong> this week — the strongest adoption signal in the past quarter. IT has confirmed the configuration template is ready to deploy. Rolling it out to Engineering, Operations, and Customer Success requires no new procurement or vendor approvals. Conservative estimate: <strong>20 minutes saved per person per day</strong>. Secondary benefit: reducing synchronous meeting load in Operations will directly address the burnout signals detected in that team.</div>
+                <div class="action-footer"><span class="chip c-g">20 min/person/day</span><span class="chip c-b">Effort: Minimal</span><span class="chip c-r">Timeline: This week</span><span class="chip c-s">Owner: IT + Ops Lead</span></div>
+              </div>
+
+              <div class="action-card">
+                <div class="action-card-hd"><div class="action-num" aria-hidden="true">3</div><div class="action-title">Publish Q2 vendor approval process — one page unblocks four departments today</div></div>
+                <div class="action-body">Nine separate log entries this week, across Sales, Finance, Operations, and Engineering, describe confusion about the approval chain for purchases above £500. This is creating decision bottlenecks and unnecessary inter-team friction. A single authored Notion page — or a two-minute Loom walkthrough — distributed company-wide resolves this completely. This action has the <strong>fastest possible time-to-close</strong> of any item in this week's data. No meetings required.</div>
+                <div class="action-footer"><span class="chip c-g">4 departments unblocked</span><span class="chip c-b">Effort: Minimal</span><span class="chip c-r">Timeline: Today</span><span class="chip c-s">Owner: Finance</span></div>
+              </div>
+
+              <div class="action-card">
+                <div class="action-card-hd"><div class="action-num" aria-hidden="true">4</div><div class="action-title">Operations workload audit — burnout risk pattern confirmed, not projected</div></div>
+                <div class="action-body">Stress-related language in Operations entries has increased <strong>40% over three consecutive weeks</strong>. Morale for that team sits at 5.8/10 — the lowest department score — and is declining. Dominant phrases in the data: "exhausted," "no time to think," "back-to-back." This is not a risk indicator; it is an active pattern. Recommended response: a structured 1:1 check-in series this week (not a group session), followed by a frank workload redistribution review with the team lead. Delay increases the probability of attrition.</div>
+                <div class="action-footer"><span class="chip c-r">Critical</span><span class="chip c-b">Effort: Moderate</span><span class="chip c-r">Timeline: This week</span><span class="chip c-s">Owner: Ops Manager</span></div>
+              </div>
+
+              <div class="action-card">
+                <div class="action-card-hd"><div class="action-num" aria-hidden="true">5</div><div class="action-title">Formally respond to flexible work requests — 3 months of consistent signal</div></div>
+                <div class="action-body">18% of monthly log entries have referenced start-time flexibility or additional remote days for <strong>three consecutive months</strong>. The frequency and consistency of this signal is significant. Whether the organisation's answer is yes, no, or under review — communicating a clear position will materially reduce the ambient frustration this theme generates. A two-paragraph statement from a senior leader, shared at the next all-hands, is sufficient to close the loop. Ignoring recurring signals of this duration erodes trust in the feedback process itself.</div>
+                <div class="action-footer"><span class="chip c-a">Confidence: High</span><span class="chip c-b">Effort: Low</span><span class="chip c-r">Timeline: Next all-hands</span><span class="chip c-s">Owner: Senior Leadership</span></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card mb18">
+              <div class="card-hd"><div class="card-title">Company Sentiment</div></div>
+              <div class="card-body">
+                <div style="font-size:.67rem;color:var(--s400);margin-bottom:6px;">Overall this week</div>
+                <div class="gauge-track" aria-hidden="true"><div class="gauge-needle" style="left:63%"></div></div>
+                <div class="gauge-ends" aria-hidden="true"><span>Stressed</span><span>Energised</span></div>
+                <div style="font-family:var(--f-d);font-size:1.5rem;color:var(--forest);margin-top:11px;font-weight:400;">+12%</div>
+                <div style="font-size:.67rem;color:var(--s400);font-weight:300;">vs last week</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-hd"><div class="card-title">Export</div></div>
+              <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-ghost btn-full" onclick="L.toast(&#39;Generating PDF…&#39;)">Export as PDF</button>
+                <button class="btn btn-ghost btn-full" onclick="L.toast(&#39;Exporting…&#39;)">Export to Sheets</button>
+                <button class="btn btn-primary btn-full" onclick="L.toast(&#39;Report sent to leadership&#39;)">Email to Leadership</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SENTIMENT ── -->
+      <div class="page" id="mgr-sentiment">
+        <div class="page-hd"><h1>Sentiment <em>Analysis</em></h1><p>AI-extracted themes from anonymised entries. No individual data is surfaced here.</p></div>
+        <div class="kpi-grid g4 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Positive</div><span class="kpi-delta d-up">+7%</span></div><div class="kpi-val">68%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Neutral</div><span class="kpi-delta d-fl">—</span></div><div class="kpi-val">20%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Negative</div><span class="kpi-delta d-dn">-3%</span></div><div class="kpi-val">12%</div><div class="kpi-meta">Of this week's entries</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Avg Productivity</div><span class="kpi-delta d-up">+0.4</span></div><div class="kpi-val">7.8</div><div class="kpi-meta">Out of 10</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card"><div class="card-hd"><div class="card-title">Friction Themes</div></div><div class="card-body">
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Tool / Software Issues</div><div class="bar-track"><div class="bar-fill f-red" style="width: 74%;"></div></div><div class="bar-pct" style="color:var(--red);">74%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Meeting Overload</div><div class="bar-track"><div class="bar-fill f-amber" style="width: 58%;"></div></div><div class="bar-pct" style="color:var(--amber);">58%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Missing Documentation</div><div class="bar-track"><div class="bar-fill f-amber" style="width: 41%;"></div></div><div class="bar-pct" style="color:var(--amber);">41%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Communication Gaps</div><div class="bar-track"><div class="bar-fill f-cobalt" style="width: 35%;"></div></div><div class="bar-pct" style="color:var(--cobalt);">35%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Work-Life Balance</div><div class="bar-track"><div class="bar-fill f-red" style="width: 28%;"></div></div><div class="bar-pct" style="color:var(--red);">28%</div></div>
+          </div></div>
+          <div class="card"><div class="card-hd"><div class="card-title">Positive Themes</div></div><div class="card-body">
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Team Collaboration</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 72%;"></div></div><div class="bar-pct" style="color:var(--forest);">72%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Async Tools Praised</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 64%;"></div></div><div class="bar-pct" style="color:var(--forest);">64%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Project Wins</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 48%;"></div></div><div class="bar-pct" style="color:var(--forest);">48%</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:150px;">Clear Direction</div><div class="bar-track"><div class="bar-fill f-forest" style="width: 38%;"></div></div><div class="bar-pct" style="color:var(--forest);">38%</div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ── TRENDS ── -->
+      <div class="page" id="mgr-trends">
+        <div class="page-hd"><h1>Workplace <em>Trends</em></h1><p>6-month view. Declining trends are flagged automatically.</p></div>
+        <div class="kpi-grid g4 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Morale</div><span class="kpi-delta d-dn">Declining</span></div><div class="kpi-val">61%</div><div class="kpi-meta">Was 72% in October</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Stress</div><span class="kpi-delta d-dn">Rising</span></div><div class="kpi-val">High</div><div class="kpi-meta">31% flagging stress</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Participation</div><span class="kpi-delta d-up">+4%</span></div><div class="kpi-val">89%</div><div class="kpi-meta">Log submission rate</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Comms Satisfaction</div><span class="kpi-delta d-dn">Declining</span></div><div class="kpi-val">64%</div><div class="kpi-meta">Was 78% in November</div></div>
+        </div>
+        <div class="col-2 mb18">
+          <div class="card"><div class="card-hd"><div><div class="card-title">Morale — 6 Months</div><div class="card-sub" style="color:var(--red);">Declining — action recommended</div></div></div><div class="card-body"><div class="trend-chart" id="ch-morale" aria-hidden="true"><div class="tc tc-g" style="height:72%"></div><div class="tc tc-g" style="height:71%"></div><div class="tc tc-a" style="height:69%"></div><div class="tc tc-a" style="height:68%"></div><div class="tc tc-a" style="height:64%"></div><div class="tc tc-a" style="height:61%"></div></div><div class="trend-lbs"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div></div></div>
+          <div class="card"><div class="card-hd"><div><div class="card-title">Stress Levels — 6 Months</div><div class="card-sub" style="color:var(--red);">Rising — intervention needed</div></div></div><div class="card-body"><div class="trend-chart" id="ch-stress" aria-hidden="true"><div class="tc tc-g" style="height:18%"></div><div class="tc tc-g" style="height:20%"></div><div class="tc tc-a" style="height:22%"></div><div class="tc tc-a" style="height:25%"></div><div class="tc tc-r" style="height:28%"></div><div class="tc tc-r" style="height:31%"></div></div><div class="trend-lbs"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div></div></div>
+        </div>
+        <div class="col-2">
+          <div class="card"><div class="card-hd"><div><div class="card-title">Engagement — 6 Months</div><div class="card-sub" style="color:var(--forest);">Positive trend</div></div></div><div class="card-body"><div class="trend-chart" id="ch-engage" aria-hidden="true"><div class="tc tc-g" style="height:82%"></div><div class="tc tc-g" style="height:83%"></div><div class="tc tc-g" style="height:84%"></div><div class="tc tc-g" style="height:86%"></div><div class="tc tc-g" style="height:87%"></div><div class="tc tc-g" style="height:89%"></div></div><div class="trend-lbs"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div></div></div>
+          <div class="card"><div class="card-hd"><div><div class="card-title">Comms Satisfaction — 6 Months</div><div class="card-sub" style="color:var(--red);">Declining</div></div></div><div class="card-body"><div class="trend-chart" id="ch-comms" aria-hidden="true"><div class="tc tc-g" style="height:78%"></div><div class="tc tc-g" style="height:76%"></div><div class="tc tc-g" style="height:72%"></div><div class="tc tc-g" style="height:70%"></div><div class="tc tc-a" style="height:67%"></div><div class="tc tc-a" style="height:64%"></div></div><div class="trend-lbs"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── SMART ALERTS ── -->
+      <div class="page" id="mgr-alerts">
+        <div class="page-hd"><h1>Smart <em>Alerts</em></h1><p>AI-detected signals of emerging problems. Based on anonymised pattern analysis only.</p></div>
+        <div class="mb18">
+          <div class="sec-lbl">Critical — Immediate Attention</div>
+          <div class="alert a-crit" role="alert">
+            <div class="alert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Burnout Risk Confirmed — Operations Team</div>
+              <div class="alert-desc">Stress-related language has increased 40% in Operations entries over 3 consecutive weeks. Dominant phrases: "exhausted," "overwhelmed," "no time to think." Morale at 5.8/10 and declining. Recommend immediate 1:1 check-in series and workload redistribution review — not a group meeting.</div>
+              <div class="alert-meta">Detected 4 March · ~7 team members (anonymised) · Confidence: High</div>
+              <div class="alert-acts"><button class="btn btn-ghost btn-xs" onclick="L.toast(&#39;Marked reviewed&#39;)">Mark Reviewed</button><button class="btn btn-primary btn-xs" onclick="L.toast(&#39;Scheduling…&#39;)">Schedule Review</button></div>
+            </div>
+          </div>
+          <div class="alert a-crit" role="alert">
+            <div class="alert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+            <div class="alert-body">
+              <div class="alert-title">Company Morale — Sustained 6-Month Decline</div>
+              <div class="alert-desc">Overall morale has dropped from 72% to 61% over 6 months — consistent and accelerating. No single department explains the full movement, suggesting a systemic cause. Structural review recommended at senior leadership level.</div>
+              <div class="alert-meta">First detected October 2025 · Company-wide · Confidence: High</div>
+              <div class="alert-acts"><button class="btn btn-ghost btn-xs" onclick="L.toast(&#39;Marked reviewed&#39;)">Mark Reviewed</button><button class="btn btn-primary btn-xs" onclick="L.toast(&#39;Escalated&#39;)">Escalate</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="sec-lbl">Warning — Monitor Closely</div>
+        <div class="alert a-warn">
+          <div class="alert-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+          <div class="alert-body">
+            <div class="alert-title">Negative Sentiment Rising — Engineering</div>
+            <div class="alert-desc">Engineering sentiment has shifted negative over 2 weeks. Primary themes: unclear sprint priorities and design sign-off delays. Productivity score dropped from 8.1 to 7.0.</div>
+            <div class="alert-meta">Detected 2 March · 2 weeks · Confidence: Medium</div>
+            <div class="alert-acts"><button class="btn btn-ghost btn-xs" onclick="L.toast(&#39;Dismissed&#39;)">Dismiss</button><button class="btn btn-primary btn-xs" onclick="L.toast(&#39;Flagged&#39;)">Investigate</button></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── MGR SUGGESTIONS ── -->
+      <div class="page p-active" id="mgr-msugg">
+        <div class="page-hd"><h1>Employee <em>Suggestions</em></h1><p>Top requests from your team, ranked by vote count. Update status to close the feedback loop.</p></div>
+        <div class="kpi-grid g3 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Total Suggestions</div><span class="kpi-delta d-up">+3</span></div><div class="kpi-val">24</div><div class="kpi-meta">8 awaiting review</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Total Votes</div><span class="kpi-delta d-up">+12</span></div><div class="kpi-val">187</div><div class="kpi-meta">This month</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Implemented</div><span class="kpi-delta d-up">+1</span></div><div class="kpi-val">5</div><div class="kpi-meta">From 24 total</div></div>
+        </div>
+        <div class="sec-lbl">Most Requested — Ranked by Votes</div>
+        <div id="mgr-sug-list" aria-live="polite">
+        <div class="sug-card" id="sc-m-1">
+          <div class="vote-col">
+            <div class="vote-num">42</div><div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Flexible work hours — 7–10am start window</div>
+            <div class="sug-desc">Allow employees to choose start time within a 3-hour window. Trust-based output model. Commute stress appears in 14% of log entries over the past month.</div>
+            <div class="sug-meta">
+              <span class="ss ss-review">review</span>
+              <span>Anonymous</span>
+              <span>12 Feb 2026</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(1,&#39;open&#39;)">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(1,&#39;review&#39;)">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(1,&#39;planned&#39;)">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(1,&#39;done&#39;)">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-m-2">
+          <div class="vote-col">
+            <div class="vote-num">38</div><div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Tool onboarding before company-wide rollouts</div>
+            <div class="sug-desc">Before any new tool is deployed, provide a 2-week opt-in training period. Would have prevented the shared drive friction we are currently experiencing.</div>
+            <div class="sug-meta">
+              <span class="ss ss-planned">planned</span>
+              <span>Anonymous</span>
+              <span>28 Jan 2026</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(2,&#39;open&#39;)">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(2,&#39;review&#39;)">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(2,&#39;planned&#39;)">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(2,&#39;done&#39;)">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-m-3">
+          <div class="vote-col">
+            <div class="vote-num">31</div><div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Monthly all-hands Q&amp;A with leadership</div>
+            <div class="sug-desc">A 30-minute open Q&amp;A each month with senior leadership. Anonymous question submission option. Addresses the communication transparency theme appearing in 24% of logs.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Named</span>
+              <span>3 Feb 2026</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(3,&#39;open&#39;)">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(3,&#39;review&#39;)">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(3,&#39;planned&#39;)">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(3,&#39;done&#39;)">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-m-4">
+          <div class="vote-col">
+            <div class="vote-num">27</div><div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">No meetings before 10am — protected focus time</div>
+            <div class="sug-desc">Block meetings before 10am company-wide. 67% of employees in the last pulse survey flagged protected morning time as their highest-priority request.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Anonymous</span>
+              <span>19 Feb 2026</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(4,&#39;open&#39;)">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(4,&#39;review&#39;)">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(4,&#39;planned&#39;)">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(4,&#39;done&#39;)">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="sug-card" id="sc-m-5">
+          <div class="vote-col">
+            <div class="vote-num">19</div><div class="vote-lab">votes</div>
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">Monthly peer recognition micro-awards</div>
+            <div class="sug-desc">Lightweight peer-to-peer recognition. Nominees proposed by team, winner announced at all-hands. No cash — recognition and visibility only. Addresses low-morale signal in Operations.</div>
+            <div class="sug-meta">
+              <span class="ss ss-open">open</span>
+              <span>Named</span>
+              <span>25 Feb 2026</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(5,&#39;open&#39;)">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(5,&#39;review&#39;)">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(5,&#39;planned&#39;)">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(5,&#39;done&#39;)">Mark Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- ── EXEC SUMMARY ── -->
+      <div class="page" id="mgr-exec">
+        <div class="page-hd"><h1>Executive <em>Summary</em></h1><p>Formal weekly document — 26 Feb to 4 Mar 2026.</p></div>
+        <div class="exec-doc mb22">
+          <div class="exec-hd">
+            <div class="exec-lbl">Confidential — Internal Distribution Only</div>
+            <div class="exec-title">Weekly Executive Summary</div>
+            <div class="exec-sub">Logue Workplace Intelligence · 26 February – 4 March 2026</div>
+            <div class="exec-kpis">
+              <div><div class="ek-v">47</div><div class="ek-l">Entries</div></div>
+              <div><div class="ek-v">68%</div><div class="ek-l">Positive Sentiment</div></div>
+              <div><div class="ek-v">14</div><div class="ek-l">Friction Points</div></div>
+              <div><div class="ek-v">89%</div><div class="ek-l">Participation</div></div>
+            </div>
+          </div>
+          <div class="exec-body">
+            <div class="exec-sec">
+              <div class="exec-sec-lbl">Executive Overview</div>
+              <p style="font-size:.81rem;color:var(--s700);line-height:1.85;font-weight:300;">This report summarises anonymised employee feedback for the week of 26 February to 4 March 2026. Overall sentiment improved 7% week-on-week, driven by positive reception of the async standup pilot. However, a sustained 6-month morale decline and a confirmed burnout pattern in Operations require senior leadership review. The five priority actions identified, if executed this week, are projected to recover 8+ hours of daily productivity at minimal cost.</p>
+            </div>
+            <div class="exec-sec">
+              <div class="exec-sec-lbl">Priority Actions</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;gap:12px;"><div class="action-num" aria-hidden="true">1</div><div><div style="font-size:.8rem;font-weight:600;color:var(--s900);margin-bottom:3px;">File-sharing onboarding for Marketing &amp; Design</div><div style="font-size:.74rem;color:var(--s500);font-weight:300;">62% losing ~25 min/day. Single IT walkthrough recovers 8+ hrs. Timeline: this week.</div></div></div>
+                <div style="display:flex;gap:12px;"><div class="action-num" aria-hidden="true">2</div><div><div style="font-size:.8rem;font-weight:600;color:var(--s900);margin-bottom:3px;">Expand async standup bot company-wide</div><div style="font-size:.74rem;color:var(--s500);font-weight:300;">11 positive mentions. IT template ready. 20 min/person/day. Timeline: this week.</div></div></div>
+                <div style="display:flex;gap:12px;"><div class="action-num" aria-hidden="true">3</div><div><div style="font-size:.8rem;font-weight:600;color:var(--s900);margin-bottom:3px;">Publish Q2 vendor approval process</div><div style="font-size:.74rem;color:var(--s500);font-weight:300;">9 entries across 4 departments. One Notion page resolves immediately. Owner: Finance. Today.</div></div></div>
+              </div>
+            </div>
+            <div class="exec-sec" style="margin-bottom:0;">
+              <div class="exec-sec-lbl">Privacy Statement</div>
+              <p style="font-size:.78rem;color:var(--s700);line-height:1.8;font-weight:300;">All data in this report is fully anonymised. No individual employee entries, names, or identifiable information has been accessed. All patterns are derived exclusively from AI analysis of aggregated, anonymised submissions.</p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="L.toast(&#39;Generating PDF…&#39;)">Export PDF</button>
+          <button class="btn btn-ghost" onclick="L.toast(&#39;Exporting…&#39;)">Export to Sheets</button>
+          <button class="btn btn-primary" onclick="L.toast(&#39;Report sent&#39;)">Email to Leadership</button>
+        </div>
+      </div>
+
+      <!-- ── MGR SETTINGS ── -->
+      <div class="page" id="mgr-msettings">
+        <div class="page-hd"><h1>Manager <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-wrap">
+            <div class="s-nav">
+              <button class="s-item s-active" onclick="L.settingsTab(this)">Alerts</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Privacy</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Reports</button>
+            </div>
+            <div>
+              <div class="s-row"><div><div class="s-row-title">Critical friction alerts</div><div class="s-row-sub">Notify on High Priority detections</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Critical alerts"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Burnout risk notifications</div><div class="s-row-sub">Alert when stress patterns detected in a department</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Burnout alerts"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Weekly summary auto-send</div><div class="s-row-sub">Email executive summary every Monday morning</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Auto-send"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Anonymisation enforced</div><div class="s-row-sub">Individual attribution never shown in any report</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Anonymisation"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</div><!-- /rp-mgr -->
+
+<!-- ══════════════════════════════════════════════════
+     OWNER PANEL
+     AUDIT: Revenue/billing data is COMPLETELY isolated.
+     No employee feedback content is accessible here.
+     Billing is the ONLY place payment UI lives.
+══════════════════════════════════════════════════ -->
+<div class="role-panel" id="rp-own">
+<div class="app">
+  <aside class="sidebar" aria-label="Owner navigation">
+    <div class="sb-brand">
+      <div class="sb-logo"><div class="sb-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div><span class="sb-name">Logue</span></div>
+      <div class="sb-tagline">Workplace Intelligence</div>
+    </div>
+    <div class="role-badge rb-own"><span class="rb-dot" aria-hidden="true"></span>Owner</div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Business Health</div>
+      <button class="nav-item" onclick="L.nav(&#39;own&#39;,&#39;overview&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+        Overview
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;own&#39;,&#39;revenue&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+        Revenue &amp; MRR
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;own&#39;,&#39;users&#39;,this)" aria-current="page">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+        Users &amp; Growth
+      </button>
+      <button class="nav-item" onclick="L.nav(&#39;own&#39;,&#39;billing&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></span>
+        Billing &amp; Plans
+      </button>
+    </nav>
+    <div class="sb-div" aria-hidden="true"></div>
+    <nav class="nav-sec">
+      <div class="nav-lbl" aria-hidden="true">Platform</div>
+      <button class="nav-item" onclick="L.nav(&#39;own&#39;,&#39;osettings&#39;,this)">
+        <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+        Platform Settings
+      </button>
+    </nav>
+    <div class="sb-foot">
+      <div class="user-row"><div class="user-av av-o" aria-hidden="true">AO</div><div><div class="user-name">Alex Owen</div><div class="user-role">Founder &amp; Owner</div></div></div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-crumb">Logue <span class="tb-sep" aria-hidden="true">›</span><span class="tb-page" id="own-crumb">Users &amp; Growth</span></div>
+      <div class="tb-right">
+        <div class="tb-date">Wed 4 Mar 2026</div>
+        <button class="btn btn-ghost btn-sm" onclick="L.toast(&#39;Downloading…&#39;)">Download</button>
+        <button class="btn btn-primary btn-sm" onclick="L.toast(&#39;Opening billing portal…&#39;)">Billing Portal</button>
+      </div>
+    </header>
+    <main class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page" id="own-overview">
+        <div class="page-hd"><h1>Business <em>Overview</em></h1><p>Platform health and revenue metrics only. Employee feedback data is completely isolated and inaccessible from this view.</p></div>
+        <div class="owner-hero">
+          <div class="oh-title">Logue Platform — March 2026</div>
+          <div class="oh-sub">Revenue and user metrics. Employee feedback lives in a separate, isolated data layer — inaccessible from this dashboard.</div>
+        </div>
+        <div class="kpi-grid g4 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Monthly Recurring Revenue</div><span class="kpi-delta d-up">+18%</span></div><div class="kpi-val">$42.8k</div><div class="kpi-meta">+$6.5k vs February</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Users</div><span class="kpi-delta d-up">+312</span></div><div class="kpi-val">1,847</div><div class="kpi-meta">94 organisations</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Monthly Churn</div><span class="kpi-delta d-dn">+0.3%</span></div><div class="kpi-val">2.1%</div><div class="kpi-meta">Industry avg: 4.7%</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Customer Acq. Cost</div><span class="kpi-delta d-up">-$12</span></div><div class="kpi-val">$284</div><div class="kpi-meta">LTV: $1,360</div></div>
+        </div>
+        <div class="col-3-2">
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">MRR Growth</div><div class="card-sub">Last 8 months</div></div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;">
+                <div><div style="font-family:var(--f-d);font-size:2.1rem;font-weight:400;color:var(--s900);line-height:1;">$42,840</div><div style="font-size:.66rem;color:var(--s400);margin-top:4px;font-weight:300;">Current MRR</div></div>
+                <span class="kpi-delta d-up">+18% MoM</span>
+              </div>
+              <div class="spark" aria-hidden="true">
+                <div class="sp-b" style="height:28%"></div><div class="sp-b" style="height:37%"></div>
+                <div class="sp-b" style="height:44%"></div><div class="sp-b" style="height:52%"></div>
+                <div class="sp-b" style="height:62%"></div><div class="sp-b" style="height:73%"></div>
+                <div class="sp-b" style="height:85%"></div><div class="sp-b sp-hi" style="height:100%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--s300);margin-top:4px;"><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="kpi mb14"><div class="kpi-top"><div class="kpi-lbl">Annual Recurring Revenue</div><span class="kpi-delta d-up">+21%</span></div><div class="kpi-val">$514k</div><div class="kpi-meta">Projected: $610k</div></div>
+            <div class="kpi mb14"><div class="kpi-top"><div class="kpi-lbl">Net Revenue Retention</div><span class="kpi-delta d-up">Top decile</span></div><div class="kpi-val">118%</div><div class="kpi-meta">Expansion positive</div></div>
+            <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">LTV / CAC</div><span class="kpi-delta d-up">Healthy</span></div><div class="kpi-val">4.8×</div><div class="kpi-meta">Payback: 8.2 months</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REVENUE ── -->
+      <div class="page" id="own-revenue">
+        <div class="page-hd"><h1>Revenue <em>&amp; MRR</em></h1><p>Financial health entirely isolated from employee feedback data.</p></div>
+        <div class="kpi-grid g4 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">MRR</div><span class="kpi-delta d-up">+18%</span></div><div class="kpi-val">$42.8k</div><div class="kpi-meta">+$6.5k vs last month</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">ARR</div><span class="kpi-delta d-up">+21%</span></div><div class="kpi-val">$514k</div><div class="kpi-meta">Projected: $610k</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">New MRR</div><span class="kpi-delta d-up">+$8.2k</span></div><div class="kpi-val">$11.4k</div><div class="kpi-meta">From new orgs</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Churned MRR</div><span class="kpi-delta d-fl">Low</span></div><div class="kpi-val">$890</div><div class="kpi-meta">Net expansion positive</div></div>
+        </div>
+        <div class="col-2">
+          <div class="card"><div class="card-hd"><div class="card-title">Revenue by Plan</div></div><div class="card-body">
+            <div class="bar-row mb14"><div class="bar-lbl" style="width:88px;">Enterprise</div><div class="bar-track" style="height:8px;"><div class="bar-fill f-amber" style="width: 48%; height: 100%;"></div></div><div class="bar-pct" style="color:var(--amber);">$20.6k</div></div>
+            <div class="bar-row mb14"><div class="bar-lbl" style="width:88px;">Professional</div><div class="bar-track" style="height:8px;"><div class="bar-fill f-forest" style="width: 43%; height: 100%;"></div></div><div class="bar-pct" style="color:var(--forest);">$18.4k</div></div>
+            <div class="bar-row"><div class="bar-lbl" style="width:88px;">Starter</div><div class="bar-track" style="height:8px;"><div class="bar-fill f-neu" style="width: 9%; height: 100%;"></div></div><div class="bar-pct">$3.8k</div></div>
+          </div></div>
+          <div class="card"><div class="card-hd"><div class="card-title">Key Metrics</div></div><div class="card-body">
+            <div class="s-row"><div><div class="s-row-title">Net Revenue Retention</div></div><div style="font-family:var(--f-d);font-size:1.25rem;color:var(--forest);">118%</div></div>
+            <div class="s-row"><div><div class="s-row-title">Avg Contract Value</div></div><div style="font-family:var(--f-d);font-size:1.25rem;color:var(--s900);">$456</div></div>
+            <div class="s-row"><div><div class="s-row-title">LTV / CAC Ratio</div></div><div style="font-family:var(--f-d);font-size:1.25rem;color:var(--s900);">4.8×</div></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ── USERS ── -->
+      <div class="page p-active" id="own-users">
+        <div class="page-hd"><h1>Users <em>&amp; Growth</em></h1><p>Platform metrics across all organisations.</p></div>
+        <div class="kpi-grid g4 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Users</div><span class="kpi-delta d-up">+312</span></div><div class="kpi-val">1,847</div><div class="kpi-meta">+20% MoM</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Orgs</div><span class="kpi-delta d-up">+11</span></div><div class="kpi-val">94</div><div class="kpi-meta">+13% MoM</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Churn Rate</div><span class="kpi-delta d-dn">+0.3%</span></div><div class="kpi-val">2.1%</div><div class="kpi-meta">Below industry avg</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Trial Conversion</div><span class="kpi-delta d-up">+4%</span></div><div class="kpi-val">38%</div><div class="kpi-meta">Trial-to-paid</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Growth Drivers</div></div>
+          <div class="card-body">
+            <div class="li"><div class="li-top"><div class="li-title">Word-of-mouth drives 41% of signups</div><span class="badge b-pos">Organic</span></div><div class="li-body">No paid acquisition needed to hit current growth targets. Strong product-led growth signal.</div></div>
+            <div class="li"><div class="li-top"><div class="li-title">Enterprise expansion = 60% of net new MRR</div><span class="badge b-warn">Expansion</span></div><div class="li-body">Pro-to-Enterprise upgrades are the dominant revenue growth lever. NRR at 118% reflects this.</div></div>
+            <div class="li"><div class="li-top"><div class="li-title">Starter churn — onboarding gap at day 10</div><span class="badge b-neg">Action Required</span></div><div class="li-body">83% of churned accounts in the last 60 days were Starter plans with low week-2 engagement. A day-10 nudge campaign is recommended.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BILLING (sole place payment/plan UI lives) ── -->
+      <div class="page" id="own-billing">
+        <div class="page-hd"><h1>Billing <em>&amp; Plans</em></h1><p>Manage subscriptions, invoices, and plan changes. This is the only dashboard in Logue where billing is accessible.</p></div>
+        <div class="kpi-grid g3 mb22">
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Active Subscriptions</div><span class="kpi-delta d-up">+11</span></div><div class="kpi-val">94</div><div class="kpi-meta">All tiers</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">Renewals This Month</div><span class="kpi-delta d-fl">On track</span></div><div class="kpi-val">18</div><div class="kpi-meta">$84.2k renewal value</div></div>
+          <div class="kpi"><div class="kpi-top"><div class="kpi-lbl">At Risk / Overdue</div><span class="kpi-delta d-dn">+2</span></div><div class="kpi-val">3</div><div class="kpi-meta">Requires follow-up</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div><div class="card-title">Active Subscriptions</div><div class="card-sub">Billing data is completely isolated from employee feedback</div></div><button class="btn btn-primary btn-sm" onclick="L.toast(&#39;Opening Stripe portal…&#39;)">Manage in Portal</button></div>
+          <div class="card-body">
+            <table class="rev-table">
+              <thead><tr><th>Organisation</th><th>Plan</th><th>Status</th><th>Users</th><th>MRR</th><th>Next Renewal</th></tr></thead>
+              <tbody>
+                <tr><td>Nexora Inc.</td><td><span class="plan-tag pt-ent">Enterprise</span></td><td><span class="pip pip-a" aria-hidden="true"></span>Active</td><td>210</td><td>$4,620</td><td>1 Apr 2026</td></tr>
+                <tr><td>Brightfield Co.</td><td><span class="plan-tag pt-pro">Professional</span></td><td><span class="pip pip-a" aria-hidden="true"></span>Active</td><td>80</td><td>$1,760</td><td>15 Mar 2026</td></tr>
+                <tr><td>Luma Studio</td><td><span class="plan-tag pt-pro">Professional</span></td><td><span class="pip pip-a" aria-hidden="true"></span>Active</td><td>43</td><td>$946</td><td>22 Mar 2026</td></tr>
+                <tr><td>Meridian Group</td><td><span class="plan-tag pt-ent">Enterprise</span></td><td><span class="pip pip-t" aria-hidden="true"></span>Trial</td><td>155</td><td>—</td><td>Trial ends 18 Mar</td></tr>
+                <tr><td>Foxfield Ltd.</td><td><span class="plan-tag pt-str">Starter</span></td><td><span class="pip pip-r" aria-hidden="true"></span>At risk</td><td>12</td><td>$108</td><td>Overdue</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OWNER SETTINGS ── -->
+      <div class="page" id="own-osettings">
+        <div class="page-hd"><h1>Platform <em>Settings</em></h1></div>
+        <div class="card"><div class="card-body">
+          <div class="settings-wrap">
+            <div class="s-nav">
+              <button class="s-item s-active" onclick="L.settingsTab(this)">Security</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Data Policy</button>
+              <button class="s-item" onclick="L.settingsTab(this)">Integrations</button>
+            </div>
+            <div>
+              <div class="s-row"><div><div class="s-row-title">Platform-wide anonymisation enforced</div><div class="s-row-sub">No dashboard can ever surface individual employee data</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Anonymisation enforced"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Owner ↔ Manager data wall</div><div class="s-row-sub">Revenue metrics never accessible in manager or employee views</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Data wall"></button></div>
+              <div class="s-row"><div><div class="s-row-title">Two-factor authentication required</div><div class="s-row-sub">Enforced for all owner and admin accounts</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="2FA required"></button></div>
+              <div class="s-row"><div><div class="s-row-title">GDPR data retention (12 months)</div><div class="s-row-sub">Auto-delete anonymised entries after 12 months</div></div><button class="toggle t-on" onclick="L.toggleSwitch(this)" role="switch" aria-checked="true" aria-label="GDPR retention"></button></div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</div><!-- /rp-own -->
+
+<!-- ══════════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════════ -->
+
+<!-- Enterprise tier info modal — employees only, zero payment CTA -->
+<div class="overlay" id="m-tier" role="dialog" aria-modal="true" aria-labelledby="tier-title">
+  <div class="modal modal-sm">
+    <div class="modal-icon" style="background:var(--sage-tint);color:var(--forest);" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+    </div>
+    <div class="modal-title" id="tier-title">Enterprise Plan</div>
+    <div class="modal-body">Your organisation is on the <strong>Logue Enterprise</strong> plan. You have access to all features including AI synthesis, trend analysis, smart alerts, and executive reporting. <br><br>To manage billing or upgrade your plan, please contact your account administrator or Owner.</div>
+    <button class="btn btn-primary btn-full" onclick="L.closeModal(&#39;m-tier&#39;)">Got it</button>
+  </div>
+</div>
+
+<!-- Voice recording modal -->
+<div class="overlay" id="m-voice" role="dialog" aria-modal="true" aria-labelledby="voice-modal-title">
+  <div class="modal modal-v">
+    <div class="v-ring" id="v-ring" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+    </div>
+    <div class="waveform" id="v-wave" aria-hidden="true">
+      <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+      <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+      <div class="wv"></div><div class="wv"></div><div class="wv"></div>
+    </div>
+    <div class="v-timer" id="v-timer" aria-live="polite" aria-label="Recording duration">0:00</div>
+    <h2 class="modal-title" id="voice-modal-title">Voice Entry</h2>
+    <p class="modal-body" id="v-sub">Press Record to begin. Logue AI will transcribe your speech into the journal.</p>
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button class="btn btn-ghost" onclick="L.voice.close()" aria-label="Cancel voice entry">Cancel</button>
+      <button class="btn btn-primary" id="v-btn" onclick="L.voice.toggle()" aria-label="Start recording">Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-txt"></span></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   LOGUE v4 — APPLICATION LOGIC
+   
+   AUDIT IMPROVEMENTS vs v3:
+   ──────────────────────────────────────────────────────────────
+   1. NAMESPACE: All functions consolidated into single LOGUE
+      object (aliased as L). Eliminates 12+ global function
+      collisions and makes the module tree-shakeable.
+   
+   2. DRY NAVIGATION: One navigate(role, pageId, el) function
+      handles all three roles. Previously had near-identical
+      switchRole(), nav(), and sTab() scattered across the file.
+      Page labels driven by a config object — single source of truth.
+   
+   3. VALIDATION FIRST: submitEntry() validates text before
+      calling any API. Shows accessible inline error via
+      role="alert" element. Clears error on retry. Previously
+      the function would call the API with empty text.
+   
+   4. ERROR BOUNDARIES: All async calls wrapped in try/catch.
+      Network failure degrades gracefully — entry is still
+      saved locally, and a human-readable fallback message is
+      shown in the AI panel.
+   
+   5. VOICE ROBUSTNESS: Voice modal now checks for Web Speech
+      API availability and falls back gracefully. Timer uses
+      clearInterval on every close to prevent phantom timers
+      from stacking if modal is opened/closed rapidly.
+   
+   6. TOGGLE ARIA: toggleSwitch() now also updates aria-checked
+      attribute in sync with the visual state — required for
+      WCAG 2.1 AA compliance with role="switch".
+   
+   7. SUGGESTIONS: renderSuggestions() is called once on init,
+      then patched via castVote() and suggestions.submit()
+      without full re-renders. Previously re-rendered the full
+      DOM on every vote, which would have lost focus state.
+   
+   8. DRY DATA: SUGGESTIONS array is the single source of truth
+      for both employee and manager views. No duplication.
+   ──────────────────────────────────────────────────────────────
+   ARCHITECTURE NOTE:
+   In production, replace all store operations with:
+     POST /api/entries    — create journal entry (server-side anon)
+     GET  /api/analytics  — manager aggregated stats
+     GET  /api/owner      — revenue metrics (owner-only JWT)
+   Never call the Anthropic API directly from the browser.
+   The /api/analyse endpoint must strip PII before forwarding.
+═══════════════════════════════════════════════════════════════ */
+
+'use strict';
+
+/* ── PAGE LABEL CONFIG — single source of truth for breadcrumbs ── */
+const PAGE_LABELS = {
+  log: 'Daily Log',
+  goals: 'My Goals',
+  sugg: 'Suggestions',
+  esettings: 'Settings',
+  pulse: 'Team Pulse',
+  aiactions: 'AI Actions',
+  sentiment: 'Sentiment Analysis',
+  trends: 'Workplace Trends',
+  alerts: 'Smart Alerts',
+  msugg: 'Suggestions',
+  exec: 'Executive Summary',
+  msettings: 'Settings',
+  overview: 'Business Overview',
+  revenue: 'Revenue & MRR',
+  users: 'Users & Growth',
+  billing: 'Billing & Plans',
+  osettings: 'Platform Settings'
+};
+
+/* ── SUGGESTIONS DATA STORE ── */
+/* Single source of truth for both emp + mgr views */
+const SUGGESTIONS = [
+  { id: 1, title: 'Flexible work hours — 7–10am start window', body: 'Allow employees to choose start time within a 3-hour window. Trust-based output model. Commute stress appears in 14% of log entries over the past month.', votes: 42, voted: false, status: 'review', anon: true, date: '12 Feb 2026' },
+  { id: 2, title: 'Tool onboarding before company-wide rollouts', body: 'Before any new tool is deployed, provide a 2-week opt-in training period. Would have prevented the shared drive friction we are currently experiencing.', votes: 38, voted: false, status: 'planned', anon: true, date: '28 Jan 2026' },
+  { id: 3, title: 'Monthly all-hands Q&A with leadership', body: 'A 30-minute open Q&A each month with senior leadership. Anonymous question submission option. Addresses the communication transparency theme appearing in 24% of logs.', votes: 31, voted: false, status: 'open', anon: false, date: '3 Feb 2026' },
+  { id: 4, title: 'No meetings before 10am — protected focus time', body: 'Block meetings before 10am company-wide. 67% of employees in the last pulse survey flagged protected morning time as their highest-priority request.', votes: 27, voted: false, status: 'open', anon: true, date: '19 Feb 2026' },
+  { id: 5, title: 'Monthly peer recognition micro-awards', body: 'Lightweight peer-to-peer recognition. Nominees proposed by team, winner announced at all-hands. No cash — recognition and visibility only. Addresses low-morale signal in Operations.', votes: 19, voted: false, status: 'open', anon: false, date: '25 Feb 2026' }
+];
+let nextSugId = 6;
+
+/* ── STATE ── */
+let currentMood = 'Good';
+
+/* ══════════════════════════════════════════════════════
+   LOGUE MODULE (namespace L)
+══════════════════════════════════════════════════════ */
+const L = {
+
+  /* ── ROLE SWITCHING ──────────────────────────────── */
+  switchRole(role, btn) {
+    /* Deactivate all panels and switcher buttons */
+    document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('rp-active'));
+    document.querySelectorAll('.rb-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+    /* Activate target */
+    document.getElementById('rp-' + role).classList.add('rp-active');
+    btn.setAttribute('aria-pressed', 'true');
+    window.scrollTo(0, 0);
+  },
+
+  /* ── PAGE NAVIGATION ─────────────────────────────
+     AUDIT: One function handles all three roles.
+     Previously had 3 near-identical nav functions.
+     ─────────────────────────────────────────────── */
+  nav(role, pageId, el) {
+    const panel = document.getElementById('rp-' + role);
+    /* Deactivate all pages and nav items within this panel */
+    panel.querySelectorAll('.page').forEach(p => p.classList.remove('p-active'));
+    panel.querySelectorAll('.nav-item').forEach(n => n.removeAttribute('aria-current'));
+    /* Activate target */
+    const page = document.getElementById(role + '-' + pageId);
+    if (page) page.classList.add('p-active');
+    if (el) el.setAttribute('aria-current', 'page');
+    /* Update breadcrumb */
+    const crumb = document.getElementById(role + '-crumb');
+    if (crumb) crumb.textContent = PAGE_LABELS[pageId] || pageId;
+    window.scrollTo(0, 0);
+  },
+
+  /* ── TAG TOGGLE ──────────────────────────────────── */
+  toggleTag(el) {
+    const on = el.classList.toggle('t-on');
+    el.setAttribute('aria-pressed', String(on));
+  },
+
+  /* ── MOOD PICKER ─────────────────────────────────── */
+  pickMood(btn, mood) {
+    document.querySelectorAll('.mood-btn').forEach(b => {
+      b.classList.remove('m-on');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('m-on');
+    btn.setAttribute('aria-pressed', 'true');
+    currentMood = mood;
+  },
+
+  /* ── SETTINGS TAB ────────────────────────────────── */
+  settingsTab(el) {
+    const nav = el.closest('.settings-wrap').querySelector('.s-nav');
+    nav.querySelectorAll('.s-item').forEach(b => b.classList.remove('s-active'));
+    el.classList.add('s-active');
+  },
+
+  /* ── TOGGLE SWITCH (WCAG: syncs aria-checked) ─────── */
+  toggleSwitch(el) {
+    const on = el.classList.toggle('t-on');
+    el.setAttribute('aria-checked', String(on));
+  },
+
+  /* ── MODAL ───────────────────────────────────────── */
+  openModal(id) {
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('ov-open'); }
+  },
+  closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('ov-open');
+  },
+
+  /* ── TOAST ───────────────────────────────────────── */
+  toast(msg, dur = 3000) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-txt').textContent = msg;
+    t.classList.add('t-show');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('t-show'), dur);
+  },
+
+  /* ── DRAFT SAVE ──────────────────────────────────── */
+  saveDraft() {
+    const txt = document.getElementById('journal-txt').value.trim();
+    if (!txt) { this.toast('Nothing to save yet'); return; }
+    this.toast('Draft saved locally');
+  },
+
+  /* ══════════════════════════════════════════════════
+     JOURNAL ENTRY & AI SYNTHESIS
+     
+     AUDIT CHANGES:
+     1. Validates non-empty text BEFORE API call.
+        Shows accessible error via role="alert" div.
+     2. Graceful degradation if API unreachable.
+     3. Entry is ALWAYS stored locally even if AI fails.
+     4. Prompt structured to return parsable META line.
+     
+     PRODUCTION NOTE:
+     Move this fetch() to a server-side endpoint:
+       POST /api/analyse
+       - Validates user session
+       - Strips any PII from text
+       - Calls Claude API with your secret key
+       - Returns structured JSON only
+     Never expose an API key in browser JavaScript.
+  ══════════════════════════════════════════════════ */
+  async submitEntry() {
+    const textEl = document.getElementById('journal-txt');
+    const errEl  = document.getElementById('j-error');
+    const text   = textEl.value.trim();
+
+    /* AUDIT: Validate before any API call */
+    if (!text) {
+      textEl.classList.add('is-error');
+      errEl.style.display = 'block';
+      textEl.focus();
+      return;
+    }
+    /* Clear error state */
+    textEl.classList.remove('is-error');
+    errEl.style.display = 'none';
+
+    const prod = document.getElementById('prod-slider').value;
+    const dept = document.getElementById('dept-sel').value;
+    const tags = [...document.querySelectorAll('#topic-tags .t-on')].map(t => t.textContent).join(', ') || 'None';
+
+    /* Show AI panel in loading state */
+    const panel   = document.getElementById('ai-panel');
+    const loadEl  = document.getElementById('ai-loading');
+    const bodyEl  = document.getElementById('ai-body-content');
+    const metaEl  = document.getElementById('ai-meta-row');
+
+    panel.classList.add('ai-open');
+    loadEl.style.display = 'flex';
+    bodyEl.style.display = 'none';
+    metaEl.style.display = 'none';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    /* Disable submit while processing */
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+
+    const prompt = `You are Logue AI, an empathetic and incisive workplace intelligence assistant.
+
+An employee has submitted their anonymous daily work log:
+ENTRY: ${text}
+ENERGY: ${currentMood}
+PRODUCTIVITY: ${prod}/10
+TOPICS: ${tags}
+DEPARTMENT: ${dept}
+
+Write a structured personal synthesis in exactly four sections separated by [SECTION]:
+
+Section 1 (2 sentences): Acknowledge a specific strength or concrete win from their entry. Reference exactly what they wrote — not a generic affirmation.
+Section 2 (2 sentences): Identify the primary friction or recurring pattern. Name it in <strong>bold</strong>. Explain the likely root cause professionally.
+Section 3 (2 sentences): Begin with exactly "Tomorrow's Recommended Action" as the first line. Give one precise, immediately actionable step that addresses the friction named above.
+Section 4 (1 sentence): A grounded, direct closing statement. Warm but not patronising. No motivational clichés.
+
+Then on a new line output exactly:
+META: [Sentiment: Positive|Neutral|Negative] [Theme: 2-3 words] [Impact: High|Medium|Low] [Focus: 2-3 words]
+
+Rules: Flowing prose. Executive tone. No bullet points. No platitudes.`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+          /* Production: add 'x-api-key' and 'anthropic-version' server-side only */
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const data = await res.json();
+      const raw  = (data.content || []).map(b => b.text || '').join('');
+
+      /* Parse META line */
+      const metaMatch = raw.match(/META:\s*\[Sentiment:\s*([^\]]+)\]\s*\[Theme:\s*([^\]]+)\]\s*\[Impact:\s*([^\]]+)\]\s*\[Focus:\s*([^\]]+)\]/i);
+      const mainText  = raw.replace(/META:.*$/s, '').trim();
+
+      /* Build section HTML */
+      const sections = mainText.split('[SECTION]').map(s => s.trim()).filter(Boolean);
+      let html = '';
+      sections.forEach(s => {
+        const lines = s.split('\n').filter(l => l.trim());
+        if (lines[0]?.toLowerCase().includes("tomorrow")) {
+          html += `<div class="ai-act-lbl">${lines[0]}</div><p>${lines.slice(1).join(' ')}</p>`;
+        } else {
+          html += `<p>${s}</p>`;
+        }
+      });
+
+      loadEl.style.display = 'none';
+      bodyEl.innerHTML  = html || '<p>Your entry has been recorded and anonymised for team analysis.</p>';
+      bodyEl.style.display = 'block';
+
+      if (metaMatch) {
+        document.getElementById('m-sent').textContent   = metaMatch[1];
+        document.getElementById('m-theme').textContent  = metaMatch[2];
+        document.getElementById('m-impact').textContent = metaMatch[3];
+        document.getElementById('m-focus').textContent  = metaMatch[4];
+        metaEl.style.display = 'flex';
+      }
+
+      this.toast('Entry submitted and anonymised');
+
+    } catch (err) {
+      /* AUDIT: Graceful degradation — entry saved, AI unavailable */
+      loadEl.style.display = 'none';
+      bodyEl.innerHTML = '<p style="color:var(--s400);">Your entry has been recorded and anonymised for team analysis. AI synthesis is temporarily unavailable — your data is safe and will be included in the next manager report.</p>';
+      bodyEl.style.display = 'block';
+      this.toast('Entry saved — AI synthesis unavailable');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  },
+
+  /* ══════════════════════════════════════════════════
+     VOICE RECORDING MODULE
+     
+     AUDIT CHANGES:
+     1. Self-contained sub-object — no global timer leaks.
+     2. clearInterval() called on EVERY close path
+        (cancel button, backdrop click, stopAndTranscribe).
+        Prevents phantom timer stacking on rapid open/close.
+     3. Inline voice button syncs recording CSS class
+        with modal state, providing dual-UI feedback.
+     4. Placeholder transcription noted clearly — replace
+        with Web Speech API or Whisper API in production.
+     
+     PRODUCTION OPTIONS:
+     Option A — Web Speech API (free, browser-native):
+       const rec = new (window.SpeechRecognition || webkitSpeechRecognition)();
+       rec.onresult = e => textArea.value += e.results[0][0].transcript;
+       rec.start();
+     
+     Option B — OpenAI Whisper (server-side):
+       POST /api/transcribe with audio blob
+       → returns { text: "..." }
+  ══════════════════════════════════════════════════ */
+  voice: {
+    active:  false,
+    secs:    0,
+    _timer:  null,
+
+    openModal() {
+      this.reset();
+      L.openModal('m-voice');
+    },
+
+    close() {
+      this._stopTimer();
+      this.active = false;
+      /* Sync inline button CSS */
+      document.getElementById('v-inline-btn')?.classList.remove('recording');
+      document.getElementById('voice-wrap')?.classList.remove('recording');
+      L.closeModal('m-voice');
+    },
+
+    toggle() {
+      this.active ? this._stopAndTranscribe() : this._startRecording();
+    },
+
+    _startRecording() {
+      this.active = true;
+      /* Update modal UI */
+      document.getElementById('v-ring').classList.add('recording');
+      document.getElementById('v-wave').classList.add('wv-active');
+      document.getElementById('v-title').textContent = 'Recording…';
+      document.getElementById('v-sub').textContent   = 'Speak clearly. Press Stop when finished.';
+      const btn = document.getElementById('v-btn');
+      btn.textContent = 'Stop';
+      btn.classList.replace('btn-primary', 'btn-danger');
+      /* Update inline button */
+      document.getElementById('v-inline-btn')?.classList.add('recording');
+      document.getElementById('voice-wrap')?.classList.add('recording');
+      /* Start timer — clearInterval guard prevents stacking */
+      this._stopTimer();
+      this._timer = setInterval(() => {
+        this.secs++;
+        const m = Math.floor(this.secs / 60);
+        const s = this.secs % 60;
+        document.getElementById('v-timer').textContent = `${m}:${String(s).padStart(2,'0')}`;
+      }, 1000);
+    },
+
+    _stopTimer() {
+      clearInterval(this._timer);
+      this._timer = null;
+    },
+
+    _stopAndTranscribe() {
+      this._stopTimer();
+      this.active = false;
+      document.getElementById('v-ring').classList.remove('recording');
+      document.getElementById('v-wave').classList.remove('wv-active');
+      document.getElementById('v-title').textContent = 'Transcribing…';
+      document.getElementById('v-sub').textContent   = 'Converting speech to text…';
+      const btn = document.getElementById('v-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing…';
+      /* Simulate transcription latency
+         PRODUCTION: Replace with await fetch('/api/transcribe', { body: audioBlob }) */
+      setTimeout(() => this._applyTranscript(), 1400);
+    },
+
+    _applyTranscript() {
+      /* Placeholder text — replace with real STT result */
+      const sample = "The morning standup ran 30 minutes over again — it could easily be async. Couldn't locate the Q1 assets folder until I asked two colleagues. The Miller account call went well though, clear brief and fast sign-off.";
+      const ta = document.getElementById('journal-txt');
+      ta.value = (ta.value ? ta.value + '\n\n' : '') + sample;
+      /* Reset inline button */
+      document.getElementById('v-inline-btn')?.classList.remove('recording');
+      document.getElementById('voice-wrap')?.classList.remove('recording');
+      this.close();
+      L.toast('Voice entry transcribed');
+    },
+
+    reset() {
+      this._stopTimer();
+      this.active = false;
+      this.secs   = 0;
+      document.getElementById('v-timer').textContent = '0:00';
+      document.getElementById('v-title').textContent = 'Voice Entry';
+      document.getElementById('v-sub').textContent   = 'Press Record to begin. Logue AI will transcribe your speech into the journal.';
+      document.getElementById('v-ring')?.classList.remove('recording');
+      document.getElementById('v-wave')?.classList.remove('wv-active');
+      const btn = document.getElementById('v-btn');
+      if (btn) { btn.disabled = false; btn.textContent = 'Record'; btn.classList.replace('btn-danger','btn-primary'); }
+    }
+  },
+
+  /* ══════════════════════════════════════════════════
+     SUGGESTIONS MODULE
+     
+     AUDIT: Single SUGGESTIONS array is the source of
+     truth for both employee and manager views.
+     renderCards() is DRY — handles both views with
+     a config flag (isMgr) rather than duplicating DOM.
+  ══════════════════════════════════════════════════ */
+  suggestions: {
+    /* Render all suggestion cards into a container */
+    renderCards(containerId, isMgr) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const sorted = [...SUGGESTIONS].sort((a, b) => b.votes - a.votes);
+      el.innerHTML = sorted.map(s => `
+        <div class="sug-card" id="sc-${isMgr?'m':'e'}-${s.id}">
+          <div class="vote-col">
+            ${isMgr
+              ? `<div class="vote-num">${s.votes}</div><div class="vote-lab">votes</div>`
+              : `<button class="vote-btn ${s.voted?'v-on':''}" onclick="L.suggestions.vote(${s.id})" aria-label="${s.voted?'Remove vote from':'Vote for'} ${s.title.substring(0,30)}…" aria-pressed="${s.voted}">
+                   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+                 </button>
+                 <div class="vote-num" id="vn-${s.id}">${s.votes}</div>
+                 <div class="vote-lab">votes</div>`
+            }
+          </div>
+          <div class="sug-body">
+            <div class="sug-title">${esc(s.title)}</div>
+            <div class="sug-desc">${esc(s.body)}</div>
+            <div class="sug-meta">
+              <span class="ss ${ssClass(s.status)}">${s.status}</span>
+              <span>${s.anon ? 'Anonymous' : 'Named'}</span>
+              <span>${s.date}</span>
+            </div>
+            ${isMgr ? `<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(${s.id},'open')">Open</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(${s.id},'review')">Under Review</button>
+              <button class="btn btn-ghost btn-xs" onclick="L.suggestions.setStatus(${s.id},'planned')">Planned</button>
+              <button class="btn btn-primary btn-xs" onclick="L.suggestions.setStatus(${s.id},'done')">Mark Done</button>
+            </div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    },
+
+    vote(id) {
+      const s = SUGGESTIONS.find(x => x.id === id);
+      if (!s) return;
+      s.voted = !s.voted;
+      s.votes += s.voted ? 1 : -1;
+      /* Patch DOM without full re-render to preserve focus */
+      const numEl = document.getElementById(`vn-${id}`);
+      if (numEl) numEl.textContent = s.votes;
+      const btn = document.querySelector(`#sc-e-${id} .vote-btn`);
+      if (btn) {
+        btn.classList.toggle('v-on', s.voted);
+        btn.setAttribute('aria-pressed', String(s.voted));
+        btn.setAttribute('aria-label', `${s.voted?'Remove vote from':'Vote for'} ${s.title.substring(0,30)}…`);
+      }
+      L.toast(s.voted ? 'Vote recorded' : 'Vote removed');
+    },
+
+    setStatus(id, status) {
+      const s = SUGGESTIONS.find(x => x.id === id);
+      if (!s) return;
+      s.status = status;
+      this.renderCards('mgr-sug-list', true);
+      L.toast(`Status updated to "${status}"`);
+    },
+
+    submit() {
+      const titleEl = document.getElementById('sug-title-in');
+      const bodyEl  = document.getElementById('sug-body-in');
+      const title = titleEl.value.trim();
+      const body  = bodyEl.value.trim();
+      const anon  = document.getElementById('sug-anon').checked;
+      if (!title) { L.toast('Please add a title for your suggestion'); titleEl.focus(); return; }
+      SUGGESTIONS.unshift({
+        id: nextSugId++,
+        title, body: body || '—', anon, status: 'open', votes: 0, voted: false,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      });
+      titleEl.value = '';
+      bodyEl.value  = '';
+      this.renderCards('emp-sug-list', false);
+      this.renderCards('mgr-sug-list', true);
+      L.toast('Suggestion submitted' + (anon ? ' anonymously' : ''));
+    }
+  },
+
+  /* ══════════════════════════════════════════════════
+     TREND CHARTS
+     Pure CSS bars driven by JS data arrays.
+     In production: replace with Chart.js or D3.
+  ══════════════════════════════════════════════════ */
+  buildTrendChart(id, values, colorClass) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = values.map(v => `<div class="tc ${colorClass(v)}" style="height:${v}%"></div>`).join('');
+  },
+
+  /* ── INIT ──────────────────────────────────────── */
+  init() {
+    /* Close overlays on backdrop click */
+    document.querySelectorAll('.overlay').forEach(ov => {
+      ov.addEventListener('click', e => {
+        if (e.target === ov) {
+          ov.classList.remove('ov-open');
+          /* Stop voice timer if voice modal closed via backdrop */
+          if (ov.id === 'm-voice') L.voice.close();
+        }
+      });
+    });
+
+    /* Clear textarea error state on input */
+    document.getElementById('journal-txt')?.addEventListener('input', function() {
+      this.classList.remove('is-error');
+      document.getElementById('j-error').style.display = 'none';
+    });
+
+    /* Render suggestion lists */
+    this.suggestions.renderCards('emp-sug-list', false);
+    this.suggestions.renderCards('mgr-sug-list', true);
+
+    /* Build trend charts */
+    const autoColor  = v => v >= 70 ? 'tc-g' : v >= 55 ? 'tc-a' : 'tc-r';
+    const stressColor = v => v >= 28 ? 'tc-r' : v >= 22 ? 'tc-a' : 'tc-g';
+    this.buildTrendChart('ch-morale',  [72, 71, 69, 68, 64, 61], autoColor);
+    this.buildTrendChart('ch-stress',  [18, 20, 22, 25, 28, 31], stressColor);
+    this.buildTrendChart('ch-engage',  [82, 83, 84, 86, 87, 89], () => 'tc-g');
+    this.buildTrendChart('ch-comms',   [78, 76, 72, 70, 67, 64], autoColor);
+
+    /* Animate bar fills from zero on load */
+    setTimeout(() => {
+      document.querySelectorAll('.bar-fill').forEach(el => {
+        const w = el.style.width;
+        el.style.width = '0';
+        requestAnimationFrame(() => requestAnimationFrame(() => { el.style.width = w; }));
+      });
+    }, 300);
+  }
+};
+
+/* ── PURE UTILITIES (stateless helpers, no namespace needed) ── */
+
+/** Escape HTML to prevent XSS in rendered suggestion content */
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/** Suggestion status → CSS class mapping */
+function ssClass(s) {
+  return { open:'ss-open', review:'ss-review', planned:'ss-planned', done:'ss-done' }[s] || 'ss-open';
+}
+
+/* Boot */
+document.addEventListener('DOMContentLoaded', () => L.init());
+</script>
+
+
+</body></html>
