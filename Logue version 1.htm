@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)file:///Users/tobydance/Downloads/feedbackloop-enterprise.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeedbackLoop AI</title>
+<link href="./Logue version 1_files/css2" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #F5F5F3;
+  color: #1C1C1A;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── DESIGN TOKENS ── */
+:root {
+  --green-900: #1A3D2B;
+  --green-700: #2D6A4F;
+  --green-500: #40916C;
+  --green-300: #74C69D;
+  --green-100: #D8F3DC;
+  --green-50:  #F0FAF3;
+  --slate-900: #1C1C1A;
+  --slate-700: #3D3D3A;
+  --slate-500: #6B6B67;
+  --slate-300: #B0B0AB;
+  --slate-100: #E8E8E4;
+  --slate-50:  #F5F5F3;
+  --white:     #FFFFFF;
+  --red-600:   #C0392B;
+  --red-100:   #FDECEA;
+  --amber-600: #B7791F;
+  --amber-100: #FEF3C7;
+  --blue-600:  #2B6CB0;
+  --blue-100:  #EBF4FF;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 28px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+}
+
+/* ── ROLE SWITCHER (demo UI) ── */
+.role-switcher {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 40px;
+  background: var(--slate-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  z-index: 1000;
+}
+.role-switcher-label {
+  font-size: 0.7rem;
+  color: var(--slate-300);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+.role-btn {
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+  color: var(--slate-300);
+  letter-spacing: 0.02em;
+}
+.role-btn:hover { color: var(--white); border-color: var(--slate-500); }
+.role-btn.active { background: var(--green-700); color: var(--white); border-color: var(--green-700); }
+
+/* ── SHELL ── */
+.app-shell {
+  display: flex;
+  min-height: calc(100vh - 40px);
+  margin-top: 40px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 232px;
+  background: var(--white);
+  border-right: 1px solid var(--slate-100);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+
+.sidebar-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--slate-100);
+}
+.logo-lockup { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 30px; height: 30px;
+  background: var(--green-700);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+.logo-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  letter-spacing: -0.02em;
+}
+.logo-tag {
+  font-size: 0.6rem;
+  color: var(--slate-300);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.sidebar-role-badge {
+  margin: 12px 18px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.badge-employee { background: var(--green-50); color: var(--green-700); border: 1px solid var(--green-100); }
+.badge-manager  { background: var(--blue-100); color: var(--blue-600); border: 1px solid #bee3f8; }
+.badge-owner    { background: var(--amber-100); color: var(--amber-600); border: 1px solid #fbd38d; }
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+
+.nav-section { padding: 8px 10px 4px; }
+.nav-section-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--slate-300);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0 8px;
+  margin-bottom: 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 8px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--slate-500);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.12s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  position: relative;
+}
+.nav-item:hover { background: var(--slate-50); color: var(--slate-900); }
+.nav-item.active { background: var(--green-50); color: var(--green-700); font-weight: 600; }
+.nav-icon {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-pill {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 20px;
+  background: var(--red-100);
+  color: var(--red-600);
+}
+.nav-pill.green { background: var(--green-100); color: var(--green-700); }
+
+.sidebar-divider { height: 1px; background: var(--slate-100); margin: 6px 18px; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 18px;
+  border-top: 1px solid var(--slate-100);
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+.user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-300), var(--green-700));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.68rem; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.user-name { font-size: 0.78rem; font-weight: 600; color: var(--slate-900); }
+.user-sub  { font-size: 0.67rem; color: var(--slate-300); }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 232px;
+  flex: 1;
+  min-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 54px;
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-100);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 40px;
+  z-index: 90;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--slate-300);
+}
+.topbar-sep { color: var(--slate-100); }
+.topbar-current { color: var(--slate-900); font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.topbar-date {
+  font-size: 0.73rem;
+  color: var(--slate-300);
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-sm);
+  padding: 5px 12px;
+}
+.btn-topbar {
+  padding: 6px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--slate-100);
+  background: var(--white);
+  color: var(--slate-500);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.btn-topbar:hover { background: var(--slate-50); }
+.btn-topbar.primary { background: var(--green-700); border-color: var(--green-700); color: var(--white); }
+.btn-topbar.primary:hover { background: var(--green-900); }
+
+/* ── CONTENT ── */
+.content { padding: 28px 28px 48px; flex: 1; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeUp 0.25s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom: 24px; }
+.page-header h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+.page-header h1 em { font-style: italic; color: var(--green-700); }
+.page-header p { font-size: 0.82rem; color: var(--slate-500); max-width: 520px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+}
+.card-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  letter-spacing: -0.01em;
+}
+.card-sub { font-size: 0.72rem; color: var(--slate-300); margin-top: 1px; }
+.card-body { padding: 18px 20px; }
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.stats-4 { grid-template-columns: repeat(4, 1fr); }
+.stats-3 { grid-template-columns: repeat(3, 1fr); }
+.stats-2 { grid-template-columns: repeat(2, 1fr); }
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--shadow-md); }
+.stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.stat-label { font-size: 0.7rem; font-weight: 600; color: var(--slate-300); text-transform: uppercase; letter-spacing: 0.08em; }
+.stat-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.badge-up   { background: var(--green-100); color: var(--green-700); }
+.badge-down { background: var(--red-100); color: var(--red-600); }
+.badge-flat { background: var(--slate-100); color: var(--slate-500); }
+.stat-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 3px;
+}
+.stat-meta { font-size: 0.7rem; color: var(--slate-300); }
+
+/* ── GRID LAYOUTS ── */
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.grid-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+.mb-18 { margin-bottom: 18px; }
+.mb-22 { margin-bottom: 22px; }
+
+/* ── JOURNAL FORM ── */
+.journal-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.journal-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.journal-col {
+  padding: 22px 22px 18px;
+  transition: background 0.15s;
+}
+.journal-col:first-child {
+  border-right: 1px solid var(--slate-100);
+}
+.journal-col:focus-within:first-child {
+  background: var(--green-50);
+}
+.journal-col:focus-within:last-child {
+  background: #fdf9f9;
+}
+.col-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.col-indicator {
+  width: 4px; height: 32px;
+  border-radius: 2px;
+}
+.ind-green { background: var(--green-500); }
+.ind-red   { background: var(--red-600); opacity: 0.6; }
+.col-title { font-size: 0.85rem; font-weight: 700; color: var(--slate-900); }
+.col-desc  { font-size: 0.7rem; color: var(--slate-300); margin-top: 1px; }
+
+textarea {
+  width: 100%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--slate-900);
+  line-height: 1.65;
+  resize: vertical;
+  min-height: 110px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+textarea:focus { border-color: var(--green-300); background: var(--white); }
+textarea::placeholder { color: var(--slate-300); }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.tag {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.12s;
+  user-select: none;
+}
+.tag-g { border-color: var(--green-300); color: var(--green-700); }
+.tag-g:hover, .tag-g.on { background: var(--green-100); border-color: var(--green-500); }
+.tag-r { border-color: #f5c6bc; color: var(--red-600); }
+.tag-r:hover, .tag-r.on { background: var(--red-100); border-color: #e9967a; }
+
+/* JOURNAL BOTTOM PANEL */
+.journal-bottom {
+  border-top: 1px solid var(--slate-100);
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--slate-50);
+}
+
+/* VOICE RECORD UI */
+.voice-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--slate-100);
+  background: var(--white);
+  color: var(--slate-500);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.voice-btn:hover { border-color: var(--green-300); color: var(--green-700); }
+.voice-btn.recording { border-color: var(--red-600); color: var(--red-600); background: var(--red-100); animation: pulse-border 1.2s infinite; }
+@keyframes pulse-border { 0%,100% { box-shadow: 0 0 0 0 rgba(192,57,43,0.3); } 50% { box-shadow: 0 0 0 5px rgba(192,57,43,0); } }
+.mic-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.recording .mic-dot { animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+.voice-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.voice-modal.open { display: flex; }
+.voice-modal-card {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  padding: 32px;
+  width: 360px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.2s ease;
+}
+@keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.vm-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--red-100);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  transition: background 0.2s;
+}
+.vm-icon.active { background: var(--red-600); animation: pulse-scale 1s infinite; }
+@keyframes pulse-scale { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+.vm-icon svg { width: 28px; height: 28px; stroke: var(--red-600); fill: none; stroke-width: 2; stroke-linecap: round; }
+.vm-icon.active svg { stroke: var(--white); }
+.vm-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--slate-900); }
+.vm-sub { font-size: 0.78rem; color: var(--slate-300); margin-bottom: 20px; line-height: 1.6; }
+.vm-waveform {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+.wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--slate-100);
+  transition: height 0.1s;
+}
+.vm-waveform.active .wave-bar { background: var(--red-600); animation: waveAnim 0.6s ease-in-out infinite alternate; }
+.wave-bar:nth-child(1) { animation-delay: 0s; height: 8px; }
+.wave-bar:nth-child(2) { animation-delay: 0.08s; height: 16px; }
+.wave-bar:nth-child(3) { animation-delay: 0.16s; height: 24px; }
+.wave-bar:nth-child(4) { animation-delay: 0.24s; height: 30px; }
+.wave-bar:nth-child(5) { animation-delay: 0.32s; height: 24px; }
+.wave-bar:nth-child(6) { animation-delay: 0.4s; height: 16px; }
+.wave-bar:nth-child(7) { animation-delay: 0.48s; height: 8px; }
+@keyframes waveAnim { to { height: 4px; } }
+.vm-timer { font-size: 1.4rem; font-family: 'Instrument Serif', serif; color: var(--slate-900); margin-bottom: 22px; }
+.vm-btns { display: flex; gap: 10px; justify-content: center; }
+.vm-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--slate-100);
+  background: var(--slate-50);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--slate-500);
+  transition: all 0.12s;
+}
+.vm-btn:hover { background: var(--slate-100); }
+.vm-btn.record { background: var(--red-600); border-color: var(--red-600); color: var(--white); }
+.vm-btn.record:hover { background: #a93226; }
+.vm-btn.stop { background: var(--slate-900); border-color: var(--slate-900); color: var(--white); }
+
+/* JOURNAL OPTIONS ROW */
+.journal-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.opt-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-xs);
+}
+.opt-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 10px;
+}
+.mood-row { display: flex; gap: 5px; }
+.mood-btn {
+  flex: 1;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--slate-100);
+  background: var(--slate-50);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.mood-btn:hover { border-color: var(--green-300); }
+.mood-btn.on { border-color: var(--green-500); background: var(--green-50); box-shadow: 0 0 0 2px var(--green-100); }
+input[type="range"] { width: 100%; accent-color: var(--green-700); margin-top: 4px; }
+.slider-labs { display: flex; justify-content: space-between; font-size: 0.62rem; color: var(--slate-300); margin-top: 2px; }
+select, .select-field {
+  width: 100%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  color: var(--slate-900);
+  outline: none;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+select:focus { border-color: var(--green-300); }
+.check-list { display: flex; flex-direction: column; gap: 5px; }
+.check-item { display: flex; align-items: center; gap: 7px; font-size: 0.75rem; color: var(--slate-500); cursor: pointer; }
+.check-item input { accent-color: var(--green-700); width: 13px; height: 13px; cursor: pointer; }
+
+/* SUBMIT ROW */
+.submit-row {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-xs);
+  margin-bottom: 18px;
+}
+.privacy-info { display: flex; align-items: center; gap: 10px; }
+.priv-icon {
+  width: 28px; height: 28px;
+  background: var(--green-50);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.priv-icon svg { width: 14px; height: 14px; stroke: var(--green-700); fill: none; stroke-width: 2; stroke-linecap: round; }
+.priv-title { font-size: 0.78rem; font-weight: 600; color: var(--slate-900); }
+.priv-sub   { font-size: 0.68rem; color: var(--slate-300); }
+.btn-row { display: flex; gap: 8px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--r-md);
+  border: 1px solid;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.btn-outline { background: transparent; border-color: var(--slate-100); color: var(--slate-500); }
+.btn-outline:hover { background: var(--slate-50); border-color: var(--slate-300); }
+.btn-solid { background: var(--green-700); border-color: var(--green-700); color: var(--white); }
+.btn-solid:hover { background: var(--green-900); box-shadow: 0 3px 10px rgba(45,106,79,0.25); }
+.btn-sm { padding: 5px 12px; font-size: 0.72rem; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* AI INSIGHT PANEL */
+.ai-panel {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--green-100);
+  border-radius: var(--r-xl);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.3s ease;
+}
+.ai-panel.visible { display: block; }
+.ai-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-700), var(--green-300));
+}
+.ai-panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.ai-chip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--green-50);
+  color: var(--green-700);
+  border: 1px solid var(--green-100);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.ai-panel-head h3 { font-family: 'Instrument Serif', serif; font-size: 1rem; font-weight: 400; color: var(--slate-900); }
+.ai-loading { display: flex; align-items: center; gap: 8px; color: var(--slate-300); font-size: 0.8rem; }
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--slate-100);
+  border-top-color: var(--green-700);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-body { font-size: 0.83rem; line-height: 1.8; color: var(--slate-700); }
+.ai-body p { margin-bottom: 10px; }
+.ai-body p:last-child { margin-bottom: 0; }
+.ai-action-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--green-700);
+  margin: 14px 0 4px;
+}
+.ai-meta-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--slate-100);
+}
+.ai-meta-item { display: flex; flex-direction: column; gap: 1px; }
+.ai-meta-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate-300); font-weight: 700; }
+.ai-meta-val   { font-size: 0.78rem; font-weight: 600; color: var(--slate-900); }
+
+/* ── MANAGER DASHBOARD ── */
+.pulse-header {
+  background: var(--green-700);
+  border-radius: var(--r-xl);
+  padding: 24px 28px;
+  margin-bottom: 22px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.pulse-header::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.pulse-header h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 3px;
+  position: relative;
+}
+.pulse-header p { font-size: 0.78rem; opacity: 0.65; position: relative; }
+.pulse-stats {
+  display: flex;
+  gap: 28px;
+  margin-top: 18px;
+  position: relative;
+}
+.ps-val { font-family: 'Instrument Serif', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
+.ps-label { font-size: 0.62rem; opacity: 0.6; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* FRICTION LIST */
+.friction-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.friction-item:last-child { border-bottom: none; }
+.friction-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 5px; }
+.friction-title { font-size: 0.83rem; font-weight: 700; color: var(--slate-900); }
+.sev-chip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sev-h { background: var(--red-100); color: var(--red-600); }
+.sev-m { background: var(--amber-100); color: var(--amber-600); }
+.sev-l { background: var(--green-100); color: var(--green-700); }
+.friction-desc { font-size: 0.77rem; color: var(--slate-500); line-height: 1.6; margin-bottom: 8px; }
+.friction-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.dept-chip {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 0.67rem;
+  color: var(--slate-500);
+  font-weight: 500;
+}
+
+/* BAR CHART */
+.bar-chart { margin-top: 8px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.bar-lbl { font-size: 0.65rem; color: var(--slate-300); width: 22px; text-align: right; }
+.bar-track { flex: 1; height: 5px; background: var(--slate-100); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 1.1s cubic-bezier(0.4,0,0.2,1); }
+.fill-r { background: linear-gradient(90deg, #e9967a, var(--red-600)); }
+.fill-g { background: linear-gradient(90deg, var(--green-300), var(--green-500)); }
+.fill-a { background: linear-gradient(90deg, #f6d08a, var(--amber-600)); }
+.bar-pct { font-size: 0.65rem; color: var(--slate-300); width: 26px; }
+
+/* SENTIMENT GAUGE */
+.sentiment-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--red-600) 0%, #f5a623 45%, var(--green-500) 100%);
+  position: relative;
+  margin: 8px 0;
+}
+.sentiment-marker {
+  position: absolute;
+  top: -4px;
+  width: 16px; height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  border: 2px solid var(--slate-900);
+  transform: translateX(-50%);
+  box-shadow: var(--shadow-sm);
+  transition: left 0.8s ease;
+}
+.sentiment-labs { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--slate-300); }
+
+/* ACTION PLAN */
+.action-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.action-item:last-child { border-bottom: none; }
+.action-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--slate-300);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.action-body { flex: 1; }
+.action-title { font-size: 0.83rem; font-weight: 700; color: var(--slate-900); margin-bottom: 3px; }
+.action-desc  { font-size: 0.77rem; color: var(--slate-500); line-height: 1.6; margin-bottom: 7px; }
+.action-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.a-chip {
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.ac-g  { background: var(--green-100); color: var(--green-700); }
+.ac-a  { background: var(--amber-100); color: var(--amber-600); }
+.ac-b  { background: var(--blue-100); color: var(--blue-600); }
+.ac-r  { background: var(--red-100); color: var(--red-600); }
+
+/* LEADERBOARD */
+.lb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.lb-item:last-child { border-bottom: none; }
+.lb-rank { font-family: 'Instrument Serif', serif; font-size: 1rem; color: var(--slate-300); width: 20px; text-align: center; }
+.lb-rank.top { color: var(--green-700); }
+.lb-av { width: 28px; height: 28px; border-radius: 50%; font-size: 0.62rem; font-weight: 700; color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lb-info { flex: 1; }
+.lb-name   { font-size: 0.78rem; font-weight: 600; color: var(--slate-900); }
+.lb-streak { font-size: 0.66rem; color: var(--slate-300); }
+.lb-pts    { font-size: 0.78rem; font-weight: 700; color: var(--green-700); }
+
+/* SECTION DIVIDER */
+.sec-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--slate-300);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--slate-100); }
+
+/* ── OWNER DASHBOARD ── */
+.owner-hero {
+  background: linear-gradient(135deg, var(--slate-900) 0%, var(--green-900) 100%);
+  border-radius: var(--r-xl);
+  padding: 26px 28px;
+  margin-bottom: 22px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.owner-hero::before {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+}
+.owner-hero h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 3px;
+  position: relative;
+}
+.owner-hero p { font-size: 0.78rem; opacity: 0.55; position: relative; }
+
+.mrr-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+}
+.mrr-row { display: flex; align-items: flex-end; justify-content: space-between; }
+.mrr-val { font-family: 'Instrument Serif', serif; font-size: 2.4rem; font-weight: 400; color: var(--slate-900); line-height: 1; }
+.mrr-delta { font-size: 0.72rem; font-weight: 600; color: var(--green-700); background: var(--green-50); border: 1px solid var(--green-100); border-radius: var(--r-sm); padding: 3px 9px; }
+.mrr-label { font-size: 0.68rem; color: var(--slate-300); margin-top: 4px; }
+
+/* MINI SPARKLINE (CSS) */
+.sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+  margin-top: 12px;
+}
+.spark-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: var(--green-100);
+  transition: height 0.8s ease;
+}
+.spark-bar.hi { background: var(--green-500); }
+
+/* USAGE FEED */
+.feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.dot-g { background: var(--green-500); }
+.dot-a { background: var(--amber-600); }
+.dot-r { background: var(--red-600); }
+.dot-b { background: var(--blue-600); }
+.feed-text { font-size: 0.78rem; color: var(--slate-500); line-height: 1.5; flex: 1; }
+.feed-text strong { color: var(--slate-900); font-weight: 600; }
+.feed-time { font-size: 0.67rem; color: var(--slate-300); white-space: nowrap; }
+
+/* PLAN DISTRIBUTION */
+.plan-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.plan-name-lbl { font-size: 0.75rem; font-weight: 600; color: var(--slate-700); width: 80px; }
+.plan-bar-wrap { flex: 1; height: 7px; background: var(--slate-100); border-radius: 3px; overflow: hidden; }
+.plan-bar-fill { height: 100%; border-radius: 3px; }
+.plan-count { font-size: 0.7rem; font-weight: 600; color: var(--slate-500); width: 60px; text-align: right; }
+
+/* ── TOGGLE SWITCH ── */
+.toggle {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: var(--slate-100);
+  position: relative;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: var(--shadow-xs);
+}
+.toggle.on { background: var(--green-700); }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ── SETTINGS ── */
+.settings-layout { display: grid; grid-template-columns: 190px 1fr; gap: 20px; }
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+.s-nav-item {
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--slate-500);
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  transition: all 0.12s;
+}
+.s-nav-item:hover { background: var(--slate-50); color: var(--slate-900); }
+.s-nav-item.active { background: var(--green-50); color: var(--green-700); font-weight: 600; }
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.settings-row:last-child { border-bottom: none; }
+.sr-label { font-size: 0.8rem; font-weight: 500; color: var(--slate-900); }
+.sr-desc  { font-size: 0.7rem; color: var(--slate-300); margin-top: 1px; }
+
+/* ── PRICING ── */
+.pricing-wrap { max-width: 860px; margin: 0 auto; }
+.pricing-intro { text-align: center; padding: 10px 0 28px; }
+.pricing-intro h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.pricing-intro h1 em { font-style: italic; color: var(--green-700); }
+.pricing-intro p { font-size: 0.83rem; color: var(--slate-500); max-width: 480px; margin: 0 auto; }
+.billing-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 28px; }
+.bl-label { font-size: 0.78rem; font-weight: 500; color: var(--slate-500); }
+.save-tag { background: var(--green-100); color: var(--green-700); font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.plans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.plan-card {
+  background: var(--white);
+  border: 1px solid var(--slate-100);
+  border-radius: var(--r-xl);
+  padding: 24px 20px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.plan-card:hover { box-shadow: var(--shadow-md); }
+.plan-card.featured {
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 2px rgba(45,106,79,0.1), var(--shadow-md);
+}
+.popular-tag {
+  position: absolute;
+  top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--green-700);
+  color: var(--white);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+.plan-tier { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-300); margin-bottom: 8px; }
+.plan-price { margin-bottom: 6px; }
+.plan-price-num { font-family: 'Instrument Serif', serif; font-size: 2.1rem; font-weight: 400; color: var(--slate-900); }
+.plan-price-per { font-size: 0.75rem; color: var(--slate-300); }
+.plan-desc { font-size: 0.75rem; color: var(--slate-300); line-height: 1.55; margin-bottom: 18px; }
+.plan-sep { height: 1px; background: var(--slate-100); margin-bottom: 16px; }
+.plan-feats { list-style: none; margin-bottom: 20px; }
+.plan-feats li { display: flex; align-items: flex-start; gap: 7px; font-size: 0.76rem; color: var(--slate-700); padding: 4px 0; }
+.plan-feats li::before { content: '✓'; color: var(--green-700); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.plan-feats li.off::before { content: '—'; color: var(--slate-300); }
+.plan-feats li.off { color: var(--slate-300); }
+.plan-cta {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--r-md);
+  border: 1px solid;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.cta-outline { background: transparent; border-color: var(--slate-100); color: var(--slate-500); }
+.cta-outline:hover { background: var(--slate-50); }
+.cta-solid { background: var(--green-700); border-color: var(--green-700); color: var(--white); }
+.cta-solid:hover { background: var(--green-900); box-shadow: 0 4px 12px rgba(45,106,79,0.3); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.testi-card { background: var(--white); border: 1px solid var(--slate-100); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow-xs); }
+.stars { color: #f59e0b; font-size: 0.7rem; margin-bottom: 8px; }
+.testi-text { font-size: 0.77rem; color: var(--slate-500); line-height: 1.65; font-style: italic; margin-bottom: 12px; }
+.testi-author { display: flex; align-items: center; gap: 9px; }
+.t-av { width: 28px; height: 28px; border-radius: 50%; font-size: 0.62rem; font-weight: 700; color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.t-name { font-size: 0.73rem; font-weight: 600; color: var(--slate-900); }
+.t-role { font-size: 0.65rem; color: var(--slate-300); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--slate-900);
+  color: var(--white);
+  border-radius: var(--r-md);
+  padding: 11px 18px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  z-index: 900;
+  transform: translateY(70px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── ROLE PANELS ── */
+.role-panel { display: none; }
+.role-panel.active { display: flex; flex-direction: column; min-height: calc(100vh - 40px); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .stats-4 { grid-template-columns: 1fr 1fr; }
+  .stats-3 { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3-2, .grid-2-1 { grid-template-columns: 1fr; }
+  .journal-cols { grid-template-columns: 1fr; }
+  .journal-col:first-child { border-right: none; border-bottom: 1px solid var(--slate-100); }
+  .journal-options { grid-template-columns: 1fr; }
+  .plans-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .content { padding: 18px 16px 48px; }
+  .topbar { padding: 0 16px; }
+  .pulse-stats { flex-wrap: wrap; gap: 14px; }
+  .settings-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .stats-4, .stats-3, .stats-2 { grid-template-columns: 1fr; }
+  .role-switcher { gap: 4px; }
+  .role-btn { padding: 3px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ROLE SWITCHER (demo nav) -->
+<div class="role-switcher">
+  <span class="role-switcher-label">View as:</span>
+  <button class="role-btn active" onclick="switchRole(&#39;employee&#39;, this)">Employee</button>
+  <button class="role-btn" onclick="switchRole(&#39;manager&#39;, this)">Manager</button>
+  <button class="role-btn" onclick="switchRole(&#39;owner&#39;, this)">Owner</button>
+</div>
+
+<!-- ════════════════════════════════
+     EMPLOYEE ROLE
+════════════════════════════════ -->
+<div class="role-panel active" id="role-employee">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar-employee">
+      <div class="sidebar-logo">
+        <div class="logo-lockup">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg>
+          </div>
+          <div>
+            <div class="logo-name">FeedbackLoop</div>
+            <div class="logo-tag">Workplace AI</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge badge-employee"><div class="badge-dot"></div>Employee View</div>
+      <div class="nav-section">
+        <div class="nav-section-label">My Workspace</div>
+        <button class="nav-item" onclick="empNav(&#39;journal&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
+          Daily Journal
+        </button>
+        <button class="nav-item" onclick="empNav(&#39;history&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+          My History
+        </button>
+        <button class="nav-item" onclick="empNav(&#39;goals&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+          Personal Goals
+        </button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="nav-section">
+        <div class="nav-section-label">Account</div>
+        <button class="nav-item" onclick="empNav(&#39;settings&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+          Settings
+        </button>
+        <button class="nav-item active" onclick="empNav(&#39;pricing&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+          Upgrade Plan
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-row">
+          <div class="user-avatar">JR</div>
+          <div>
+            <div class="user-name">Jamie Rivera</div>
+            <div class="user-sub">Marketing · Pro</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          FeedbackLoop <span class="topbar-sep">›</span>
+          <span class="topbar-current" id="emp-breadcrumb">Upgrade Plan</span>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date">Wed, Mar 4 2026</div>
+          <button class="btn-topbar">Notifications</button>
+          <button class="btn-topbar primary" onclick="empNav(&#39;pricing&#39;, null)">Upgrade</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- JOURNAL PAGE -->
+        <div class="page" id="emp-journal">
+          <div class="page-header">
+            <h1>Daily <em>Check-In</em></h1>
+            <p>Your end-of-day reflection — anonymized, AI-analyzed, and turned into real organizational improvements.</p>
+          </div>
+
+          <div class="journal-card">
+            <div class="journal-cols">
+              <div class="journal-col">
+                <div class="col-header">
+                  <div class="col-indicator ind-green"></div>
+                  <div>
+                    <div class="col-title">Victories &amp; Wins</div>
+                    <div class="col-desc">What worked well today?</div>
+                  </div>
+                </div>
+                <textarea id="wins-input" placeholder="e.g. Closed the Miller account ahead of schedule. The new async standup is saving real time every morning."></textarea>
+                <div class="tag-row">
+                  <span class="tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Great team collaboration&#39;)">Collaboration</span>
+                  <span class="tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Tools worked smoothly&#39;)">Tools working</span>
+                  <span class="tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Clear communication&#39;)">Clear comms</span>
+                  <span class="tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Fast delivery&#39;)">Fast delivery</span>
+                  <span class="tag tag-g" onclick="addTag(this,&#39;wins-input&#39;,&#39;Strong client interaction&#39;)">Client win</span>
+                </div>
+              </div>
+              <div class="journal-col">
+                <div class="col-header">
+                  <div class="col-indicator ind-red"></div>
+                  <div>
+                    <div class="col-title">Friction &amp; Blockers</div>
+                    <div class="col-desc">Where did things slow down?</div>
+                  </div>
+                </div>
+                <textarea id="friction-input" placeholder="e.g. Still can&#39;t find assets in the shared drive. Had to ask three people to understand the new approval process."></textarea>
+                <div class="tag-row">
+                  <span class="tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Unclear process or workflow&#39;)">Unclear process</span>
+                  <span class="tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Software was slow or buggy&#39;)">Slow software</span>
+                  <span class="tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Missing information or context&#39;)">Missing info</span>
+                  <span class="tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Too many unproductive meetings&#39;)">Meeting overload</span>
+                  <span class="tag tag-r" onclick="addTag(this,&#39;friction-input&#39;,&#39;Communication breakdown&#39;)">Comms gap</span>
+                </div>
+              </div>
+            </div>
+            <div class="journal-bottom">
+              <button class="voice-btn" id="voice-trigger" onclick="openVoiceModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                Voice Note
+              </button>
+              <span style="font-size:0.72rem;color:var(--slate-300);">Speak your thoughts — AI will transcribe them into your entry</span>
+            </div>
+          </div>
+
+          <div class="journal-options">
+            <div class="opt-card">
+              <div class="opt-label">Energy &amp; Mood</div>
+              <div class="mood-row">
+                <button class="mood-btn" onclick="selectMood(this)" title="Drained">😔</button>
+                <button class="mood-btn" onclick="selectMood(this)" title="Low">😐</button>
+                <button class="mood-btn" onclick="selectMood(this)" title="Okay">🙂</button>
+                <button class="mood-btn" onclick="selectMood(this)" title="Good">😊</button>
+                <button class="mood-btn on" onclick="selectMood(this)" title="Energized">🚀</button>
+              </div>
+              <div style="margin-top:14px;">
+                <div class="opt-label">Productivity Level</div>
+                <input type="range" min="1" max="10" value="8" id="prod-slider">
+                <div class="slider-labs"><span>Low</span><span>High</span></div>
+              </div>
+            </div>
+            <div class="opt-card">
+              <div class="opt-label">Department &amp; Tools</div>
+              <select>
+                <option>Select department...</option>
+                <option selected="">Marketing</option>
+                <option>Sales</option>
+                <option>Engineering</option>
+                <option>Operations</option>
+                <option>Customer Success</option>
+              </select>
+              <div class="opt-label" style="margin-top:6px;">Tools Used</div>
+              <div class="check-list">
+                <label class="check-item"><input type="checkbox" checked=""> Slack</label>
+                <label class="check-item"><input type="checkbox" checked=""> Google Drive</label>
+                <label class="check-item"><input type="checkbox"> Notion</label>
+                <label class="check-item"><input type="checkbox"> Jira</label>
+              </div>
+            </div>
+            <div class="opt-card">
+              <div class="opt-label">Privacy &amp; Entry Type</div>
+              <div class="check-list" style="margin-bottom:12px;">
+                <label class="check-item"><input type="checkbox" checked=""> Anonymize my entry</label>
+                <label class="check-item"><input type="checkbox" checked=""> Include in team report</label>
+                <label class="check-item"><input type="checkbox"> Share with manager</label>
+              </div>
+              <div class="opt-label">Entry Type</div>
+              <select>
+                <option selected="">End of Day</option>
+                <option>Mid-Day Check-In</option>
+                <option>Project Debrief</option>
+                <option>Sprint Retrospective</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <div class="privacy-info">
+              <div class="priv-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div>
+                <div class="priv-title">Privacy Protected</div>
+                <div class="priv-sub">Your entry is anonymized before analysis. Management sees trends, not individuals.</div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-outline" onclick="showToast(&#39;Draft saved&#39;)">Save Draft</button>
+              <button class="btn btn-solid" onclick="analyzeEntry()">Analyze &amp; Submit</button>
+            </div>
+          </div>
+
+          <div class="ai-panel" id="ai-panel">
+            <div class="ai-panel-head">
+              <span class="ai-chip">AI Synthesis</span>
+              <h3>Your Personal Insight</h3>
+            </div>
+            <div id="ai-loading" class="ai-loading"><div class="spinner"></div><span>Analyzing your entry…</span></div>
+            <div id="ai-output" class="ai-body" style="display:none;"></div>
+            <div id="ai-meta" class="ai-meta-row" style="display:none;">
+              <div class="ai-meta-item"><span class="ai-meta-label">Mood Detected</span><span class="ai-meta-val" id="meta-mood">—</span></div>
+              <div class="ai-meta-item"><span class="ai-meta-label">Key Theme</span><span class="ai-meta-val" id="meta-theme">—</span></div>
+              <div class="ai-meta-item"><span class="ai-meta-label">Impact</span><span class="ai-meta-val" id="meta-impact">—</span></div>
+              <div class="ai-meta-item"><span class="ai-meta-label">Tomorrow's Focus</span><span class="ai-meta-val" id="meta-focus">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HISTORY PAGE -->
+        <div class="page" id="emp-history">
+          <div class="page-header"><h1>My <em>History</em></h1><p>Your personal reflection archive — 28 entries this month.</p></div>
+          <div class="stats-grid stats-3 mb-22">
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Day Streak</div><span class="stat-badge badge-up">+12%</span></div><div class="stat-value">18</div><div class="stat-meta">Personal record: 22 days</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Entries This Month</div><span class="stat-badge badge-up">+5</span></div><div class="stat-value">28</div><div class="stat-meta">Target: 22 / month</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Avg Productivity</div><span class="stat-badge badge-flat">Stable</span></div><div class="stat-value">7.4</div><div class="stat-meta">Out of 10</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Recent Entries</div></div>
+            <div class="card-body">
+              <div class="action-item"><div class="action-num" style="background:var(--green-50);color:var(--green-700);border-color:var(--green-100);">1</div><div class="action-body"><div class="action-title">Mar 3 — Strong collaboration day</div><div class="action-desc">Wins: Closed two deals. Friction: approval workflow delay. Mood: Energized · Productivity: 9/10</div><div class="action-chips"><span class="a-chip ac-g">High Productivity</span><span class="a-chip ac-b">Team Collab</span></div></div></div>
+              <div class="action-item"><div class="action-num">2</div><div class="action-body"><div class="action-title">Mar 2 — File-sharing issue flagged</div><div class="action-desc">Wins: Campaign brief approved. Friction: 40min lost searching shared drive. Mood: Neutral · Productivity: 5/10</div><div class="action-chips"><span class="a-chip ac-r">Blocker Flagged</span><span class="a-chip ac-a">Tool Issue</span></div></div></div>
+              <div class="action-item"><div class="action-num" style="background:var(--green-50);color:var(--green-700);border-color:var(--green-100);">3</div><div class="action-body"><div class="action-title">Feb 28 — Best day this month</div><div class="action-desc">Wins: Q1 campaign launched on time. No friction reported. Mood: Energized · Productivity: 10/10</div><div class="action-chips"><span class="a-chip ac-g">Top Performance</span></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GOALS PAGE -->
+        <div class="page" id="emp-goals">
+          <div class="page-header"><h1>Personal <em>Goals</em></h1><p>Set intentions and let AI track your progress through your daily journal entries.</p></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Active Goals</div></div>
+              <div class="card-body">
+                <div class="action-item"><div class="action-num" style="background:var(--green-50);color:var(--green-700);border-color:var(--green-100);">1</div><div class="action-body"><div class="action-title">Reduce daily meeting time to under 90 min</div><div class="action-desc">3 of 5 days achieved this week.</div><div class="action-chips"><span class="a-chip ac-g">60% Progress</span></div></div></div>
+                <div class="action-item"><div class="action-num" style="background:var(--amber-100);color:var(--amber-600);border-color:#fbd38d;">2</div><div class="action-body"><div class="action-title">Journal 5 days per week</div><div class="action-desc">4 of 5 days this week. 18-day streak!</div><div class="action-chips"><span class="a-chip ac-a">80% This Week</span></div></div></div>
+                <div class="action-item"><div class="action-num">3</div><div class="action-body"><div class="action-title">Maintain productivity score above 7.0</div><div class="action-desc">Current average: 7.4. On track.</div><div class="action-chips"><span class="a-chip ac-g">On Track</span></div></div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">AI-Suggested Goals</div></div>
+              <div class="card-body">
+                <p style="font-size:0.78rem;color:var(--slate-300);margin-bottom:14px;">Based on your recent journal entries:</p>
+                <div class="action-item"><div class="action-num">AI</div><div class="action-body"><div class="action-title">Block 2 focus hours daily</div><div class="action-desc">You mentioned "interrupted" in 6 of your last 10 entries.</div><div class="action-chips"><button class="btn btn-outline btn-sm">Add Goal</button></div></div></div>
+                <div class="action-item"><div class="action-num">AI</div><div class="action-body"><div class="action-title">Batch Slack responses twice daily</div><div class="action-desc">Notifications and context switching are recurring themes.</div><div class="action-chips"><button class="btn btn-outline btn-sm">Add Goal</button></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div class="page" id="emp-settings">
+          <div class="page-header"><h1>Account <em>Settings</em></h1><p>Control your notifications, privacy, and preferences.</p></div>
+          <div class="card">
+            <div class="card-body">
+              <div class="settings-layout">
+                <div class="settings-nav">
+                  <button class="s-nav-item active" onclick="sTab(this)">Notifications</button>
+                  <button class="s-nav-item" onclick="sTab(this)">Privacy</button>
+                  <button class="s-nav-item" onclick="sTab(this)">Integrations</button>
+                  <button class="s-nav-item" onclick="sTab(this)">Appearance</button>
+                </div>
+                <div>
+                  <div class="settings-row"><div><div class="sr-label">Daily journal reminder</div><div class="sr-desc">Nudge at 4:30 PM to complete your entry</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                  <div class="settings-row"><div><div class="sr-label">Weekly report digest</div><div class="sr-desc">Email summary every Monday morning</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                  <div class="settings-row"><div><div class="sr-label">AI insights on my entries</div><div class="sr-desc">Personal synthesis after each submission</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                  <div class="settings-row"><div><div class="sr-label">Full anonymization</div><div class="sr-desc">Management sees trends only, never names</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                  <div class="settings-row"><div><div class="sr-label">Opt out of leaderboard</div><div class="sr-desc">Hide your streak from team rankings</div></div><button class="toggle" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRICING PAGE -->
+        <div class="page active" id="emp-pricing">
+          <div class="pricing-wrap">
+            <div class="pricing-intro">
+              <h1>Turn daily reflections into <em>real ROI</em></h1>
+              <p>Most businesses recover more employee hours in the first two weeks than FeedbackLoop costs in a year.</p>
+            </div>
+            <div class="billing-toggle">
+              <span class="bl-label">Monthly</span>
+              <button class="toggle on" id="billing-toggle" onclick="toggleBilling(this)"></button>
+              <span class="bl-label">Annual <span class="save-tag">Save 25%</span></span>
+            </div>
+            <div class="plans-grid">
+              <div class="plan-card">
+                <div class="plan-tier">Starter</div>
+                <div class="plan-price"><span class="plan-price-num" id="price-starter">$9</span><span class="plan-price-per"> / user / mo</span></div>
+                <div class="plan-desc">For small teams getting started with daily reflection and basic trend visibility.</div>
+                <div class="plan-sep"></div>
+                <ul class="plan-feats">
+                  <li>Daily micro-journal</li><li>Friction &amp; wins tracking</li><li>Weekly summary email</li><li>Up to 15 employees</li><li>7-day data history</li>
+                  <li class="off">AI recommendations</li><li class="off">Department analytics</li><li class="off">Integrations</li>
+                </ul>
+                <button class="plan-cta cta-outline">Get Started Free</button>
+              </div>
+              <div class="plan-card featured">
+                <div class="popular-tag">Most Popular</div>
+                <div class="plan-tier">Professional</div>
+                <div class="plan-price"><span class="plan-price-num" id="price-pro">$22</span><span class="plan-price-per"> / user / mo</span></div>
+                <div class="plan-desc">For growing businesses that want AI-powered insights and actionable management reports.</div>
+                <div class="plan-sep"></div>
+                <ul class="plan-feats">
+                  <li>Everything in Starter</li><li>Full AI synthesis per entry</li><li>Weekly Efficiency Reports</li><li>Department analytics</li><li>Engagement leaderboard</li><li>Personal goals tracking</li><li>90-day history</li><li class="off">Custom branding</li>
+                </ul>
+                <button class="plan-cta cta-solid">Start 14-Day Free Trial</button>
+              </div>
+              <div class="plan-card">
+                <div class="plan-tier">Enterprise</div>
+                <div class="plan-price"><span class="plan-price-num">Custom</span></div>
+                <div class="plan-desc">For large orgs needing SSO, custom workflows, and compliance controls.</div>
+                <div class="plan-sep"></div>
+                <ul class="plan-feats">
+                  <li>Everything in Professional</li><li>Unlimited employees</li><li>HRIS, Slack, Teams integrations</li><li>SSO &amp; security controls</li><li>Dedicated CS manager</li><li>Custom branding</li><li>Unlimited history</li><li>SLA &amp; compliance</li>
+                </ul>
+                <button class="plan-cta cta-outline">Contact Sales</button>
+              </div>
+            </div>
+            <div class="testimonials-grid">
+              <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"Within two weeks we identified a recurring issue costing our team 6 hours a week. FeedbackLoop paid for itself on day 14."</div><div class="testi-author"><div class="t-av" style="background:linear-gradient(135deg,#74c69d,#2d6a4f);">KL</div><div><div class="t-name">Karen L.</div><div class="t-role">COO, Brightfield Co.</div></div></div></div>
+              <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"We replaced quarterly surveys with FeedbackLoop. Now we fix problems in days, not quarters. Retention is up 22% YoY."</div><div class="testi-author"><div class="t-av" style="background:linear-gradient(135deg,#90cdf4,#2b6cb0);">DR</div><div><div class="t-name">David R.</div><div class="t-role">VP People, Nexora Inc.</div></div></div></div>
+              <div class="testi-card"><div class="stars">★★★★★</div><div class="testi-text">"Anonymization was the game-changer. Employees are brutally honest — the AI turns that honesty into a roadmap we actually use."</div><div class="testi-author"><div class="t-av" style="background:linear-gradient(135deg,#fbd38d,#9a7c2e);">TP</div><div><div class="t-name">Theresa P.</div><div class="t-role">Founder, Luma Studio</div></div></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /app-shell -->
+</div><!-- /role-employee -->
+
+
+<!-- ════════════════════════════════
+     MANAGER ROLE
+════════════════════════════════ -->
+<div class="role-panel" id="role-manager">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-lockup">
+          <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+          <div><div class="logo-name">FeedbackLoop</div><div class="logo-tag">Workplace AI</div></div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge badge-manager"><div class="badge-dot"></div>Manager View</div>
+      <div class="nav-section">
+        <div class="nav-section-label">Team Intelligence</div>
+        <button class="nav-item active" onclick="mgrNav(&#39;pulse&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+          The Pulse <span class="nav-pill">3</span>
+        </button>
+        <button class="nav-item" onclick="mgrNav(&#39;action&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+          Action Plan <span class="nav-pill green">New</span>
+        </button>
+        <button class="nav-item" onclick="mgrNav(&#39;sentiment&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+          Sentiment Trends
+        </button>
+        <button class="nav-item" onclick="mgrNav(&#39;engagement&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+          Team Engagement
+        </button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="nav-section">
+        <div class="nav-section-label">Reports</div>
+        <button class="nav-item" onclick="mgrNav(&#39;weekly&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+          Weekly Report
+        </button>
+        <button class="nav-item" onclick="mgrNav(&#39;msettings&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+          Settings
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-row">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#90cdf4,#2b6cb0);">SM</div>
+          <div><div class="user-name">Sarah Mitchell</div><div class="user-sub">Operations · Manager</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">FeedbackLoop › <span class="topbar-current" id="mgr-breadcrumb">The Pulse</span></div>
+        <div class="topbar-right">
+          <div class="topbar-date">Wed, Mar 4 2026</div>
+          <button class="btn-topbar">Export Report</button>
+          <button class="btn-topbar primary" onclick="showToast(&#39;Opening report editor…&#39;)">Generate Report</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- PULSE PAGE -->
+        <div class="page active" id="mgr-pulse">
+          <div class="page-header">
+            <h1>The <em>Pulse</em></h1>
+            <p>Aggregated from 47 anonymous entries this week. No individual data is shown here.</p>
+          </div>
+
+          <div class="pulse-header">
+            <h2>Week of March 4, 2026</h2>
+            <p>All data is anonymized and aggregated — individual entries are never surfaced here.</p>
+            <div class="pulse-stats">
+              <div><div class="ps-val">47</div><div class="ps-label">Entries Analyzed</div></div>
+              <div><div class="ps-val">89%</div><div class="ps-label">Participation</div></div>
+              <div><div class="ps-val">7.2</div><div class="ps-label">Morale Score</div></div>
+              <div><div class="ps-val">14</div><div class="ps-label">Open Friction Points</div></div>
+            </div>
+          </div>
+
+          <div class="grid-3-2 mb-18">
+            <div class="card">
+              <div class="card-header">
+                <div><div class="card-title">Top 3 Friction Points</div><div class="card-sub">Requires management attention this week</div></div>
+              </div>
+              <div class="card-body">
+                <div class="friction-item">
+                  <div class="friction-top"><div class="friction-title">File-sharing software confusion</div><span class="sev-chip sev-h">High</span></div>
+                  <div class="friction-desc">62% of Marketing &amp; Design report losing ~25 min/day navigating the new shared drive. "Can't find" and "had to ask" appear in 20 entries.</div>
+                  <div class="friction-pills"><span class="dept-chip">Marketing · 12</span><span class="dept-chip">Design · 8</span></div>
+                  <div class="bar-chart">
+                    <div class="bar-row"><span class="bar-lbl">Mon</span><div class="bar-track"><div class="bar-fill fill-r" style="width: 30%;"></div></div><span class="bar-pct">30%</span></div>
+                    <div class="bar-row"><span class="bar-lbl">Tue</span><div class="bar-track"><div class="bar-fill fill-r" style="width: 48%;"></div></div><span class="bar-pct">48%</span></div>
+                    <div class="bar-row"><span class="bar-lbl">Wed</span><div class="bar-track"><div class="bar-fill fill-r" style="width: 62%;"></div></div><span class="bar-pct">62%</span></div>
+                  </div>
+                </div>
+                <div class="friction-item">
+                  <div class="friction-top"><div class="friction-title">Meeting overload in Operations</div><span class="sev-chip sev-m">Medium</span></div>
+                  <div class="friction-desc">7 employees flagged 3+ hours of unproductive meetings daily. Most frequent phrase: "could have been an email."</div>
+                  <div class="friction-pills"><span class="dept-chip">Operations · 7</span></div>
+                </div>
+                <div class="friction-item">
+                  <div class="friction-top"><div class="friction-title">Q2 approval process unclear</div><span class="sev-chip sev-m">Medium</span></div>
+                  <div class="friction-desc">Confusion about vendor approval chain for purchases over $500 in 9 entries across 4 departments.</div>
+                  <div class="friction-pills"><span class="dept-chip">Finance · 4</span><span class="dept-chip">Ops · 3</span><span class="dept-chip">Sales · 2</span></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-18">
+                <div class="card-header"><div class="card-title">Dept. Morale Scores</div></div>
+                <div class="card-body">
+                  <div class="bar-chart">
+                    <div class="bar-row" style="margin-bottom:8px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Marketing</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 84%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">8.4</span></div>
+                    <div class="bar-row" style="margin-bottom:8px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Sales</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 78%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">7.8</span></div>
+                    <div class="bar-row" style="margin-bottom:8px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Engineering</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-a" style="width: 70%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--amber-600);">7.0</span></div>
+                    <div class="bar-row" style="margin-bottom:8px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Operations</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-r" style="width: 58%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--red-600);">5.8</span></div>
+                    <div class="bar-row"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Cust. Success</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 82%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">8.2</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title">Top Wins This Week</div></div>
+                <div class="card-body">
+                  <div class="friction-item" style="padding-top:0;">
+                    <div class="friction-top"><div class="friction-title">Async standup bot praised</div><span class="sev-chip sev-l">Replicate</span></div>
+                    <div class="friction-desc">11 independent mentions. "Saves 20 minutes" is the most repeated phrase. Strong rollout candidate.</div>
+                    <div class="friction-pills"><span class="dept-chip">Sales · 6</span><span class="dept-chip">Marketing · 5</span></div>
+                  </div>
+                  <div class="friction-item">
+                    <div class="friction-top"><div class="friction-title">Q1 campaign launched on time</div><span class="sev-chip sev-l">Celebrate</span></div>
+                    <div class="friction-desc">8 entries celebrate this milestone. Good signal for public recognition.</div>
+                    <div class="friction-pills"><span class="dept-chip">Marketing · 8</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION PLAN PAGE -->
+        <div class="page" id="mgr-action">
+          <div class="page-header">
+            <h1>AI <em>Action Plan</em></h1>
+            <p>Generated from this week's anonymized employee entries. Updated every Monday.</p>
+          </div>
+          <div class="grid-3-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recommended Actions</div><div class="card-sub">Prioritized by estimated impact</div></div>
+              <div class="card-body">
+                <div id="mgr-action-list">
+    <div class="action-item">
+      <div class="action-num">1</div>
+      <div class="action-body">
+        <div class="action-title">Schedule file-sharing onboarding for Marketing &amp; Design</div>
+        <div class="action-desc">62% of employees losing ~25 min/day. A single walkthrough with a searchable folder guide eliminates this friction within the week. Assign to IT or Department Lead.</div>
+        <div class="action-chips">
+          <span class="a-chip ac-g">~12 hrs recovered/week</span><span class="a-chip ac-b">Effort: Low</span><span class="a-chip ac-a">This week</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="action-item">
+      <div class="action-num">2</div>
+      <div class="action-body">
+        <div class="action-title">Audit Operations meetings — shift status updates to async</div>
+        <div class="action-desc">7 members flagged 3+ hours of unproductive meetings daily. Trial: replace 9 AM check-in with Slack async Mon–Wed, live sync Thursdays only.</div>
+        <div class="action-chips">
+          <span class="a-chip ac-g">3–5 hrs/person/week</span><span class="a-chip ac-a">Effort: Medium</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="action-item">
+      <div class="action-num">3</div>
+      <div class="action-body">
+        <div class="action-title">Expand async standup bot company-wide</div>
+        <div class="action-desc">11 unprompted positive mentions this week. IT has the config template. Highest ROI action in this week's data.</div>
+        <div class="action-chips">
+          <span class="a-chip ac-g">High adoption likely</span><span class="a-chip ac-b">Effort: Low</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="action-item">
+      <div class="action-num">4</div>
+      <div class="action-body">
+        <div class="action-title">Publish updated Q2 vendor approval documentation</div>
+        <div class="action-desc">Confusion in 9 entries across 4 departments. One Notion page or Loom walkthrough resolves this immediately. Owner: Finance or Ops lead.</div>
+        <div class="action-chips">
+          <span class="a-chip ac-g">Cross-dept impact</span><span class="a-chip ac-a">Today</span>
+        </div>
+      </div>
+    </div>
+  </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-18">
+                <div class="card-header"><div class="card-title">Company Sentiment</div></div>
+                <div class="card-body">
+                  <div style="font-size:0.72rem;color:var(--slate-300);margin-bottom:8px;">Overall this week</div>
+                  <div class="sentiment-track"><div class="sentiment-marker" style="left:65%"></div></div>
+                  <div class="sentiment-labs"><span>Stressed</span><span>Neutral</span><span>Energized</span></div>
+                  <div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.5rem;color:var(--green-700);margin-top:12px;">+12% <span style="font-family:&#39;Plus Jakarta Sans&#39;,sans-serif;font-size:0.75rem;color:var(--slate-300);font-weight:400;">vs last week</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title">Export Report</div></div>
+                <div class="card-body">
+                  <div style="display:flex;flex-direction:column;gap:8px;">
+                    <button class="btn btn-outline btn-full" onclick="showToast(&#39;Generating PDF…&#39;)">Export as PDF</button>
+                    <button class="btn btn-outline btn-full" onclick="showToast(&#39;Exporting to Sheets…&#39;)">Export to Google Sheets</button>
+                    <button class="btn btn-solid btn-full" onclick="showToast(&#39;Report sent to leadership&#39;)">Email to Leadership</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SENTIMENT PAGE -->
+        <div class="page" id="mgr-sentiment">
+          <div class="page-header"><h1>Sentiment <em>Trends</em></h1><p>30-day company-wide emotional and productivity patterns.</p></div>
+          <div class="stats-grid stats-4 mb-22">
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Avg Morale</div><span class="stat-badge badge-up">+0.4</span></div><div class="stat-value">7.2</div><div class="stat-meta">Out of 10</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Positive Entries</div><span class="stat-badge badge-up">+7%</span></div><div class="stat-value">68%</div><div class="stat-meta">This week</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Friction Reports</div><span class="stat-badge badge-down">+3</span></div><div class="stat-value">14</div><div class="stat-meta">Open issues</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Avg Productivity</div><span class="stat-badge badge-up">+0.4</span></div><div class="stat-value">7.8</div><div class="stat-meta">Out of 10</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Friction Category Breakdown — Last 30 Days</div></div>
+            <div class="card-body">
+              <div class="bar-chart" style="margin-top:0;">
+                <div class="bar-row" style="margin-bottom:12px;"><span class="bar-lbl" style="width:160px;text-align:left;font-size:0.73rem;color:var(--slate-700);">Tool / Software Issues</span><div class="bar-track" style="height:8px;"><div class="bar-fill fill-r" style="width: 74%;"></div></div><span class="bar-pct" style="width:32px;font-weight:600;">74%</span></div>
+                <div class="bar-row" style="margin-bottom:12px;"><span class="bar-lbl" style="width:160px;text-align:left;font-size:0.73rem;color:var(--slate-700);">Meeting Overload</span><div class="bar-track" style="height:8px;"><div class="bar-fill fill-a" style="width: 58%;"></div></div><span class="bar-pct" style="width:32px;font-weight:600;">58%</span></div>
+                <div class="bar-row" style="margin-bottom:12px;"><span class="bar-lbl" style="width:160px;text-align:left;font-size:0.73rem;color:var(--slate-700);">Missing Documentation</span><div class="bar-track" style="height:8px;"><div class="bar-fill fill-a" style="width: 41%;"></div></div><span class="bar-pct" style="width:32px;font-weight:600;">41%</span></div>
+                <div class="bar-row" style="margin-bottom:12px;"><span class="bar-lbl" style="width:160px;text-align:left;font-size:0.73rem;color:var(--slate-700);">Communication Gaps</span><div class="bar-track" style="height:8px;"><div class="bar-fill fill-a" style="width: 35%;"></div></div><span class="bar-pct" style="width:32px;font-weight:600;">35%</span></div>
+                <div class="bar-row"><span class="bar-lbl" style="width:160px;text-align:left;font-size:0.73rem;color:var(--slate-700);">Resource Shortage</span><div class="bar-track" style="height:8px;"><div class="bar-fill fill-r" style="width: 22%;"></div></div><span class="bar-pct" style="width:32px;font-weight:600;">22%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ENGAGEMENT PAGE -->
+        <div class="page" id="mgr-engagement">
+          <div class="page-header"><h1>Team <em>Engagement</em></h1><p>Participation streaks and consistency — no individual feedback is revealed here.</p></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Participation Leaders</div><div class="card-sub">Based on streak length only</div></div>
+              <div class="card-body">
+                <div class="sec-label">Most Consistent</div>
+                <div class="lb-item"><div class="lb-rank top">1</div><div class="lb-av" style="background:linear-gradient(135deg,#74c69d,#2d6a4f);">JR</div><div class="lb-info"><div class="lb-name">Team Member A</div><div class="lb-streak">18-day streak</div></div><div class="lb-pts">98 pts</div></div>
+                <div class="lb-item"><div class="lb-rank top">2</div><div class="lb-av" style="background:linear-gradient(135deg,#74c69d,#40916c);">SP</div><div class="lb-info"><div class="lb-name">Team Member B</div><div class="lb-streak">14-day streak</div></div><div class="lb-pts">84 pts</div></div>
+                <div class="lb-item"><div class="lb-rank">3</div><div class="lb-av" style="background:linear-gradient(135deg,#a8d8b9,#52b788);">AL</div><div class="lb-info"><div class="lb-name">Team Member C</div><div class="lb-streak">9-day streak</div></div><div class="lb-pts">71 pts</div></div>
+                <div class="lb-item"><div class="lb-rank">4</div><div class="lb-av" style="background:linear-gradient(135deg,#fbd38d,#9a7c2e);">MK</div><div class="lb-info"><div class="lb-name">Team Member D</div><div class="lb-streak">7-day streak</div></div><div class="lb-pts">63 pts</div></div>
+                <p style="font-size:0.7rem;color:var(--slate-300);margin-top:14px;padding-top:14px;border-top:1px solid var(--slate-100);">Names are pseudonymized on leaderboard to protect privacy while maintaining accountability.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Participation Rate by Dept.</div></div>
+              <div class="card-body">
+                <div class="bar-chart" style="margin-top:0;">
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Marketing</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 96%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">96%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Sales</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 91%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">91%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Engineering</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 87%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">87%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Operations</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-a" style="width: 72%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--amber-600);">72%</span></div>
+                  <div class="bar-row"><span class="bar-lbl" style="width:90px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Cust. Success</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 88%;"></div></div><span class="bar-pct" style="font-weight:700;color:var(--green-700);">88%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEEKLY REPORT -->
+        <div class="page" id="mgr-weekly">
+          <div class="page-header"><h1>Weekly <em>Efficiency Report</em></h1><p>Feb 26 – Mar 4, 2026 · Based on 47 anonymized entries</p></div>
+          <div class="pulse-header" style="margin-bottom:22px;">
+            <h2>Management Summary</h2>
+            <p>4 high-impact recommendations from this week's employee data</p>
+            <div class="pulse-stats">
+              <div><div class="ps-val">47</div><div class="ps-label">Entries</div></div>
+              <div><div class="ps-val">14</div><div class="ps-label">Friction Points</div></div>
+              <div><div class="ps-val">~32h</div><div class="ps-label">Est. Time Lost</div></div>
+              <div><div class="ps-val">89%</div><div class="ps-label">Participation</div></div>
+            </div>
+          </div>
+          <div class="grid-3-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recommended Actions</div></div>
+              <div class="card-body">
+                <div class="action-item"><div class="action-num">1</div><div class="action-body"><div class="action-title">Schedule file-sharing onboarding for Marketing &amp; Design</div><div class="action-desc">62% of employees losing ~25 min/day. A single walkthrough with a searchable folder guide eliminates this within the week.</div><div class="action-chips"><span class="a-chip ac-g">~12 hrs recovered/week</span><span class="a-chip ac-b">Effort: Low</span><span class="a-chip ac-a">This week</span></div></div></div>
+                <div class="action-item"><div class="action-num">2</div><div class="action-body"><div class="action-title">Audit Operations meetings — shift to async</div><div class="action-desc">7 members flagged 3+ hours of unproductive meetings daily. Trial replacing the daily 9 AM check-in with a Slack async update Mon–Wed.</div><div class="action-chips"><span class="a-chip ac-g">3–5 hrs/person/week</span><span class="a-chip ac-a">Effort: Medium</span></div></div></div>
+                <div class="action-item"><div class="action-num">3</div><div class="action-body"><div class="action-title">Expand async standup bot company-wide</div><div class="action-desc">11 unprompted positive mentions this week. IT has the config template ready. Highest ROI action in this week's data.</div><div class="action-chips"><span class="a-chip ac-g">High adoption likely</span><span class="a-chip ac-b">Effort: Low</span></div></div></div>
+                <div class="action-item"><div class="action-num">4</div><div class="action-body"><div class="action-title">Publish Q2 vendor approval documentation</div><div class="action-desc">Confusion in 9 entries across 4 departments. One Notion page or Loom walkthrough resolves this immediately.</div><div class="action-chips"><span class="a-chip ac-g">Cross-dept impact</span><span class="a-chip ac-a">Today</span></div></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-18">
+                <div class="card-header"><div class="card-title">Sentiment This Week</div></div>
+                <div class="card-body">
+                  <div class="sentiment-track"><div class="sentiment-marker" style="left:65%"></div></div>
+                  <div class="sentiment-labs"><span>Stressed</span><span>Neutral</span><span>Energized</span></div>
+                  <div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.4rem;color:var(--green-700);margin-top:12px;">+12% <span style="font-family:&#39;Plus Jakarta Sans&#39;,sans-serif;font-size:0.72rem;color:var(--slate-300);font-weight:400;">vs last week</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title">Export</div></div>
+                <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+                  <button class="btn btn-outline btn-full" onclick="showToast(&#39;Generating PDF…&#39;)">Export as PDF</button>
+                  <button class="btn btn-outline btn-full" onclick="showToast(&#39;Exporting to Sheets…&#39;)">Export to Sheets</button>
+                  <button class="btn btn-solid btn-full" onclick="showToast(&#39;Report sent!&#39;)">Email to Leadership</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MGR SETTINGS -->
+        <div class="page" id="mgr-msettings">
+          <div class="page-header"><h1>Manager <em>Settings</em></h1></div>
+          <div class="card"><div class="card-body">
+            <div class="settings-layout">
+              <div class="settings-nav">
+                <button class="s-nav-item active" onclick="sTab(this)">Alerts</button>
+                <button class="s-nav-item" onclick="sTab(this)">Privacy</button>
+                <button class="s-nav-item" onclick="sTab(this)">Reports</button>
+              </div>
+              <div>
+                <div class="settings-row"><div><div class="sr-label">Critical friction alerts</div><div class="sr-desc">Notify when High Priority issue is detected</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Weekly report auto-send</div><div class="sr-desc">Email report to leadership every Monday</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Participation drop alert</div><div class="sr-desc">Alert when team participation falls below 70%</div></div><button class="toggle" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Anonymous mode enforced</div><div class="sr-desc">Prevent any individual attribution in all reports</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div><!-- /role-manager -->
+
+
+<!-- ════════════════════════════════
+     OWNER ROLE
+════════════════════════════════ -->
+<div class="role-panel" id="role-owner">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-lockup">
+          <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M8 12l3 3 5-5"></path></svg></div>
+          <div><div class="logo-name">FeedbackLoop</div><div class="logo-tag">Workplace AI</div></div>
+        </div>
+      </div>
+      <div class="sidebar-role-badge badge-owner"><div class="badge-dot"></div>Owner View</div>
+      <div class="nav-section">
+        <div class="nav-section-label">Business Health</div>
+        <button class="nav-item active" onclick="ownerNav(&#39;overview&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></div>
+          Overview
+        </button>
+        <button class="nav-item" onclick="ownerNav(&#39;revenue&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+          Revenue &amp; MRR
+        </button>
+        <button class="nav-item" onclick="ownerNav(&#39;users&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+          Users &amp; Growth
+        </button>
+        <button class="nav-item" onclick="ownerNav(&#39;system&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+          System Usage
+        </button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="nav-section">
+        <div class="nav-section-label">Administration</div>
+        <button class="nav-item" onclick="ownerNav(&#39;osettings&#39;, this)">
+          <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+          Platform Settings
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-row">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#fbd38d,#9a7c2e);">AO</div>
+          <div><div class="user-name">Alex Owen</div><div class="user-sub">Founder &amp; Owner</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">FeedbackLoop › <span class="topbar-current" id="owner-breadcrumb">Business Overview</span></div>
+        <div class="topbar-right">
+          <div class="topbar-date">Wed, Mar 4 2026</div>
+          <button class="btn-topbar">Download Report</button>
+          <button class="btn-topbar primary" onclick="showToast(&#39;Opening billing portal…&#39;)">Billing Portal</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- OVERVIEW -->
+        <div class="page active" id="owner-overview">
+          <div class="page-header">
+            <h1>Business <em>Overview</em></h1>
+            <p>Platform-wide health metrics. This view contains no employee feedback data.</p>
+          </div>
+
+          <div class="owner-hero">
+            <h2>FeedbackLoop Platform — March 2026</h2>
+            <p>All revenue and user data is kept strictly separate from employee feedback content.</p>
+          </div>
+
+          <div class="stats-grid stats-4 mb-22">
+            <div class="stat-card">
+              <div class="stat-top"><div class="stat-label">Monthly Recurring Revenue</div><span class="stat-badge badge-up">+18%</span></div>
+              <div class="stat-value">$42.8k</div>
+              <div class="stat-meta">MRR · +$6.5k vs Feb</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-top"><div class="stat-label">Active Users</div><span class="stat-badge badge-up">+312</span></div>
+              <div class="stat-value">1,847</div>
+              <div class="stat-meta">Across 94 organizations</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-top"><div class="stat-label">Monthly Churn Rate</div><span class="stat-badge badge-down">+0.3%</span></div>
+              <div class="stat-value">2.1%</div>
+              <div class="stat-meta">Industry avg: 4.7%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-top"><div class="stat-label">Journal Entries / Day</div><span class="stat-badge badge-up">+22%</span></div>
+              <div class="stat-value">894</div>
+              <div class="stat-meta">7-day avg</div>
+            </div>
+          </div>
+
+          <div class="grid-3-2 mb-18">
+            <div class="card">
+              <div class="card-header"><div class="card-title">MRR Growth</div><div class="card-sub">Last 8 months</div></div>
+              <div class="card-body">
+                <div class="mrr-row">
+                  <div><div class="mrr-val">$42,840</div><div class="mrr-label">Current MRR</div></div>
+                  <span class="mrr-delta">+18% MoM</span>
+                </div>
+                <div class="sparkline">
+                  <div class="spark-bar" style="height:28%"></div>
+                  <div class="spark-bar" style="height:38%"></div>
+                  <div class="spark-bar" style="height:45%"></div>
+                  <div class="spark-bar" style="height:52%"></div>
+                  <div class="spark-bar" style="height:61%"></div>
+                  <div class="spark-bar" style="height:72%"></div>
+                  <div class="spark-bar" style="height:84%"></div>
+                  <div class="spark-bar hi" style="height:100%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate-300);margin-top:4px;">
+                  <span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="stat-card mb-18">
+                <div class="stat-top"><div class="stat-label">Annual Recurring Revenue</div><span class="stat-badge badge-up">+21%</span></div>
+                <div class="stat-value">$514k</div>
+                <div class="stat-meta">Projected ARR: $610k</div>
+              </div>
+              <div class="stat-card mb-18">
+                <div class="stat-top"><div class="stat-label">Net Revenue Retention</div><span class="stat-badge badge-up">Top decile</span></div>
+                <div class="stat-value">118%</div>
+                <div class="stat-meta">Expansion revenue driving growth</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-top"><div class="stat-label">Avg Contract Value</div><span class="stat-badge badge-up">+$84</span></div>
+                <div class="stat-value">$456</div>
+                <div class="stat-meta">Per organization / month</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Plan Distribution</div><div class="card-sub">By organization count</div></div>
+              <div class="card-body">
+                <div class="plan-row"><div class="plan-name-lbl">Enterprise</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:14%;background:var(--amber-600);height:100%;border-radius:3px;"></div></div><div class="plan-count">13 orgs</div></div>
+                <div class="plan-row"><div class="plan-name-lbl">Professional</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:54%;background:var(--green-500);height:100%;border-radius:3px;"></div></div><div class="plan-count">51 orgs</div></div>
+                <div class="plan-row"><div class="plan-name-lbl">Starter</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:32%;background:var(--slate-300);height:100%;border-radius:3px;"></div></div><div class="plan-count">30 orgs</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recent Activity Feed</div></div>
+              <div class="card-body">
+                <div class="feed-item"><div class="feed-dot dot-g"></div><div class="feed-text"><strong>Nexora Inc.</strong> upgraded from Pro to Enterprise</div><div class="feed-time">2h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-b"></div><div class="feed-text"><strong>3 new orgs</strong> started free trials today</div><div class="feed-time">4h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-a"></div><div class="feed-text"><strong>Luma Studio</strong> added 8 new seats</div><div class="feed-time">6h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-r"></div><div class="feed-text"><strong>1 organization</strong> cancelled (downgrade to Starter)</div><div class="feed-time">Yesterday</div></div>
+                <div class="feed-item"><div class="feed-dot dot-g"></div><div class="feed-text"><strong>Brightfield Co.</strong> renewed annual contract</div><div class="feed-time">Yesterday</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVENUE PAGE -->
+        <div class="page" id="owner-revenue">
+          <div class="page-header"><h1>Revenue <em>&amp; MRR</em></h1><p>Financial health of the FeedbackLoop platform. Entirely separate from employee data.</p></div>
+          <div class="stats-grid stats-4 mb-22">
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">MRR</div><span class="stat-badge badge-up">+18%</span></div><div class="stat-value">$42.8k</div><div class="stat-meta">+$6.5k vs last month</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">ARR</div><span class="stat-badge badge-up">+21%</span></div><div class="stat-value">$514k</div><div class="stat-meta">Projected: $610k</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">New MRR</div><span class="stat-badge badge-up">+$8.2k</span></div><div class="stat-value">$11.4k</div><div class="stat-meta">From new orgs this month</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Churned MRR</div><span class="stat-badge badge-down">-$1.2k</span></div><div class="stat-value">$890</div><div class="stat-meta">Net expansion positive</div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Revenue Breakdown</div></div>
+              <div class="card-body">
+                <div class="plan-row" style="margin-bottom:14px;"><div class="plan-name-lbl">Enterprise</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:48%;background:var(--amber-600);height:100%;border-radius:3px;"></div></div><div class="plan-count" style="color:var(--amber-600);font-weight:700;">$20.6k</div></div>
+                <div class="plan-row" style="margin-bottom:14px;"><div class="plan-name-lbl">Professional</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:43%;background:var(--green-500);height:100%;border-radius:3px;"></div></div><div class="plan-count" style="color:var(--green-700);font-weight:700;">$18.4k</div></div>
+                <div class="plan-row"><div class="plan-name-lbl">Starter</div><div class="plan-bar-wrap"><div class="plan-bar-fill" style="width:9%;background:var(--slate-300);height:100%;border-radius:3px;"></div></div><div class="plan-count" style="font-weight:700;">$3.8k</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Key Revenue Metrics</div></div>
+              <div class="card-body">
+                <div class="settings-row"><div><div class="sr-label">Net Revenue Retention</div><div class="sr-desc">Expansion driving growth above 100%</div></div><div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.3rem;color:var(--green-700);font-weight:400;">118%</div></div>
+                <div class="settings-row"><div><div class="sr-label">Avg Contract Value</div><div class="sr-desc">Per organization per month</div></div><div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.3rem;color:var(--slate-900);font-weight:400;">$456</div></div>
+                <div class="settings-row"><div><div class="sr-label">Payback Period</div><div class="sr-desc">Months to recover customer acquisition cost</div></div><div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.3rem;color:var(--slate-900);font-weight:400;">8.2 mo</div></div>
+                <div class="settings-row"><div><div class="sr-label">LTV / CAC Ratio</div></div><div style="font-family:&#39;Instrument Serif&#39;,serif;font-size:1.3rem;color:var(--green-700);font-weight:400;">4.8x</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS PAGE -->
+        <div class="page" id="owner-users">
+          <div class="page-header"><h1>Users <em>&amp; Growth</em></h1><p>Platform user metrics across all organizations. No individual feedback content here.</p></div>
+          <div class="stats-grid stats-4 mb-22">
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Total Active Users</div><span class="stat-badge badge-up">+312</span></div><div class="stat-value">1,847</div><div class="stat-meta">+20% MoM</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Active Organizations</div><span class="stat-badge badge-up">+11</span></div><div class="stat-value">94</div><div class="stat-meta">+13% MoM</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Churn Rate</div><span class="stat-badge badge-down">+0.3%</span></div><div class="stat-value">2.1%</div><div class="stat-meta">Below industry avg of 4.7%</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Trial Conversions</div><span class="stat-badge badge-up">+4%</span></div><div class="stat-value">38%</div><div class="stat-meta">Trial-to-paid rate</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Growth Drivers</div></div>
+            <div class="card-body">
+              <div class="action-item"><div class="action-num" style="background:var(--green-50);color:var(--green-700);border-color:var(--green-100);">1</div><div class="action-body"><div class="action-title">Word-of-mouth referrals driving 41% of new signups</div><div class="action-desc">Customers citing "the platform paid for itself" are the top source of inbound leads this quarter.</div><div class="action-chips"><span class="a-chip ac-g">Organic Growth</span></div></div></div>
+              <div class="action-item"><div class="action-num">2</div><div class="action-body"><div class="action-title">Enterprise expansion accounts for 60% of net new MRR</div><div class="action-desc">Existing Pro customers upgrading to Enterprise is the dominant revenue growth lever. NRR at 118%.</div><div class="action-chips"><span class="a-chip ac-a">Expansion Revenue</span></div></div></div>
+              <div class="action-item"><div class="action-num">3</div><div class="action-body"><div class="action-title">Churn concentrated in Starter plan — onboarding gap</div><div class="action-desc">83% of churned accounts in the last 60 days were on Starter with low engagement in week 2. Recommend an in-app onboarding nudge at day 10.</div><div class="action-chips"><span class="a-chip ac-r">Action Required</span></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SYSTEM USAGE -->
+        <div class="page" id="owner-system">
+          <div class="page-header"><h1>System <em>Usage</em></h1><p>Platform activity and engagement metrics.</p></div>
+          <div class="stats-grid stats-4 mb-22">
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Entries / Day (7d avg)</div><span class="stat-badge badge-up">+22%</span></div><div class="stat-value">894</div><div class="stat-meta">Peak: 1,204 on Monday</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">AI Analyses Run</div><span class="stat-badge badge-up">+31%</span></div><div class="stat-value">6,240</div><div class="stat-meta">This month</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">Avg Session Length</div><span class="stat-badge badge-up">+45s</span></div><div class="stat-value">4.2m</div><div class="stat-meta">Per journal session</div></div>
+            <div class="stat-card"><div class="stat-top"><div class="stat-label">API Uptime</div><span class="stat-badge badge-up">Healthy</span></div><div class="stat-value">99.9%</div><div class="stat-meta">Last 30 days</div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Feature Usage Rates</div></div>
+              <div class="card-body">
+                <div class="bar-chart">
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:120px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Daily Journal</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 92%;"></div></div><span class="bar-pct" style="width:32px;font-weight:700;color:var(--green-700);">92%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:120px;text-align:left;font-size:0.72rem;color:var(--slate-700);">AI Synthesis</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-g" style="width: 78%;"></div></div><span class="bar-pct" style="width:32px;font-weight:700;color:var(--green-700);">78%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:120px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Manager Reports</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-a" style="width: 64%;"></div></div><span class="bar-pct" style="width:32px;font-weight:700;color:var(--amber-600);">64%</span></div>
+                  <div class="bar-row" style="margin-bottom:10px;"><span class="bar-lbl" style="width:120px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Goals Tracking</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-a" style="width: 51%;"></div></div><span class="bar-pct" style="width:32px;font-weight:700;color:var(--amber-600);">51%</span></div>
+                  <div class="bar-row"><span class="bar-lbl" style="width:120px;text-align:left;font-size:0.72rem;color:var(--slate-700);">Voice Notes</span><div class="bar-track" style="height:7px;"><div class="bar-fill fill-r" style="width: 23%;"></div></div><span class="bar-pct" style="width:32px;font-weight:700;color:var(--red-600);">23%</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recent System Events</div></div>
+              <div class="card-body">
+                <div class="feed-item"><div class="feed-dot dot-g"></div><div class="feed-text">AI synthesis API <strong>response time improved</strong> to 1.4s avg</div><div class="feed-time">1h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-g"></div><div class="feed-text"><strong>Weekly reports generated</strong> for all 94 organizations</div><div class="feed-time">6h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-a"></div><div class="feed-text">Voice transcription feature <strong>usage up 23%</strong> this week</div><div class="feed-time">12h ago</div></div>
+                <div class="feed-item"><div class="feed-dot dot-g"></div><div class="feed-text">Slack integration <strong>activated</strong> by 4 new orgs</div><div class="feed-time">Yesterday</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OWNER SETTINGS -->
+        <div class="page" id="owner-osettings">
+          <div class="page-header"><h1>Platform <em>Settings</em></h1></div>
+          <div class="card"><div class="card-body">
+            <div class="settings-layout">
+              <div class="settings-nav">
+                <button class="s-nav-item active" onclick="sTab(this)">Security</button>
+                <button class="s-nav-item" onclick="sTab(this)">Billing</button>
+                <button class="s-nav-item" onclick="sTab(this)">Data Policy</button>
+                <button class="s-nav-item" onclick="sTab(this)">Integrations</button>
+              </div>
+              <div>
+                <div class="settings-row"><div><div class="sr-label">Enforce anonymization platform-wide</div><div class="sr-desc">Prevent any dashboard from revealing individual employee data</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Data wall: Owner ↔ Manager separation</div><div class="sr-desc">Owner revenue data is never accessible in manager views</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Two-factor authentication required</div><div class="sr-desc">All admin accounts must use 2FA</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">GDPR data retention policy</div><div class="sr-desc">Auto-delete anonymized entries older than 12 months</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+                <div class="settings-row"><div><div class="sr-label">Audit log access</div><div class="sr-desc">Full access log for compliance reporting</div></div><button class="toggle on" onclick="this.classList.toggle(&#39;on&#39;)"></button></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div><!-- /role-owner -->
+
+
+<!-- VOICE MODAL -->
+<div class="voice-modal" id="voice-modal">
+  <div class="voice-modal-card">
+    <div class="vm-icon" id="vm-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+    </div>
+    <div class="vm-title" id="vm-title">Voice Note</div>
+    <div class="vm-sub" id="vm-sub">Press Record to start capturing your feedback. AI will transcribe it into your journal entry.</div>
+    <div class="vm-waveform" id="vm-waveform">
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    </div>
+    <div class="vm-timer" id="vm-timer">0:00</div>
+    <div class="vm-btns">
+      <button class="vm-btn" onclick="closeVoiceModal()">Cancel</button>
+      <button class="vm-btn record" id="vm-record-btn" onclick="toggleRecording()">Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-msg">Saved</span></div>
+
+
+<script>
+/* ═══════════════════════════════════════
+   DATA STORE
+   Employee entries flow into Manager action plan.
+   Owner data is completely separate.
+═══════════════════════════════════════ */
+const employeeData = {
+  entries: [],
+  frictionThemes: {
+    'file_sharing':   { label: 'File-sharing software confusion',   count: 20, severity: 'h', dept: ['Marketing · 12', 'Design · 8'] },
+    'meetings':       { label: 'Meeting overload in Operations',     count: 7,  severity: 'm', dept: ['Operations · 7'] },
+    'approval':       { label: 'Q2 approval process unclear',        count: 9,  severity: 'm', dept: ['Finance · 4', 'Ops · 3', 'Sales · 2'] },
+  },
+  wins: [
+    { label: 'Async standup bot praised', count: 11, dept: ['Sales · 6', 'Marketing · 5'], action: 'Replicate' },
+    { label: 'Q1 campaign launched on time', count: 8, dept: ['Marketing · 8'], action: 'Celebrate' },
+  ]
+};
+
+// Generate manager action plan from employee data
+function buildActionPlan() {
+  const list = document.getElementById('mgr-action-list');
+  if (!list) return;
+
+  const recommendations = [
+    {
+      title: 'Schedule file-sharing onboarding for Marketing & Design',
+      desc: '62% of employees losing ~25 min/day. A single walkthrough with a searchable folder guide eliminates this friction within the week. Assign to IT or Department Lead.',
+      chips: [{ label: '~12 hrs recovered/week', cls: 'ac-g' }, { label: 'Effort: Low', cls: 'ac-b' }, { label: 'This week', cls: 'ac-a' }]
+    },
+    {
+      title: 'Audit Operations meetings — shift status updates to async',
+      desc: '7 members flagged 3+ hours of unproductive meetings daily. Trial: replace 9 AM check-in with Slack async Mon–Wed, live sync Thursdays only.',
+      chips: [{ label: '3–5 hrs/person/week', cls: 'ac-g' }, { label: 'Effort: Medium', cls: 'ac-a' }]
+    },
+    {
+      title: 'Expand async standup bot company-wide',
+      desc: '11 unprompted positive mentions this week. IT has the config template. Highest ROI action in this week\'s data.',
+      chips: [{ label: 'High adoption likely', cls: 'ac-g' }, { label: 'Effort: Low', cls: 'ac-b' }]
+    },
+    {
+      title: 'Publish updated Q2 vendor approval documentation',
+      desc: 'Confusion in 9 entries across 4 departments. One Notion page or Loom walkthrough resolves this immediately. Owner: Finance or Ops lead.',
+      chips: [{ label: 'Cross-dept impact', cls: 'ac-g' }, { label: 'Today', cls: 'ac-a' }]
+    }
+  ];
+
+  // Append any live entries from the employee journal
+  if (employeeData.entries.length > 0) {
+    const latest = employeeData.entries[employeeData.entries.length - 1];
+    if (latest.friction) {
+      recommendations.push({
+        title: 'Review newly submitted friction report (anonymous)',
+        desc: 'A team member just flagged a new issue. Review the anonymized pattern analysis in the weekly report.',
+        chips: [{ label: 'New submission', cls: 'ac-r' }]
+      });
+    }
+  }
+
+  list.innerHTML = recommendations.map((r, i) => `
+    <div class="action-item">
+      <div class="action-num">${i + 1}</div>
+      <div class="action-body">
+        <div class="action-title">${r.title}</div>
+        <div class="action-desc">${r.desc}</div>
+        <div class="action-chips">
+          ${r.chips.map(c => `<span class="a-chip ${c.cls}">${c.label}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════
+   ROLE SWITCHING
+═══════════════════════════════════════ */
+function switchRole(role, btn) {
+  document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('role-' + role).classList.add('active');
+  btn.classList.add('active');
+  if (role === 'manager') buildActionPlan();
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+const breadcrumbs = {
+  journal: 'Daily Journal', history: 'My History', goals: 'Personal Goals',
+  settings: 'Settings', pricing: 'Upgrade Plan',
+  pulse: 'The Pulse', action: 'Action Plan', sentiment: 'Sentiment Trends',
+  engagement: 'Team Engagement', weekly: 'Weekly Report', msettings: 'Settings',
+  overview: 'Business Overview', revenue: 'Revenue & MRR', users: 'Users & Growth',
+  system: 'System Usage', osettings: 'Platform Settings'
+};
+
+function empNav(id, el) {
+  document.querySelectorAll('#role-employee .page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#role-employee .nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('emp-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('emp-breadcrumb').textContent = breadcrumbs[id] || id;
+  window.scrollTo(0, 0);
+}
+
+function mgrNav(id, el) {
+  document.querySelectorAll('#role-manager .page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#role-manager .nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('mgr-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('mgr-breadcrumb').textContent = breadcrumbs[id] || id;
+  if (id === 'action') buildActionPlan();
+  window.scrollTo(0, 0);
+}
+
+function ownerNav(id, el) {
+  document.querySelectorAll('#role-owner .page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#role-owner .nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('owner-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('owner-breadcrumb').textContent = breadcrumbs[id] || id;
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════
+   JOURNAL HELPERS
+═══════════════════════════════════════ */
+function addTag(el, taId, text) {
+  el.classList.toggle('on');
+  const ta = document.getElementById(taId);
+  if (el.classList.contains('on')) {
+    ta.value = (ta.value ? ta.value + '\n' : '') + text;
+  }
+}
+
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function sTab(el) {
+  const parent = el.closest('.settings-layout').querySelector('.settings-nav');
+  parent.querySelectorAll('.s-nav-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ═══════════════════════════════════════
+   VOICE NOTE — SPEECH-TO-TEXT PLACEHOLDER
+   Replace the simulateTranscription() function
+   with a real Web Speech API or Whisper API call.
+═══════════════════════════════════════ */
+let isRecording = false;
+let recordTimer = null;
+let recordSeconds = 0;
+
+function openVoiceModal() {
+  document.getElementById('voice-modal').classList.add('open');
+  resetVoiceModal();
+}
+
+function closeVoiceModal() {
+  stopRecording();
+  document.getElementById('voice-modal').classList.remove('open');
+}
+
+function resetVoiceModal() {
+  isRecording = false;
+  recordSeconds = 0;
+  document.getElementById('vm-timer').textContent = '0:00';
+  document.getElementById('vm-title').textContent = 'Voice Note';
+  document.getElementById('vm-sub').textContent = 'Press Record to start. AI will transcribe your speech into the journal entry.';
+  document.getElementById('vm-icon').classList.remove('active');
+  document.getElementById('vm-waveform').classList.remove('active');
+  document.getElementById('vm-record-btn').textContent = 'Record';
+  document.getElementById('vm-record-btn').className = 'vm-btn record';
+}
+
+function toggleRecording() {
+  if (!isRecording) startRecording();
+  else stopAndTranscribe();
+}
+
+function startRecording() {
+  isRecording = true;
+  document.getElementById('vm-icon').classList.add('active');
+  document.getElementById('vm-waveform').classList.add('active');
+  document.getElementById('vm-title').textContent = 'Recording…';
+  document.getElementById('vm-sub').textContent = 'Speak clearly. Click Stop when finished.';
+  document.getElementById('vm-record-btn').textContent = 'Stop';
+  document.getElementById('vm-record-btn').className = 'vm-btn stop';
+
+  // NOTE: Real implementation would call:
+  //   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  //   const mediaRecorder = new MediaRecorder(stream);
+  //   mediaRecorder.start();
+  //   Or: use the Web Speech API SpeechRecognition object
+  //   Or: send audio blob to OpenAI Whisper / Deepgram API
+
+  recordTimer = setInterval(() => {
+    recordSeconds++;
+    const m = Math.floor(recordSeconds / 60);
+    const s = recordSeconds % 60;
+    document.getElementById('vm-timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
+}
+
+function stopRecording() {
+  isRecording = false;
+  clearInterval(recordTimer);
+}
+
+function stopAndTranscribe() {
+  stopRecording();
+  document.getElementById('vm-title').textContent = 'Transcribing…';
+  document.getElementById('vm-sub').textContent = 'AI is converting your speech to text…';
+  document.getElementById('vm-icon').classList.remove('active');
+  document.getElementById('vm-waveform').classList.remove('active');
+  document.getElementById('vm-record-btn').textContent = 'Processing…';
+  document.getElementById('vm-record-btn').disabled = true;
+
+  // PLACEHOLDER: Simulate transcription delay
+  // Replace with actual Speech-to-Text API call here
+  setTimeout(() => simulateTranscription(), 1500);
+}
+
+function simulateTranscription() {
+  // Placeholder transcription result
+  // Real implementation: parse response from Whisper/Web Speech API
+  const transcribed = "The morning standup took too long again. I think we could cut it to 15 minutes if we moved updates to Slack. Also, couldn't find the Q1 assets folder — had to ask two people.";
+  const frictionInput = document.getElementById('friction-input');
+  frictionInput.value = (frictionInput.value ? frictionInput.value + '\n' : '') + transcribed;
+
+  document.getElementById('voice-modal').classList.remove('open');
+  showToast('Voice note transcribed into your entry');
+}
+
+/* ═══════════════════════════════════════
+   AI ANALYSIS (Live Claude API)
+═══════════════════════════════════════ */
+async function analyzeEntry() {
+  const wins = document.getElementById('wins-input').value.trim();
+  const friction = document.getElementById('friction-input').value.trim();
+  const prod = document.getElementById('prod-slider').value;
+
+  if (!wins && !friction) { showToast('Please write at least one entry first'); return; }
+
+  // Store entry for manager data flow
+  employeeData.entries.push({ wins, friction, prod, timestamp: new Date().toISOString() });
+
+  const panel = document.getElementById('ai-panel');
+  const loading = document.getElementById('ai-loading');
+  const output = document.getElementById('ai-output');
+  const meta = document.getElementById('ai-meta');
+
+  panel.classList.add('visible');
+  loading.style.display = 'flex';
+  output.style.display = 'none';
+  meta.style.display = 'none';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const prompt = `You are FeedbackLoop AI, a workplace analytics assistant that helps employees reflect meaningfully.
+
+Employee daily journal:
+VICTORIES: ${wins || '(none)'}
+FRICTION POINTS: ${friction || '(none)'}
+SELF-REPORTED PRODUCTIVITY: ${prod}/10
+
+Write a structured personal synthesis with exactly four sections separated by [SECTION]:
+
+Section 1: 2 sentences acknowledging a specific, genuine strength from their victories. Be concrete.
+Section 2: 2 sentences identifying and naming the key friction point with precision. Bold the pattern name with <strong> tags. Explain likely root cause briefly.
+Section 3: Start with "Tomorrow's Action" on its own line, then one concrete immediately actionable step to reduce that friction.
+Section 4: One grounded, professional closing sentence. Direct and human — not corporate-speak.
+
+Then on a new line write exactly:
+META: [Mood: X] [Theme: X] [Impact: X] [Focus: X]
+(Mood=single word, Theme=2-3 words, Impact=High/Medium/Low, Focus=2-3 words)
+
+No bullet points. Flowing prose only.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    const metaMatch = text.match(/META:\s*\[Mood:\s*([^\]]+)\]\s*\[Theme:\s*([^\]]+)\]\s*\[Impact:\s*([^\]]+)\]\s*\[Focus:\s*([^\]]+)\]/i);
+    let mainText = text.replace(/META:.*$/s, '').trim();
+    const sections = mainText.split('[SECTION]').map(s => s.trim()).filter(Boolean);
+    let html = '';
+    sections.forEach(s => {
+      const lines = s.split('\n').map(l => l.trim()).filter(Boolean);
+      if (lines[0] && lines[0].toLowerCase().includes("tomorrow")) {
+        html += `<div class="ai-action-label">${lines[0]}</div><p>${lines.slice(1).join(' ')}</p>`;
+      } else {
+        html += `<p>${s}</p>`;
+      }
+    });
+    loading.style.display = 'none';
+    output.innerHTML = html;
+    output.style.display = 'block';
+    if (metaMatch) {
+      document.getElementById('meta-mood').textContent = metaMatch[1];
+      document.getElementById('meta-theme').textContent = metaMatch[2];
+      document.getElementById('meta-impact').textContent = metaMatch[3];
+      document.getElementById('meta-focus').textContent = metaMatch[4];
+      meta.style.display = 'flex';
+    }
+    showToast('Entry submitted & anonymized');
+  } catch (e) {
+    loading.style.display = 'none';
+    output.innerHTML = '<p style="color:var(--slate-300);">Your entry has been recorded and anonymized for the team report. AI synthesis is unavailable in this environment.</p>';
+    output.style.display = 'block';
+    showToast('Entry saved');
+  }
+}
+
+/* ═══════════════════════════════════════
+   PRICING TOGGLE
+═══════════════════════════════════════ */
+let annualBilling = true;
+function toggleBilling(btn) {
+  annualBilling = !annualBilling;
+  document.getElementById('price-starter').textContent = annualBilling ? '$9' : '$12';
+  document.getElementById('price-pro').textContent = annualBilling ? '$22' : '$29';
+  btn.classList.toggle('on', annualBilling);
+}
+
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Animate bars on load
+setTimeout(() => {
+  document.querySelectorAll('.bar-fill').forEach(b => {
+    const w = b.style.width;
+    b.style.width = '0';
+    setTimeout(() => b.style.width = w, 100);
+  });
+}, 500);
+
+// Close modal on backdrop click
+document.getElementById('voice-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeVoiceModal();
+});
+</script>
+
+
+</body></html>
